@@ -10,6 +10,8 @@ import pe.edu.uls.tests_productos.mappers.EquipoMapper;
 import pe.edu.uls.tests_productos.model.Equipo;
 import pe.edu.uls.tests_productos.services.EquipoService;
 
+//TODO: Cambiar los demas metodos para que funcionen con un service
+
 @RestController
 @RequestMapping("/equipos")
 public class EquipoController {
