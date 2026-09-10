@@ -1,10 +1,63 @@
-### SUCCES
+### =====================================================
+### GET 1 - BUSCAR EQUIPO - EXITOSO
+### =====================================================
+
 GET http://localhost:8080/new-equipos/GE-001
 
-### NOT FOUND
-GET http://localhost:8080/new-equipos/1
 
-### CREATE NEW EQUIPO VALID
+### =====================================================
+### GET 1 - BUSCAR EQUIPO - ERROR
+### =====================================================
+
+GET http://localhost:8080/new-equipos/GE-999
+
+
+### =====================================================
+### GET 2 - BUSCAR POR UBICACION - EXITOSO
+### =====================================================
+
+GET http://localhost:8080/new-equipos/ubicacion/Arequipa
+
+
+### =====================================================
+### GET 2 - BUSCAR POR UBICACION - ERROR
+### =====================================================
+
+GET http://localhost:8080/new-equipos/ubicacion/Cusco
+
+
+### =====================================================
+### GET 3 - BUSCAR POR COMBUSTIBLE - EXITOSO
+### =====================================================
+
+GET http://localhost:8080/new-equipos/tipo/Diesel
+
+
+### =====================================================
+### GET 3 - BUSCAR POR COMBUSTIBLE - ERROR
+### =====================================================
+
+GET http://localhost:8080/new-equipos/tipo/Gas
+
+
+### =====================================================
+### GET 4 - MAYOR POTENCIA - EXITOSO
+### =====================================================
+
+GET http://localhost:8080/new-equipos/mayor-potencia/400
+
+
+### =====================================================
+### GET 4 - MAYOR POTENCIA - ERROR
+### =====================================================
+
+GET http://localhost:8080/new-equipos/mayor-potencia/-100
+
+
+### =====================================================
+### POST 1 - REGISTRAR EQUIPO - EXITOSO
+### =====================================================
+
 POST http://localhost:8080/new-equipos
 Content-Type: application/json
 
@@ -15,12 +68,15 @@ Content-Type: application/json
     "potencia": 400,
     "horometro": 0,
     "ubicacion": "Arequipa",
-    "tipo": "Diesel",
+    "combustible": "Diesel",
     "estado": "Disponible"
 }
 
 
-### CREATE NEW EQUIPO INVALID
+### =====================================================
+### POST 1 - REGISTRAR EQUIPO - ERROR
+### =====================================================
+
 POST http://localhost:8080/new-equipos
 Content-Type: application/json
 
@@ -31,6 +87,120 @@ Content-Type: application/json
     "potencia": 400,
     "horometro": 0,
     "ubicacion": "Arequipa",
-    "tipo": "Diesel",
+    "combustible": "Diesel",
     "estado": "Disponible"
+}
+
+
+### =====================================================
+### POST 2 - CALCULAR COMBUSTIBLE - EXITOSO
+### =====================================================
+
+POST http://localhost:8080/new-equipos/calcular-combustible
+Content-Type: application/json
+
+{
+    "codigo": "GE-001",
+    "nombre": "Grupo Electrógeno 01",
+    "modelo": "Caterpillar C15",
+    "potencia": 500,
+    "horometro": 1200,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+
+### =====================================================
+### POST 2 - CALCULAR COMBUSTIBLE - ERROR
+### =====================================================
+
+POST http://localhost:8080/new-equipos/calcular-combustible
+Content-Type: application/json
+
+{
+    "codigo": "GE-001",
+    "nombre": "Grupo Electrógeno 01",
+    "modelo": "Caterpillar C15",
+    "potencia": -500,
+    "horometro": 1200,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+
+### =====================================================
+### POST 3 - ACTUALIZAR HOROMETRO - EXITOSO
+### =====================================================
+
+POST http://localhost:8080/new-equipos/actualizar-horometro
+Content-Type: application/json
+
+{
+    "codigo": "GE-002",
+    "nombre": "Grupo Electrógeno 02",
+    "modelo": "Perkins 1106",
+    "potencia": 300,
+    "horometro": 850,
+    "ubicacion": "Miraflores",
+    "combustible": "Diesel",
+    "estado": "Alquilado"
+}
+
+
+### =====================================================
+### POST 3 - ACTUALIZAR HOROMETRO - ERROR
+### =====================================================
+
+POST http://localhost:8080/new-equipos/actualizar-horometro
+Content-Type: application/json
+
+{
+    "codigo": "GE-002",
+    "nombre": "Grupo Electrógeno 02",
+    "modelo": "Perkins 1106",
+    "potencia": 300,
+    "horometro": -10,
+    "ubicacion": "Miraflores",
+    "combustible": "Diesel",
+    "estado": "Alquilado"
+}
+
+
+### =====================================================
+### POST 4 - REGISTRAR SERVICIO - EXITOSO
+### =====================================================
+
+POST http://localhost:8080/new-equipos/registrar-servicio
+Content-Type: application/json
+
+{
+    "codigo": "GE-003",
+    "nombre": "Grupo Electrógeno 03",
+    "modelo": "Cummins QSB",
+    "potencia": 200,
+    "horometro": 600,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+
+### =====================================================
+### POST 4 - REGISTRAR SERVICIO - ERROR
+### =====================================================
+
+POST http://localhost:8080/new-equipos/registrar-servicio
+Content-Type: application/json
+
+{
+    "codigo": "GE-003",
+    "nombre": "Grupo Electrógeno 03",
+    "modelo": "Cummins QSB",
+    "potencia": 200,
+    "horometro": 600,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Mantenimiento"
 }

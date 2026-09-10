@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import pe.edu.uls.tests_productos.exceptions.EquipoDuplicadoException;
 import pe.edu.uls.tests_productos.exceptions.EquipoInvalidoException;
 import pe.edu.uls.tests_productos.exceptions.EquipoNoEncontradoException;
 import pe.edu.uls.tests_productos.model.Equipo;
@@ -12,144 +13,278 @@ import pe.edu.uls.tests_productos.model.Equipo;
 @Service
 public class NewEquipoService {
 
-	public Equipo obtenerEquipo(String codigo) {
+    // =====================================================
+    // GET 1 - BUSCAR POR CODIGO
+    // =====================================================
 
-		if (!codigo.equals("GE-001")) {
-			throw new EquipoNoEncontradoException("Equipo no encontrado");
-		}
+    public Equipo obtenerEquipo(String codigo) {
 
-		return new Equipo(
-				codigo,
-				"Grupo Electrógeno",
-				"Caterpillar C15",
-				500,
-				1200,
-				"Arequipa",
-				"Diesel",
-				"Disponible");
-	}
+        if (codigo == null || codigo.isBlank()) {
+            throw new EquipoInvalidoException(
+                    "El código del equipo es obligatorio");
+        }
 
-	public List<Equipo> buscarPorUbicacion(String ubicacion) {
+        if (!codigo.equals("GE-001")) {
+            throw new EquipoNoEncontradoException(
+                    "Equipo no encontrado con código: " + codigo);
+        }
 
-		List<Equipo> equipos = new ArrayList<>();
+        return new Equipo(
+                codigo,
+                "Grupo Electrógeno",
+                "Caterpillar C15",
+                500,
+                1200,
+                "Arequipa",
+                "Diesel",
+                "Disponible");
+    }
 
-		equipos.add(new Equipo(
-				"GE-001",
-				"Grupo Electrógeno 01",
-				"Caterpillar C15",
-				500,
-				1200,
-				ubicacion,
-				"Diesel",
-				"Disponible"));
+    // =====================================================
+    // GET 2 - BUSCAR POR UBICACION
+    // =====================================================
 
-		equipos.add(new Equipo(
-				"GE-004",
-				"Grupo Electrógeno 04",
-				"Perkins 1104",
-				250,
-				700,
-				ubicacion,
-				"Diesel",
-				"Disponible"));
+    public List<Equipo> buscarPorUbicacion(String ubicacion) {
 
-		return equipos;
-	}
+        if (ubicacion == null || ubicacion.isBlank()) {
+            throw new EquipoInvalidoException(
+                    "La ubicación es obligatoria");
+        }
 
-	public List<Equipo> buscarPorTipo(String tipo) {
+        if (!ubicacion.equalsIgnoreCase("Arequipa")
+                && !ubicacion.equalsIgnoreCase("Miraflores")) {
 
-		List<Equipo> equipos = new ArrayList<>();
+            throw new EquipoNoEncontradoException(
+                    "No existen equipos en la ubicación: " + ubicacion);
+        }
 
-		equipos.add(new Equipo(
-				"GE-001",
-				"Grupo Electrógeno 01",
-				"Caterpillar C15",
-				500,
-				1200,
-				"Arequipa",
-				tipo,
-				"Disponible"));
+        List<Equipo> equipos = new ArrayList<>();
 
-		equipos.add(new Equipo(
-				"GE-002",
-				"Grupo Electrógeno 02",
-				"Perkins 1106",
-				300,
-				850,
-				"Miraflores",
-				tipo,
-				"Alquilado"));
+        equipos.add(new Equipo(
+                "GE-001",
+                "Grupo Electrógeno 01",
+                "Caterpillar C15",
+                500,
+                1200,
+                ubicacion,
+                "Diesel",
+                "Disponible"));
 
-		return equipos;
-	}
+        equipos.add(new Equipo(
+                "GE-004",
+                "Grupo Electrógeno 04",
+                "Perkins 1104",
+                250,
+                700,
+                ubicacion,
+                "Diesel",
+                "Disponible"));
 
-	public List<Equipo> equiposMayorPotencia(double potencia) {
+        return equipos;
+    }
 
-		List<Equipo> equipos = new ArrayList<>();
+    // =====================================================
+    // GET 3 - BUSCAR POR TIPO DE COMBUSTIBLE
+    // =====================================================
 
-		equipos.add(new Equipo(
-				"GE-001",
-				"Grupo Electrógeno 01",
-				"Caterpillar C15",
-				potencia + 100,
-				1200,
-				"Arequipa",
-				"Diesel",
-				"Disponible"));
+    public List<Equipo> buscarPorTipo(String tipo) {
 
-		equipos.add(new Equipo(
-				"GE-002",
-				"Grupo Electrógeno 02",
-				"Perkins 1106",
-				potencia + 50,
-				850,
-				"Miraflores",
-				"Diesel",
-				"Alquilado"));
+        if (tipo == null || tipo.isBlank()) {
+            throw new EquipoInvalidoException(
+                    "El tipo de combustible es obligatorio");
+        }
 
-		return equipos;
-	}
+        if (!tipo.equalsIgnoreCase("Diesel")
+                && !tipo.equalsIgnoreCase("Gasolina")) {
 
-	public Equipo registrarEquipo(Equipo equipo) {
-		// Aquí iría la lógica para guardar el equipo en la base de datos
+            throw new EquipoNoEncontradoException(
+                    "No existen equipos con combustible: " + tipo);
+        }
 
-		if (!equipo.getCodigo().substring(0, 2).equals("GE")) {
-			throw new EquipoInvalidoException("Código de equipo inválido");
-		}
+        List<Equipo> equipos = new ArrayList<>();
 
-		return equipo;
+        equipos.add(new Equipo(
+                "GE-001",
+                "Grupo Electrógeno 01",
+                "Caterpillar C15",
+                500,
+                1200,
+                "Arequipa",
+                tipo,
+                "Disponible"));
 
-	}
+        equipos.add(new Equipo(
+                "GE-002",
+                "Grupo Electrógeno 02",
+                "Perkins 1106",
+                300,
+                850,
+                "Miraflores",
+                tipo,
+                "Alquilado"));
 
-	public Equipo calcularCombustible(Equipo equipo) {
+        return equipos;
+    }
 
-		double consumo = equipo.getPotencia() * 0.20;
+    // =====================================================
+    // GET 4 - EQUIPOS CON MAYOR POTENCIA
+    // =====================================================
 
-		equipo.setCombustible(
-				"Consumo estimado: " + consumo + " L/h");
+    public List<Equipo> equiposMayorPotencia(double potencia) {
 
-		return equipo;
-	}
+        if (potencia < 0) {
+            throw new EquipoInvalidoException(
+                    "La potencia no puede ser negativa");
+        }
 
-	public Equipo actualizarHorometro(Equipo equipo) {
+        List<Equipo> equipos = new ArrayList<>();
 
-		equipo.setHorometro(
-				equipo.getHorometro() + 100);
+        equipos.add(new Equipo(
+                "GE-001",
+                "Grupo Electrógeno 01",
+                "Caterpillar C15",
+                potencia + 100,
+                1200,
+                "Arequipa",
+                "Diesel",
+                "Disponible"));
 
-		return equipo;
-	}
+        equipos.add(new Equipo(
+                "GE-002",
+                "Grupo Electrógeno 02",
+                "Perkins 1106",
+                potencia + 50,
+                850,
+                "Miraflores",
+                "Diesel",
+                "Alquilado"));
 
-	public Equipo registrarServicio(Equipo equipo) {
+        return equipos;
+    }
 
-		equipo.setEstado("En servicio");
+    // =====================================================
+    // POST 1 - REGISTRAR EQUIPO
+    // =====================================================
 
-		return equipo;
-	}
+    public Equipo registrarEquipo(Equipo equipo) {
 
-	public Equipo cambiarEstado(Equipo equipo) {
+        if (equipo == null) {
+            throw new EquipoInvalidoException(
+                    "El equipo es obligatorio");
+        }
 
-		equipo.setEstado("Mantenimiento");
+        if (equipo.getCodigo() == null
+                || equipo.getCodigo().isBlank()) {
 
-		return equipo;
-	}
+            throw new EquipoInvalidoException(
+                    "El código del equipo es obligatorio");
+        }
+
+        if (!equipo.getCodigo().startsWith("GE-")) {
+            throw new EquipoInvalidoException(
+                    "Código de equipo inválido. Debe comenzar con GE-");
+        }
+
+        if (equipo.getPotencia() <= 0) {
+            throw new EquipoInvalidoException(
+                    "La potencia debe ser mayor que cero");
+        }
+
+        if (equipo.getCodigo().equals("GE-001")) {
+            throw new EquipoDuplicadoException(
+                    "El equipo con código GE-001 ya existe");
+        }
+
+        return equipo;
+    }
+
+    // =====================================================
+    // POST 2 - CALCULAR CONSUMO DE COMBUSTIBLE
+    // =====================================================
+
+    public Equipo calcularCombustible(Equipo equipo) {
+
+        if (equipo == null) {
+            throw new EquipoInvalidoException(
+                    "El equipo es obligatorio");
+        }
+
+        if (equipo.getPotencia() <= 0) {
+            throw new EquipoInvalidoException(
+                    "La potencia debe ser mayor que cero para calcular el consumo");
+        }
+
+        double consumo = equipo.getPotencia() * 0.20;
+
+        equipo.setCombustible(
+                "Consumo estimado: " + consumo + " L/h");
+
+        return equipo;
+    }
+
+    // =====================================================
+    // POST 3 - ACTUALIZAR HOROMETRO
+    // =====================================================
+
+    public Equipo actualizarHorometro(Equipo equipo) {
+
+        if (equipo == null) {
+            throw new EquipoInvalidoException(
+                    "El equipo es obligatorio");
+        }
+
+        if (equipo.getHorometro() < 0) {
+            throw new EquipoInvalidoException(
+                    "El horómetro no puede ser negativo");
+        }
+
+        equipo.setHorometro(
+                equipo.getHorometro() + 100);
+
+        return equipo;
+    }
+
+    // =====================================================
+    // POST 4 - REGISTRAR SERVICIO
+    // =====================================================
+
+    public Equipo registrarServicio(Equipo equipo) {
+
+        if (equipo == null) {
+            throw new EquipoInvalidoException(
+                    "El equipo es obligatorio");
+        }
+
+        if (equipo.getCodigo() == null
+                || equipo.getCodigo().isBlank()) {
+
+            throw new EquipoInvalidoException(
+                    "El código del equipo es obligatorio");
+        }
+
+        if ("Mantenimiento".equalsIgnoreCase(equipo.getEstado())) {
+            throw new EquipoInvalidoException(
+                    "El equipo se encuentra en mantenimiento y no puede entrar en servicio");
+        }
+
+        equipo.setEstado("En servicio");
+
+        return equipo;
+    }
+
+    // =====================================================
+    // MÉTODO ADICIONAL
+    // =====================================================
+
+    public Equipo cambiarEstado(Equipo equipo) {
+
+        if (equipo == null) {
+            throw new EquipoInvalidoException(
+                    "El equipo es obligatorio");
+        }
+
+        equipo.setEstado("Mantenimiento");
+
+        return equipo;
+    }
 }
