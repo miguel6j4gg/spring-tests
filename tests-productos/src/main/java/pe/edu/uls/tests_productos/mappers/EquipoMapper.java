@@ -3,9 +3,12 @@ package pe.edu.uls.tests_productos.mappers;
 import org.mapstruct.Mapper;
 
 import pe.edu.uls.tests_productos.model.Equipo;
-import pe.edu.uls.tests_productos.dto.EquipoRequest;
+import pe.edu.uls.tests_productos.dto.RequestEquipo;
+import pe.edu.uls.tests_productos.dto.ResponseEquipo;
 
 @Mapper(componentModel = "spring")
 public interface EquipoMapper {
-    Equipo toEquipo(EquipoRequest equipoRequest);
+    Equipo toEquipo(RequestEquipo requestEquipo);
+
+    ResponseEquipo toResponseEquipo(Equipo equipo);
 }

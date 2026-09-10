@@ -5,257 +5,235 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import pe.edu.uls.tests_productos.dto.EquipoRequest;
-import pe.edu.uls.tests_productos.mappers.EquipoMapper;
 import pe.edu.uls.tests_productos.model.Equipo;
-import pe.edu.uls.tests_productos.services.EquipoService;
-
-//TODO: Cambiar los demas metodos para que funcionen con un service
 
 @RestController
 @RequestMapping("/equipos")
 public class EquipoController {
-        private final EquipoService equipoService;
-        private final EquipoMapper equipoMapper;
 
-        public EquipoController(EquipoService equipoService, EquipoMapper equipoMapper) {
-                this.equipoService = equipoService;
-                this.equipoMapper = equipoMapper;
-        }
+	// =====================================================
+	// GET 1 - LISTAR EQUIPOS
+	// =====================================================
 
-        // =====================================================
-        // CREACION DE EQUIPOS USANDO SERVICE
-        // =====================================================
-        @PostMapping("/new")
-        public Equipo crearEquipo(@RequestBody EquipoRequest equipo) {
-                Equipo entity = equipoMapper.toEquipo(equipo);
-                entity = equipoService.crearEquipo(entity);
-                return entity;
-        }
+	@GetMapping
+	public List<Equipo> listarEquipos() {
 
-        // =====================================================
-        // GET 1 - LISTAR EQUIPOS
-        // =====================================================
+		List<Equipo> equipos = new ArrayList<>();
 
-        @GetMapping
-        public List<Equipo> listarEquipos() {
+		equipos.add(new Equipo(
+				"GE-001",
+				"Grupo Electrógeno 01",
+				"Caterpillar C15",
+				500,
+				1200,
+				"Arequipa",
+				"Diesel",
+				"Disponible"));
 
-                List<Equipo> equipos = new ArrayList<>();
+		equipos.add(new Equipo(
+				"GE-002",
+				"Grupo Electrógeno 02",
+				"Perkins 1106",
+				300,
+				850,
+				"Miraflores",
+				"Diesel",
+				"Alquilado"));
 
-                equipos.add(new Equipo(
-                                "GE-001",
-                                "Grupo Electrógeno 01",
-                                "Caterpillar C15",
-                                500,
-                                1200,
-                                "Arequipa",
-                                "Diesel",
-                                "Disponible"));
+		equipos.add(new Equipo(
+				"GE-003",
+				"Grupo Electrógeno 03",
+				"Cummins QSB",
+				200,
+				600,
+				"Arequipa",
+				"Diesel",
+				"Mantenimiento"));
 
-                equipos.add(new Equipo(
-                                "GE-002",
-                                "Grupo Electrógeno 02",
-                                "Perkins 1106",
-                                300,
-                                850,
-                                "Miraflores",
-                                "Diesel",
-                                "Alquilado"));
+		return equipos;
+	}
 
-                equipos.add(new Equipo(
-                                "GE-003",
-                                "Grupo Electrógeno 03",
-                                "Cummins QSB",
-                                200,
-                                600,
-                                "Arequipa",
-                                "Diesel",
-                                "Mantenimiento"));
+	// =====================================================
+	// GET 2 - BUSCAR POR CODIGO
+	// =====================================================
 
-                return equipos;
-        }
+	@GetMapping("/{codigo}")
+	public Equipo obtenerEquipo(@PathVariable String codigo) {
 
-        // =====================================================
-        // GET 2 - BUSCAR POR CODIGO
-        // =====================================================
+		return new Equipo(
+				codigo,
+				"Grupo Electrógeno",
+				"Caterpillar C15",
+				500,
+				1200,
+				"Arequipa",
+				"Diesel",
+				"Disponible");
+	}
 
-        @GetMapping("/{codigo}")
-        public Equipo obtenerEquipo(@PathVariable String codigo) {
+	// =====================================================
+	// GET 3 - BUSCAR POR UBICACION
+	// =====================================================
 
-                return new Equipo(
-                                codigo,
-                                "Grupo Electrógeno",
-                                "Caterpillar C15",
-                                500,
-                                1200,
-                                "Arequipa",
-                                "Diesel",
-                                "Disponible");
-        }
+	@GetMapping("/ubicacion/{ubicacion}")
+	public List<Equipo> buscarPorUbicacion(
+			@PathVariable String ubicacion) {
 
-        // =====================================================
-        // GET 3 - BUSCAR POR UBICACION
-        // =====================================================
+		List<Equipo> equipos = new ArrayList<>();
 
-        @GetMapping("/ubicacion/{ubicacion}")
-        public List<Equipo> buscarPorUbicacion(
-                        @PathVariable String ubicacion) {
+		equipos.add(new Equipo(
+				"GE-001",
+				"Grupo Electrógeno 01",
+				"Caterpillar C15",
+				500,
+				1200,
+				ubicacion,
+				"Diesel",
+				"Disponible"));
 
-                List<Equipo> equipos = new ArrayList<>();
+		equipos.add(new Equipo(
+				"GE-004",
+				"Grupo Electrógeno 04",
+				"Perkins 1104",
+				250,
+				700,
+				ubicacion,
+				"Diesel",
+				"Disponible"));
 
-                equipos.add(new Equipo(
-                                "GE-001",
-                                "Grupo Electrógeno 01",
-                                "Caterpillar C15",
-                                500,
-                                1200,
-                                ubicacion,
-                                "Diesel",
-                                "Disponible"));
+		return equipos;
+	}
 
-                equipos.add(new Equipo(
-                                "GE-004",
-                                "Grupo Electrógeno 04",
-                                "Perkins 1104",
-                                250,
-                                700,
-                                ubicacion,
-                                "Diesel",
-                                "Disponible"));
+	// =====================================================
+	// GET 4 - BUSCAR POR TIPO DE COMBUSTIBLE
+	// =====================================================
 
-                return equipos;
-        }
+	@GetMapping("/tipo/{tipo}")
+	public List<Equipo> buscarPorTipo(
+			@PathVariable String tipo) {
 
-        // =====================================================
-        // GET 4 - BUSCAR POR TIPO DE COMBUSTIBLE
-        // =====================================================
+		List<Equipo> equipos = new ArrayList<>();
 
-        @GetMapping("/tipo/{tipo}")
-        public List<Equipo> buscarPorTipo(
-                        @PathVariable String tipo) {
+		equipos.add(new Equipo(
+				"GE-001",
+				"Grupo Electrógeno 01",
+				"Caterpillar C15",
+				500,
+				1200,
+				"Arequipa",
+				tipo,
+				"Disponible"));
 
-                List<Equipo> equipos = new ArrayList<>();
+		equipos.add(new Equipo(
+				"GE-002",
+				"Grupo Electrógeno 02",
+				"Perkins 1106",
+				300,
+				850,
+				"Miraflores",
+				tipo,
+				"Alquilado"));
 
-                equipos.add(new Equipo(
-                                "GE-001",
-                                "Grupo Electrógeno 01",
-                                "Caterpillar C15",
-                                500,
-                                1200,
-                                "Arequipa",
-                                tipo,
-                                "Disponible"));
+		return equipos;
+	}
 
-                equipos.add(new Equipo(
-                                "GE-002",
-                                "Grupo Electrógeno 02",
-                                "Perkins 1106",
-                                300,
-                                850,
-                                "Miraflores",
-                                tipo,
-                                "Alquilado"));
+	// =====================================================
+	// GET 5 - EQUIPOS CON MAYOR POTENCIA
+	// =====================================================
 
-                return equipos;
-        }
+	@GetMapping("/mayor-potencia/{potencia}")
+	public List<Equipo> equiposMayorPotencia(
+			@PathVariable double potencia) {
 
-        // =====================================================
-        // GET 5 - EQUIPOS CON MAYOR POTENCIA
-        // =====================================================
+		List<Equipo> equipos = new ArrayList<>();
 
-        @GetMapping("/mayor-potencia/{potencia}")
-        public List<Equipo> equiposMayorPotencia(
-                        @PathVariable double potencia) {
+		equipos.add(new Equipo(
+				"GE-001",
+				"Grupo Electrógeno 01",
+				"Caterpillar C15",
+				potencia + 100,
+				1200,
+				"Arequipa",
+				"Diesel",
+				"Disponible"));
 
-                List<Equipo> equipos = new ArrayList<>();
+		equipos.add(new Equipo(
+				"GE-002",
+				"Grupo Electrógeno 02",
+				"Perkins 1106",
+				potencia + 50,
+				850,
+				"Miraflores",
+				"Diesel",
+				"Alquilado"));
 
-                equipos.add(new Equipo(
-                                "GE-001",
-                                "Grupo Electrógeno 01",
-                                "Caterpillar C15",
-                                potencia + 100,
-                                1200,
-                                "Arequipa",
-                                "Diesel",
-                                "Disponible"));
+		return equipos;
+	}
 
-                equipos.add(new Equipo(
-                                "GE-002",
-                                "Grupo Electrógeno 02",
-                                "Perkins 1106",
-                                potencia + 50,
-                                850,
-                                "Miraflores",
-                                "Diesel",
-                                "Alquilado"));
+	// =====================================================
+	// POST 1 - REGISTRAR EQUIPO
+	// =====================================================
 
-                return equipos;
-        }
+	@PostMapping
+	public Equipo registrarEquipo(
+			@RequestBody Equipo equipo) {
 
-        // =====================================================
-        // POST 1 - REGISTRAR EQUIPO
-        // =====================================================
+		return equipo;
+	}
 
-        @PostMapping
-        public Equipo registrarEquipo(
-                        @RequestBody Equipo equipo) {
+	// =====================================================
+	// POST 2 - CALCULAR CONSUMO DE COMBUSTIBLE
+	// =====================================================
 
-                return equipo;
-        }
+	@PostMapping("/calcular-combustible")
+	public Equipo calcularCombustible(
+			@RequestBody Equipo equipo) {
 
-        // =====================================================
-        // POST 2 - CALCULAR CONSUMO DE COMBUSTIBLE
-        // =====================================================
+		double consumo = equipo.getPotencia() * 0.20;
 
-        @PostMapping("/calcular-combustible")
-        public Equipo calcularCombustible(
-                        @RequestBody Equipo equipo) {
+		equipo.setCombustible(
+				"Consumo estimado: " + consumo + " L/h");
 
-                double consumo = equipo.getPotencia() * 0.20;
+		return equipo;
+	}
 
-                equipo.setCombustible(
-                                "Consumo estimado: " + consumo + " L/h");
+	// =====================================================
+	// POST 3 - ACTUALIZAR HOROMETRO
+	// =====================================================
 
-                return equipo;
-        }
+	@PostMapping("/actualizar-horometro")
+	public Equipo actualizarHorometro(
+			@RequestBody Equipo equipo) {
 
-        // =====================================================
-        // POST 3 - ACTUALIZAR HOROMETRO
-        // =====================================================
+		equipo.setHorometro(
+				equipo.getHorometro() + 100);
 
-        @PostMapping("/actualizar-horometro")
-        public Equipo actualizarHorometro(
-                        @RequestBody Equipo equipo) {
+		return equipo;
+	}
 
-                equipo.setHorometro(
-                                equipo.getHorometro() + 100);
+	// =====================================================
+	// POST 4 - REGISTRAR SERVICIO
+	// =====================================================
 
-                return equipo;
-        }
+	@PostMapping("/registrar-servicio")
+	public Equipo registrarServicio(
+			@RequestBody Equipo equipo) {
 
-        // =====================================================
-        // POST 4 - REGISTRAR SERVICIO
-        // =====================================================
+		equipo.setEstado("En servicio");
 
-        @PostMapping("/registrar-servicio")
-        public Equipo registrarServicio(
-                        @RequestBody Equipo equipo) {
+		return equipo;
+	}
 
-                equipo.setEstado("En servicio");
+	// =====================================================
+	// POST 5 - CAMBIAR ESTADO
+	// =====================================================
 
-                return equipo;
-        }
+	@PostMapping("/cambiar-estado")
+	public Equipo cambiarEstado(
+			@RequestBody Equipo equipo) {
 
-        // =====================================================
-        // POST 5 - CAMBIAR ESTADO
-        // =====================================================
+		equipo.setEstado("Mantenimiento");
 
-        @PostMapping("/cambiar-estado")
-        public Equipo cambiarEstado(
-                        @RequestBody Equipo equipo) {
-
-                equipo.setEstado("Mantenimiento");
-
-                return equipo;
-        }
+		return equipo;
+	}
 }

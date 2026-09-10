@@ -15,9 +15,9 @@ public class Equipo {
     }
 
     public Equipo(String codigo, String nombre, String modelo,
-                  double potencia, double horometro,
-                  String ubicacion, String combustible,
-                  String estado) {
+            double potencia, double horometro,
+            String ubicacion, String combustible,
+            String estado) {
 
         this.codigo = codigo;
         this.nombre = nombre;
