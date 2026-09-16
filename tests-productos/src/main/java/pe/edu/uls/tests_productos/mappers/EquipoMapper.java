@@ -10,5 +10,5 @@ import pe.edu.uls.tests_productos.dto.ResponseEquipo;
 public interface EquipoMapper {
     Equipo toEquipo(RequestEquipo requestEquipo);
 
-    ResponseEquipo toResponseEquipo(Equipo equipo);
+    ResponseEquipo toResponse(Equipo equipo);
 }

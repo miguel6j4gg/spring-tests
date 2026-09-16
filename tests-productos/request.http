@@ -1,10 +1,7 @@
-### SUCCES
-GET http://localhost:8080/new-equipos/GE-001
-
-### NOT FOUND
 GET http://localhost:8080/new-equipos/1
-
-### CREATE NEW EQUIPO VALID
+###
+GET http://localhost:8080/new-equipos/ubicacion/Arequipa
+### 
 POST http://localhost:8080/new-equipos
 Content-Type: application/json
 
@@ -15,22 +12,6 @@ Content-Type: application/json
     "potencia": 400,
     "horometro": 0,
     "ubicacion": "Arequipa",
-    "tipo": "Diesel",
-    "estado": "Disponible"
-}
-
-
-### CREATE NEW EQUIPO INVALID
-POST http://localhost:8080/new-equipos
-Content-Type: application/json
-
-{
-    "codigo": "GP-005",
-    "nombre": "Grupo Electrógeno 05",
-    "modelo": "Cummins QSB",
-    "potencia": 400,
-    "horometro": 0,
-    "ubicacion": "Arequipa",
-    "tipo": "Diesel",
+    "combustible": "Diesel",
     "estado": "Disponible"
 }

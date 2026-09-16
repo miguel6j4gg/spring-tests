@@ -1,7 +1,18 @@
 package pe.edu.uls.tests_productos.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+
+@Entity
 public class Equipo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sec_equipo")
+    @SequenceGenerator(name = "sec_equipo", sequenceName = "sec_equipo", allocationSize = 1)
+    private int id;
     private String codigo;
     private String nombre;
     private String modelo;
@@ -11,22 +22,12 @@ public class Equipo {
     private String combustible;
     private String estado;
 
-    public Equipo() {
+    public int getId() {
+        return id;
     }
 
-    public Equipo(String codigo, String nombre, String modelo,
-            double potencia, double horometro,
-            String ubicacion, String combustible,
-            String estado) {
-
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.modelo = modelo;
-        this.potencia = potencia;
-        this.horometro = horometro;
-        this.ubicacion = ubicacion;
-        this.combustible = combustible;
-        this.estado = estado;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCodigo() {
