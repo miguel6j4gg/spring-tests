@@ -15,22 +15,3 @@ Content-Type: application/json
     "combustible": "Diesel",
     "estado": "Disponible"
 }
-
-
-### =====================================================
-### POST 4 - REGISTRAR SERVICIO - ERROR
-### =====================================================
-
-POST http://localhost:8080/new-equipos/registrar-servicio
-Content-Type: application/json
-
-{
-    "codigo": "GE-003",
-    "nombre": "Grupo Electrógeno 03",
-    "modelo": "Cummins QSB",
-    "potencia": 200,
-    "horometro": 600,
-    "ubicacion": "Arequipa",
-    "combustible": "Diesel",
-    "estado": "Mantenimiento"
-}
