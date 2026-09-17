@@ -1,5 +1,6 @@
 package pe.edu.uls.tests_productos.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,9 +12,16 @@ public class Equipo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sec_equipo")
-    @SequenceGenerator(name = "sec_equipo", sequenceName = "sec_equipo", allocationSize = 1)
+    @SequenceGenerator(
+        name = "sec_equipo",
+        sequenceName = "sec_equipo",
+        allocationSize = 1
+    )
     private int id;
+
+    @Column(unique = true, nullable = false)
     private String codigo;
+
     private String nombre;
     private String modelo;
     private double potencia;
@@ -21,6 +29,7 @@ public class Equipo {
     private String ubicacion;
     private String combustible;
     private String estado;
+
 
     public int getId() {
         return id;

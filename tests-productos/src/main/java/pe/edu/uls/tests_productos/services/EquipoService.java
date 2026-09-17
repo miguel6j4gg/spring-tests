@@ -2,8 +2,9 @@ package pe.edu.uls.tests_productos.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import pe.edu.uls.tests_productos.model.Equipo;
 import pe.edu.uls.tests_productos.repository.EquipoRepository;
@@ -11,17 +12,45 @@ import pe.edu.uls.tests_productos.repository.EquipoRepository;
 @Service
 public class EquipoService {
 
-    @Autowired
-    EquipoRepository repoEquipo;
+    private final EquipoRepository repoEquipo;
+
+    public EquipoService(EquipoRepository repoEquipo) {
+        this.repoEquipo = repoEquipo;
+    }
+
+    // =====================================================
+    // REGISTRAR EQUIPO
+    // =====================================================
 
     public Equipo registrarEquipo(Equipo equipo) {
-        Equipo savedEquipo = repoEquipo.save(equipo);
-        return savedEquipo;
+
+        // Verificar que no exista otro equipo con el mismo código
+        if (repoEquipo.existsByCodigo(equipo.getCodigo())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Ya existe un equipo con el código: " + equipo.getCodigo()
+            );
+        }
+
+        return repoEquipo.save(equipo);
     }
 
+    // =====================================================
+    // BUSCAR EQUIPO POR ID
+    // =====================================================
+
     public Equipo obtenerEquipo(int id) {
-        return repoEquipo.findById(id).orElseThrow(() -> new RuntimeException("Equipo no encontrado"));
+
+        return repoEquipo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Equipo no encontrado con ID: " + id
+                ));
     }
+
+    // =====================================================
+    // BUSCAR EQUIPOS POR UBICACION
+    // =====================================================
 
     public List<Equipo> buscarPorUbicacion(String ubicacion) {
 

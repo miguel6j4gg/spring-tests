@@ -1,15 +1,127 @@
-GET http://localhost:8080/new-equipos/1
-###
-GET http://localhost:8080/new-equipos/ubicacion/Arequipa
-### 
+### =====================================================
+### DATOS DE PRUEBA
+### =====================================================
+
+### Crear GE-001
 POST http://localhost:8080/new-equipos
 Content-Type: application/json
 
 {
-    "codigo": "GE-005",
-    "nombre": "Grupo Electrógeno 05",
+    "codigo": "GE-001",
+    "nombre": "Grupo Electrógeno 01",
     "modelo": "Cummins QSB",
+    "potencia": 300,
+    "horometro": 1250,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+###
+
+### Crear GE-002
+POST http://localhost:8080/new-equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-002",
+    "nombre": "Grupo Electrógeno 02",
+    "modelo": "Perkins 1106",
+    "potencia": 250,
+    "horometro": 980,
+    "ubicacion": "Lima",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+###
+
+### Crear GE-003
+POST http://localhost:8080/new-equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-003",
+    "nombre": "Grupo Electrógeno 03",
+    "modelo": "Caterpillar C9",
     "potencia": 400,
+    "horometro": 2100,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "En uso"
+}
+
+###
+
+### Crear GE-004
+POST http://localhost:8080/new-equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-004",
+    "nombre": "Grupo Electrógeno 04",
+    "modelo": "Volvo Penta",
+    "potencia": 350,
+    "horometro": 750,
+    "ubicacion": "Cusco",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+
+### =====================================================
+### 1. CONSULTAR EQUIPO POR ID
+### =====================================================
+
+###
+
+GET http://localhost:8080/new-equipos/1
+
+
+### =====================================================
+### 2. CONSULTAR EQUIPOS POR UBICACION
+### =====================================================
+
+###
+
+GET http://localhost:8080/new-equipos/ubicacion/Arequipa
+
+
+### =====================================================
+### 3. REGISTRAR NUEVO EQUIPO
+### =====================================================
+
+###
+
+POST http://localhost:8080/new-equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-006",
+    "nombre": "Grupo Electrógeno 06",
+    "modelo": "Caterpillar C15",
+    "potencia": 450,
+    "horometro": 0,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+
+### =====================================================
+### 4. INTENTAR REGISTRAR DUPLICADO
+### =====================================================
+
+###
+
+POST http://localhost:8080/new-equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-006",
+    "nombre": "Grupo Electrógeno 06",
+    "modelo": "Caterpillar C15",
+    "potencia": 450,
     "horometro": 0,
     "ubicacion": "Arequipa",
     "combustible": "Diesel",
