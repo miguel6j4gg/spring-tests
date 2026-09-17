@@ -35,6 +35,15 @@ public class HandleErrorAdvice {
                 .body(ex.getMessage());
     }
 
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<String> handleResponseStatusException(
+            org.springframework.web.server.ResponseStatusException ex) {
+
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(ex.getReason());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> genericHandler(Exception ex) {
 
