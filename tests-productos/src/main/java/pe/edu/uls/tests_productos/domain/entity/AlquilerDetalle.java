@@ -30,6 +30,8 @@ public class AlquilerDetalle {
 
     private LocalDateTime fechaRetorno;
 
+    private String lugar;
+
     @ManyToOne
     @JoinColumn(name = "alquiler_id", nullable = false)
     private Alquiler alquiler;
@@ -120,5 +122,13 @@ public class AlquilerDetalle {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public String getLugar() {
+        return lugar;
+    }
+
+    public void setLugar(String lugar) {
+        this.lugar = lugar;
     }
 }
