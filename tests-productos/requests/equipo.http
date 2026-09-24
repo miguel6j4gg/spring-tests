@@ -1,0 +1,31 @@
+### =====================================================
+### CASO DE USO: ADMIN EQUIPO
+### Base: http://localhost:8080/equipos
+### =====================================================
+
+### 1. REGISTRAR EQUIPO
+POST http://localhost:8080/equipos
+Content-Type: application/json
+
+{
+    "codigo": "GE-001",
+    "nombre": "Grupo Electrógeno 01",
+    "modelo": "Cummins QSB",
+    "potencia": 300,
+    "horometro": 1250,
+    "ubicacion": "Arequipa",
+    "combustible": "Diesel",
+    "estado": "Disponible"
+}
+
+###
+
+### 2. CONSULTAR EQUIPO POR ID
+GET http://localhost:8080/equipos/14
+
+###
+
+### 3. CONSULTAR EQUIPOS POR UBICACION
+GET http://localhost:8080/equipos/ubicacion/Arequipa
+
+###

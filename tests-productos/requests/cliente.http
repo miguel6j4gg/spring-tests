@@ -1,0 +1,35 @@
+### =====================================================
+### CASO DE USO: ADMIN CLIENTE
+### Base: http://localhost:8080/clientes
+### =====================================================
+
+### 1. REGISTRAR CLIENTE
+POST http://localhost:8080/clientes
+Content-Type: application/json
+
+{
+    "documento": "70451234",
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "juan.perez@example.com",
+    "telefono": "987654321",
+    "direccion": "Av. Arequipa 123",
+    "estado": "Activo"
+}
+
+###
+
+### 2. CONSULTAR CLIENTE POR ID
+GET http://localhost:8080/clientes/1
+
+###
+
+### 3. CONSULTAR CLIENTES POR ESTADO
+GET http://localhost:8080/clientes/estado/Activo
+
+###
+
+### 4. LISTAR TODOS LOS CLIENTES
+GET http://localhost:8080/clientes
+
+###

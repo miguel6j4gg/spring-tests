@@ -1,0 +1,35 @@
+### =====================================================
+### CASO DE USO: ADMIN PRODUCTO
+### Base: http://localhost:8080/productos
+### =====================================================
+
+### 1. REGISTRAR PRODUCTO
+POST http://localhost:8080/productos
+Content-Type: application/json
+
+{
+    "codigo": "PROD-001",
+    "nombre": "Filtro de aceite",
+    "descripcion": "Filtro de aceite para grupo electrógeno",
+    "categoria": "Repuestos",
+    "precio": 45.50,
+    "stock": 100,
+    "estado": "Activo"
+}
+
+###
+
+### 2. CONSULTAR PRODUCTO POR ID
+GET http://localhost:8080/productos/1
+
+###
+
+### 3. CONSULTAR PRODUCTOS POR CATEGORIA
+GET http://localhost:8080/productos/categoria/Repuestos
+
+###
+
+### 4. LISTAR TODOS LOS PRODUCTOS
+GET http://localhost:8080/productos
+
+###
