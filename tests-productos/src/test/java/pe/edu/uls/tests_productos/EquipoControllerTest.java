@@ -14,14 +14,13 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import pe.edu.uls.tests_productos.controller.EquipoController;
+import pe.edu.uls.tests_productos.cu.adminEquipo.controller.EquipoController;
 
 @WebMvcTest(EquipoController.class)
 public class EquipoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
 
     // =====================================================
     // TEST 1 - GET LISTAR EQUIPOS
@@ -31,14 +30,12 @@ public class EquipoControllerTest {
     public void testListarEquipos() throws Exception {
 
         mockMvc.perform(
-                get("/equipos")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].codigo").value("GE-001"))
-        .andExpect(jsonPath("$[0].nombre")
-                .value("Grupo Electrógeno 01"));
+                get("/equipos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].codigo").value("GE-001"))
+                .andExpect(jsonPath("$[0].nombre")
+                        .value("Grupo Electrógeno 01"));
     }
-
 
     // =====================================================
     // TEST 2 - GET BUSCAR POR CODIGO
@@ -48,13 +45,11 @@ public class EquipoControllerTest {
     public void testObtenerEquipo() throws Exception {
 
         mockMvc.perform(
-                get("/equipos/GE-001")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.codigo").value("GE-001"))
-        .andExpect(jsonPath("$.potencia").value(500));
+                get("/equipos/GE-001"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value("GE-001"))
+                .andExpect(jsonPath("$.potencia").value(500));
     }
-
 
     // =====================================================
     // TEST 3 - GET BUSCAR POR UBICACION
@@ -64,13 +59,11 @@ public class EquipoControllerTest {
     public void testBuscarPorUbicacion() throws Exception {
 
         mockMvc.perform(
-                get("/equipos/ubicacion/Arequipa")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].ubicacion").value("Arequipa"))
-        .andExpect(jsonPath("$[1].ubicacion").value("Arequipa"));
+                get("/equipos/ubicacion/Arequipa"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].ubicacion").value("Arequipa"))
+                .andExpect(jsonPath("$[1].ubicacion").value("Arequipa"));
     }
-
 
     // =====================================================
     // TEST 4 - GET BUSCAR POR TIPO
@@ -80,13 +73,11 @@ public class EquipoControllerTest {
     public void testBuscarPorTipo() throws Exception {
 
         mockMvc.perform(
-                get("/equipos/tipo/Diesel")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].combustible").value("Diesel"))
-        .andExpect(jsonPath("$[1].combustible").value("Diesel"));
+                get("/equipos/tipo/Diesel"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].combustible").value("Diesel"))
+                .andExpect(jsonPath("$[1].combustible").value("Diesel"));
     }
-
 
     // =====================================================
     // TEST 5 - GET MAYOR POTENCIA
@@ -96,13 +87,11 @@ public class EquipoControllerTest {
     public void testEquiposMayorPotencia() throws Exception {
 
         mockMvc.perform(
-                get("/equipos/mayor-potencia/400")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].potencia").value(500))
-        .andExpect(jsonPath("$[1].potencia").value(450));
+                get("/equipos/mayor-potencia/400"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].potencia").value(500))
+                .andExpect(jsonPath("$[1].potencia").value(450));
     }
-
 
     // =====================================================
     // TEST 6 - POST REGISTRAR EQUIPO
@@ -126,14 +115,12 @@ public class EquipoControllerTest {
 
         mockMvc.perform(
                 post("/equipos")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.codigo").value("GE-010"))
-        .andExpect(jsonPath("$.potencia").value(400));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value("GE-010"))
+                .andExpect(jsonPath("$.potencia").value(400));
     }
-
 
     // =====================================================
     // TEST 7 - POST CALCULAR COMBUSTIBLE
@@ -157,15 +144,13 @@ public class EquipoControllerTest {
 
         mockMvc.perform(
                 post("/equipos/calcular-combustible")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.potencia").value(500))
-        .andExpect(jsonPath("$.combustible")
-                .value("Consumo estimado: 100.0 L/h"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.potencia").value(500))
+                .andExpect(jsonPath("$.combustible")
+                        .value("Consumo estimado: 100.0 L/h"));
     }
-
 
     // =====================================================
     // TEST 8 - POST ACTUALIZAR HOROMETRO
@@ -189,14 +174,12 @@ public class EquipoControllerTest {
 
         mockMvc.perform(
                 post("/equipos/actualizar-horometro")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.horometro").value(950))
-        .andExpect(jsonPath("$.codigo").value("GE-002"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.horometro").value(950))
+                .andExpect(jsonPath("$.codigo").value("GE-002"));
     }
-
 
     // =====================================================
     // TEST 9 - POST REGISTRAR SERVICIO
@@ -220,14 +203,12 @@ public class EquipoControllerTest {
 
         mockMvc.perform(
                 post("/equipos/registrar-servicio")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.codigo").value("GE-003"))
-        .andExpect(jsonPath("$.estado").value("En servicio"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value("GE-003"))
+                .andExpect(jsonPath("$.estado").value("En servicio"));
     }
-
 
     // =====================================================
     // TEST 10 - POST CAMBIAR ESTADO
@@ -251,11 +232,10 @@ public class EquipoControllerTest {
 
         mockMvc.perform(
                 post("/equipos/cambiar-estado")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json)
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.codigo").value("GE-004"))
-        .andExpect(jsonPath("$.estado").value("Mantenimiento"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value("GE-004"))
+                .andExpect(jsonPath("$.estado").value("Mantenimiento"));
     }
 }
