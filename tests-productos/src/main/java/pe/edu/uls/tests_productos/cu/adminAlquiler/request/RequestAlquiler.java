@@ -6,36 +6,38 @@ import java.util.List;
 
 public record RequestAlquiler(
 
-                LocalDate fechaInicio,
+        LocalDate fechaInicio,
 
-                LocalDate fechaFin,
+        LocalDate fechaFin,
 
-                String estado,
+        String estado,
 
-                int clienteId,
+        int clienteId,
 
-                List<DetalleAlquilerRequest> detalles
+        List<DetalleAlquilerRequest> detalles
 
 ) {
 
-        public record DetalleAlquilerRequest(
+    public record DetalleAlquilerRequest(
 
-                        int equipoId,
+            int equipoId,
 
-                        int productoId,
+            int productoId,
 
-                        int cantidad,
+            int cantidad,
 
-                        double precioUnitario,
+            double precioUnitario,
 
-                        double horometroSalida,
+            double horometroSalida,
 
-                        double horometroRetorno,
+            double horometroRetorno,
 
-                        LocalDateTime fechaSalida,
+            String lugar,
 
-                        LocalDateTime fechaRetorno
+            LocalDateTime fechaSalida,
 
-        ) {
-        }
+            LocalDateTime fechaRetorno
+
+    ) {
+    }
 }

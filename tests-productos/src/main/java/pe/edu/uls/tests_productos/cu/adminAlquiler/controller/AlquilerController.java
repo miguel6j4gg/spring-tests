@@ -19,80 +19,80 @@ import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 @RequestMapping("/alquileres")
 public class AlquilerController {
 
-        private final AlquilerService alquilerService;
+    private final AlquilerService alquilerService;
 
-        public AlquilerController(
-                        AlquilerService alquilerService) {
+    public AlquilerController(
+            AlquilerService alquilerService) {
 
-                this.alquilerService = alquilerService;
-        }
+        this.alquilerService = alquilerService;
+    }
 
-        @PostMapping
-        public ResponseAlquiler registrarAlquiler(
-                        @RequestBody RequestAlquiler request) {
+    @PostMapping
+    public ResponseAlquiler registrarAlquiler(
+            @RequestBody RequestAlquiler request) {
 
-                Alquiler alquiler = alquilerService.registrarAlquiler(request);
+        Alquiler alquiler = alquilerService.registrarAlquiler(request);
 
-                return convertirResponse(alquiler);
-        }
+        return convertirResponse(alquiler);
+    }
 
-        @GetMapping("/{id}")
-        public ResponseAlquiler obtenerAlquiler(
-                        @PathVariable int id) {
+    @GetMapping("/{id}")
+    public ResponseAlquiler obtenerAlquiler(
+            @PathVariable int id) {
 
-                Alquiler alquiler = alquilerService.obtenerAlquiler(id);
+        Alquiler alquiler = alquilerService.obtenerAlquiler(id);
 
-                return convertirResponse(alquiler);
-        }
+        return convertirResponse(alquiler);
+    }
 
-        @GetMapping
-        public List<ResponseAlquiler> listarAlquileres() {
+    @GetMapping
+    public List<ResponseAlquiler> listarAlquileres() {
 
-                return alquilerService.listarAlquileres()
-                                .stream()
-                                .map(this::convertirResponse)
-                                .toList();
-        }
+        return alquilerService.listarAlquileres()
+                .stream()
+                .map(this::convertirResponse)
+                .toList();
+    }
 
-        private ResponseAlquiler convertirResponse(
-                        Alquiler alquiler) {
+    private ResponseAlquiler convertirResponse(
+            Alquiler alquiler) {
 
-                List<ResponseAlquiler.DetalleAlquilerResponse> detalles = alquiler.getDetalles()
-                                .stream()
-                                .map(this::convertirDetalle)
-                                .toList();
+        List<ResponseAlquiler.DetalleAlquilerResponse> detalles = alquiler.getDetalles()
+                .stream()
+                .map(this::convertirDetalle)
+                .toList();
 
-                return new ResponseAlquiler(
-                                alquiler.getId(),
-                                alquiler.getFechaInicio(),
-                                alquiler.getFechaFin(),
-                                alquiler.getEstado(),
-                                alquiler.getCliente().getId(),
-                                alquiler.getCliente().getNombre(),
-                                detalles);
-        }
+        return new ResponseAlquiler(
+                alquiler.getId(),
+                alquiler.getFechaInicio(),
+                alquiler.getFechaFin(),
+                alquiler.getEstado(),
+                alquiler.getCliente().getId(),
+                alquiler.getCliente().getNombre(),
+                detalles);
+    }
 
-        private ResponseAlquiler.DetalleAlquilerResponse convertirDetalle(
-                        AlquilerDetalle detalle) {
+    private ResponseAlquiler.DetalleAlquilerResponse convertirDetalle(
+            AlquilerDetalle detalle) {
 
-                return new ResponseAlquiler.DetalleAlquilerResponse(
-                                detalle.getId(),
+        return new ResponseAlquiler.DetalleAlquilerResponse(
+                detalle.getId(),
 
-                                detalle.getEquipo().getId(),
-                                detalle.getEquipo().getCodigo(),
-                                detalle.getEquipo().getNombre(),
+                detalle.getEquipo().getId(),
+                detalle.getEquipo().getCodigo(),
+                detalle.getEquipo().getNombre(),
 
-                                detalle.getProducto().getId(),
-                                detalle.getProducto().getCodigo(),
-                                detalle.getProducto().getNombre(),
+                detalle.getProducto().getId(),
+                detalle.getProducto().getCodigo(),
+                detalle.getProducto().getNombre(),
+                detalle.getCantidad(),
+                detalle.getPrecioUnitario(),
 
-                                detalle.getCantidad(),
-                                detalle.getPrecioUnitario(),
+                detalle.getHorometroSalida(),
+                detalle.getHorometroRetorno(),
 
-                                detalle.getHorometroSalida(),
-                                detalle.getHorometroRetorno(),
-
-                                detalle.getFechaSalida(),
-                                detalle.getFechaRetorno());
-        }
+                detalle.getFechaSalida(),
+                detalle.getFechaRetorno(),
+                detalle.getLugar());
+    }
 }

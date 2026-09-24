@@ -21,94 +21,94 @@ import pe.edu.uls.tests_productos.domain.repository.ProductoRepository;
 @Service
 public class AlquilerService {
 
-        private final AlquilerRepository alquilerRepository;
-        private final ClienteRepository clienteRepository;
-        private final EquipoRepository equipoRepository;
-        private final ProductoRepository productoRepository;
+    private final AlquilerRepository alquilerRepository;
+    private final ClienteRepository clienteRepository;
+    private final EquipoRepository equipoRepository;
+    private final ProductoRepository productoRepository;
 
-        public AlquilerService(
-                        AlquilerRepository alquilerRepository,
-                        ClienteRepository clienteRepository,
-                        EquipoRepository equipoRepository,
-                        ProductoRepository productoRepository) {
+    public AlquilerService(
+            AlquilerRepository alquilerRepository,
+            ClienteRepository clienteRepository,
+            EquipoRepository equipoRepository,
+            ProductoRepository productoRepository) {
 
-                this.alquilerRepository = alquilerRepository;
-                this.clienteRepository = clienteRepository;
-                this.equipoRepository = equipoRepository;
-                this.productoRepository = productoRepository;
+        this.alquilerRepository = alquilerRepository;
+        this.clienteRepository = clienteRepository;
+        this.equipoRepository = equipoRepository;
+        this.productoRepository = productoRepository;
+    }
+
+    @Transactional
+    public Alquiler registrarAlquiler(
+            RequestAlquiler request) {
+
+        Cliente cliente = clienteRepository.findById(request.clienteId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente no encontrado con ID: "
+                                + request.clienteId()));
+
+        if (request.detalles() == null || request.detalles().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El alquiler debe tener al menos un detalle");
         }
 
-        @Transactional
-        public Alquiler registrarAlquiler(
-                        RequestAlquiler request) {
+        Alquiler alquiler = new Alquiler();
 
-                Cliente cliente = clienteRepository.findById(request.clienteId())
-                                .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND,
-                                                "Cliente no encontrado con ID: "
-                                                                + request.clienteId()));
+        alquiler.setFechaInicio(request.fechaInicio());
+        alquiler.setFechaFin(request.fechaFin());
+        alquiler.setEstado(request.estado());
+        alquiler.setCliente(cliente);
 
-                if (request.detalles() == null || request.detalles().isEmpty()) {
-                        throw new ResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "El alquiler debe tener al menos un detalle");
-                }
+        for (RequestAlquiler.DetalleAlquilerRequest detalleRequest : request.detalles()) {
 
-                Alquiler alquiler = new Alquiler();
+            Equipo equipo = equipoRepository
+                    .findById(detalleRequest.equipoId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Equipo no encontrado con ID: "
+                                    + detalleRequest.equipoId()));
 
-                alquiler.setFechaInicio(request.fechaInicio());
-                alquiler.setFechaFin(request.fechaFin());
-                alquiler.setEstado(request.estado());
-                alquiler.setCliente(cliente);
+            Producto producto = productoRepository
+                    .findById(detalleRequest.productoId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Producto no encontrado con ID: "
+                                    + detalleRequest.productoId()));
 
-                for (RequestAlquiler.DetalleAlquilerRequest detalleRequest : request.detalles()) {
+            AlquilerDetalle detalle = new AlquilerDetalle();
 
-                        Equipo equipo = equipoRepository
-                                        .findById(detalleRequest.equipoId())
-                                        .orElseThrow(() -> new ResponseStatusException(
-                                                        HttpStatus.NOT_FOUND,
-                                                        "Equipo no encontrado con ID: "
-                                                                        + detalleRequest.equipoId()));
-
-                        Producto producto = productoRepository
-                                        .findById(detalleRequest.productoId())
-                                        .orElseThrow(() -> new ResponseStatusException(
-                                                        HttpStatus.NOT_FOUND,
-                                                        "Producto no encontrado con ID: "
-                                                                        + detalleRequest.productoId()));
-
-                        AlquilerDetalle detalle = new AlquilerDetalle();
-
-                        detalle.setEquipo(equipo);
-                        detalle.setProducto(producto);
-                        detalle.setCantidad(detalleRequest.cantidad());
-                        detalle.setPrecioUnitario(
-                                        detalleRequest.precioUnitario());
-                        detalle.setHorometroSalida(
-                                        detalleRequest.horometroSalida());
-                        detalle.setHorometroRetorno(
-                                        detalleRequest.horometroRetorno());
-                        detalle.setFechaSalida(
-                                        detalleRequest.fechaSalida());
-                        detalle.setFechaRetorno(
-                                        detalleRequest.fechaRetorno());
-
-                        alquiler.agregarDetalle(detalle);
-                }
-
-                return alquilerRepository.save(alquiler);
+            detalle.setEquipo(equipo);
+            detalle.setProducto(producto);
+            detalle.setCantidad(detalleRequest.cantidad());
+            detalle.setPrecioUnitario(
+                    detalleRequest.precioUnitario());
+            detalle.setHorometroSalida(
+                    detalleRequest.horometroSalida());
+            detalle.setHorometroRetorno(
+                    detalleRequest.horometroRetorno());
+            detalle.setFechaSalida(
+                    detalleRequest.fechaSalida());
+            detalle.setFechaRetorno(
+                    detalleRequest.fechaRetorno());
+            detalle.setLugar(detalleRequest.lugar());
+            alquiler.agregarDetalle(detalle);
         }
 
-        public Alquiler obtenerAlquiler(int id) {
+        return alquilerRepository.save(alquiler);
+    }
 
-                return alquilerRepository.findById(id)
-                                .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND,
-                                                "Alquiler no encontrado con ID: " + id));
-        }
+    public Alquiler obtenerAlquiler(int id) {
 
-        public List<Alquiler> listarAlquileres() {
+        return alquilerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Alquiler no encontrado con ID: " + id));
+    }
 
-                return alquilerRepository.findAll();
-        }
+    public List<Alquiler> listarAlquileres() {
+
+        return alquilerRepository.findAll();
+    }
 }
