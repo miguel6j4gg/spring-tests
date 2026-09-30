@@ -15,6 +15,9 @@ import pe.edu.uls.tests_productos.cu.adminMantenimiento.service.MantenimientoSer
 import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 import pe.edu.uls.tests_productos.domain.entity.MantenimientoDetalle;
 
+import pe.edu.uls.tests_productos.cu.adminProducto.response.ResponseProducto;
+import pe.edu.uls.tests_productos.domain.entity.Producto;
+
 @RestController
 @RequestMapping("/mantenimientos")
 public class MantenimientoController {
@@ -75,12 +78,27 @@ public class MantenimientoController {
         private ResponseMantenimiento.DetalleMantenimientoResponse convertirDetalle(
                         MantenimientoDetalle detalle) {
 
+                List<ResponseProducto> productos = detalle.getProductos() != null
+                                ? detalle.getProductos().stream().map(this::convertirProducto).toList()
+                                : List.of();
+
                 return new ResponseMantenimiento.DetalleMantenimientoResponse(
                                 detalle.getId(),
-                                detalle.getProducto().getId(),
-                                detalle.getProducto().getCodigo(),
-                                detalle.getProducto().getNombre(),
+                                productos,
                                 detalle.getCantidad(),
                                 detalle.getDescripcion());
+        }
+
+        private ResponseProducto convertirProducto(Producto producto) {
+                return new ResponseProducto(
+                                producto.getId(),
+                                producto.getCodigo(),
+                                producto.getNombre(),
+                                producto.getDescripcion(),
+                                producto.getCategoria(),
+                                producto.getPrecio(),
+                                producto.getStock(),
+                                producto.getEstado()
+                );
         }
 }

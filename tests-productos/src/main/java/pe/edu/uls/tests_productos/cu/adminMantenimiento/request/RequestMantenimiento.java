@@ -19,7 +19,7 @@ public record RequestMantenimiento(
 
         public record DetalleMantenimientoRequest(
 
-                        int productoId,
+                        List<Integer> productoIds,
 
                         int cantidad,
 

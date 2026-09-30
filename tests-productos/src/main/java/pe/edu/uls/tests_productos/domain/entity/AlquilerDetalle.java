@@ -1,12 +1,16 @@
 package pe.edu.uls.tests_productos.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 
@@ -40,9 +44,13 @@ public class AlquilerDetalle {
     @JoinColumn(name = "equipo_id", nullable = false)
     private Equipo equipo;
 
-    @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
+    @ManyToMany
+    @JoinTable(
+        name = "alquiler_detalle_productos",
+        joinColumns = @JoinColumn(name = "alquiler_detalle_id"),
+        inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private List<Producto> productos = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -116,12 +124,12 @@ public class AlquilerDetalle {
         this.equipo = equipo;
     }
 
-    public Producto getProducto() {
-        return producto;
+    public List<Producto> getProductos() {
+        return productos;
     }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
     }
 
     public String getLugar() {

@@ -70,17 +70,15 @@ public class AlquilerService {
                             "Equipo no encontrado con ID: "
                                     + detalleRequest.equipoId()));
 
-            Producto producto = productoRepository
-                    .findById(detalleRequest.productoId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Producto no encontrado con ID: "
-                                    + detalleRequest.productoId()));
+            List<Producto> productos = List.of();
+            if (detalleRequest.productoIds() != null && !detalleRequest.productoIds().isEmpty()) {
+                productos = productoRepository.findAllById(detalleRequest.productoIds());
+            }
 
             AlquilerDetalle detalle = new AlquilerDetalle();
 
             detalle.setEquipo(equipo);
-            detalle.setProducto(producto);
+            detalle.setProductos(productos);
             detalle.setCantidad(detalleRequest.cantidad());
             detalle.setPrecioUnitario(
                     detalleRequest.precioUnitario());

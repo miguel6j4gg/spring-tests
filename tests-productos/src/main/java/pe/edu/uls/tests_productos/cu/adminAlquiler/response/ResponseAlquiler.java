@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import pe.edu.uls.tests_productos.cu.adminProducto.response.ResponseProducto;
+
 public record ResponseAlquiler(
         int id,
         LocalDate fechaInicio,
@@ -20,9 +22,7 @@ public record ResponseAlquiler(
             int equipoId,
             String codigoEquipo,
             String nombreEquipo,
-            int productoId,
-            String codigoProducto,
-            String nombreProducto,
+            List<ResponseProducto> productos,
             int cantidad,
             double precioUnitario,
             double horometroSalida,

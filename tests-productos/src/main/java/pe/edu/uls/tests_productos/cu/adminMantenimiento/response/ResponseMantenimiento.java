@@ -3,6 +3,8 @@ package pe.edu.uls.tests_productos.cu.adminMantenimiento.response;
 import java.time.LocalDate;
 import java.util.List;
 
+import pe.edu.uls.tests_productos.cu.adminProducto.response.ResponseProducto;
+
 public record ResponseMantenimiento(
 
                 int id,
@@ -25,11 +27,7 @@ public record ResponseMantenimiento(
 
                         int id,
 
-                        int productoId,
-
-                        String codigoProducto,
-
-                        String nombreProducto,
+                        List<ResponseProducto> productos,
 
                         int cantidad,
 

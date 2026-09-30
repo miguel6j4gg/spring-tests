@@ -55,4 +55,13 @@ public class EquipoService {
         return repoEquipo.findByUbicacion(ubicacion);
     }
 
+    // =====================================================
+    // LISTAR TODOS LOS EQUIPOS
+    // =====================================================
+
+    public List<Equipo> listarEquipos() {
+
+        return repoEquipo.findAll();
+    }
+
 }

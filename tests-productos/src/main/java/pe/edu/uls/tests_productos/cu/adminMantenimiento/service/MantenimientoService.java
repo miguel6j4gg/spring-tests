@@ -58,18 +58,16 @@ public class MantenimientoService {
 
                 for (RequestMantenimiento.DetalleMantenimientoRequest detalleRequest : request.detalles()) {
 
-                        Producto producto = productoRepository
-                                        .findById(detalleRequest.productoId())
-                                        .orElseThrow(() -> new ResponseStatusException(
-                                                        HttpStatus.NOT_FOUND,
-                                                        "Producto no encontrado con ID: "
-                                                                        + detalleRequest.productoId()));
+                        List<Producto> productos = List.of();
+                        if (detalleRequest.productoIds() != null && !detalleRequest.productoIds().isEmpty()) {
+                                productos = productoRepository.findAllById(detalleRequest.productoIds());
+                        }
 
                         MantenimientoDetalle detalle = new MantenimientoDetalle();
 
                         detalle.setCantidad(detalleRequest.cantidad());
                         detalle.setDescripcion(detalleRequest.descripcion());
-                        detalle.setProducto(producto);
+                        detalle.setProductos(productos);
 
                         mantenimiento.agregarDetalle(detalle);
                 }

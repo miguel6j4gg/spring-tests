@@ -15,6 +15,9 @@ import pe.edu.uls.tests_productos.cu.adminAlquiler.service.AlquilerService;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 
+import pe.edu.uls.tests_productos.cu.adminProducto.response.ResponseProducto;
+import pe.edu.uls.tests_productos.domain.entity.Producto;
+
 @RestController
 @RequestMapping("/alquileres")
 public class AlquilerController {
@@ -75,6 +78,10 @@ public class AlquilerController {
     private ResponseAlquiler.DetalleAlquilerResponse convertirDetalle(
             AlquilerDetalle detalle) {
 
+        List<ResponseProducto> productos = detalle.getProductos() != null
+                ? detalle.getProductos().stream().map(this::convertirProducto).toList()
+                : List.of();
+
         return new ResponseAlquiler.DetalleAlquilerResponse(
                 detalle.getId(),
 
@@ -82,9 +89,7 @@ public class AlquilerController {
                 detalle.getEquipo().getCodigo(),
                 detalle.getEquipo().getNombre(),
 
-                detalle.getProducto().getId(),
-                detalle.getProducto().getCodigo(),
-                detalle.getProducto().getNombre(),
+                productos,
                 detalle.getCantidad(),
                 detalle.getPrecioUnitario(),
 
@@ -94,5 +99,18 @@ public class AlquilerController {
                 detalle.getFechaSalida(),
                 detalle.getFechaRetorno(),
                 detalle.getLugar());
+    }
+
+    private ResponseProducto convertirProducto(Producto producto) {
+        return new ResponseProducto(
+                producto.getId(),
+                producto.getCodigo(),
+                producto.getNombre(),
+                producto.getDescripcion(),
+                producto.getCategoria(),
+                producto.getPrecio(),
+                producto.getStock(),
+                producto.getEstado()
+        );
     }
 }

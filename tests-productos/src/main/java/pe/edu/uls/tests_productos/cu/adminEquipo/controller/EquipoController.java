@@ -61,4 +61,17 @@ public class EquipoController {
                 .toList();
     }
 
+    // =====================================================
+    // GET 4 - LISTAR TODOS LOS EQUIPOS
+    // =====================================================
+
+    @GetMapping
+    public List<ResponseEquipo> listarEquipos() {
+
+        return equipoService.listarEquipos()
+                .stream()
+                .map(equipoMapper::toResponse)
+                .toList();
+    }
+
 }

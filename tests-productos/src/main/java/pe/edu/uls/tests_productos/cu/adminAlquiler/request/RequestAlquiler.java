@@ -22,7 +22,7 @@ public record RequestAlquiler(
 
             int equipoId,
 
-            int productoId,
+            List<Integer> productoIds,
 
             int cantidad,
 
