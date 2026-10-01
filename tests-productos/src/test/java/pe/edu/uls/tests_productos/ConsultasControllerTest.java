@@ -48,12 +48,10 @@ public class ConsultasControllerTest {
 
     @Test
     public void testJpql1ParametrosInvalidos() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarAlquileresPorClienteYEstado("", "Activo")
-        );
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarAlquileresPorClienteYEstado("Graña", "")
-        );
+        assertThrows(ResponseStatusException.class,
+                () -> consultasService.buscarAlquileresPorClienteYEstado("", "Activo"));
+        assertThrows(ResponseStatusException.class,
+                () -> consultasService.buscarAlquileresPorClienteYEstado("Graña", ""));
     }
 
     // =====================================================
@@ -68,9 +66,7 @@ public class ConsultasControllerTest {
 
     @Test
     public void testJpql2ParametrosInvalidos() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarAlquileresPorModeloEquipo("   ")
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.buscarAlquileresPorModeloEquipo("   "));
     }
 
     // =====================================================
@@ -85,9 +81,7 @@ public class ConsultasControllerTest {
 
     @Test
     public void testJpql3ParametrosInvalidos() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarMantenimientosPorUbicacion(null)
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.buscarMantenimientosPorUbicacion(null));
     }
 
     // =====================================================
@@ -102,9 +96,7 @@ public class ConsultasControllerTest {
 
     @Test
     public void testJpql4ParametrosInvalidos() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarMantenimientosPorCodigoProducto("")
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.buscarMantenimientosPorCodigoProducto(""));
     }
 
     // =====================================================
@@ -114,20 +106,16 @@ public class ConsultasControllerTest {
     public void testJpql5ProductosAlquiladosEnFechas() {
         List<Producto> resultados = consultasService.buscarProductosAlquiladosEnFechas(
                 LocalDate.of(2026, 8, 1),
-                LocalDate.of(2026, 9, 30)
-        );
+                LocalDate.of(2026, 9, 30));
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());
     }
 
     @Test
     public void testJpql5FechasInvalidas() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarProductosAlquiladosEnFechas(
-                    LocalDate.of(2026, 10, 1),
-                    LocalDate.of(2026, 8, 1)
-            )
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.buscarProductosAlquiladosEnFechas(
+                LocalDate.of(2026, 10, 1),
+                LocalDate.of(2026, 8, 1)));
     }
 
     // =====================================================
@@ -142,9 +130,7 @@ public class ConsultasControllerTest {
 
     @Test
     public void testJpql6ParametrosInvalidos() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.buscarEquiposPorTipoMantenimiento("")
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.buscarEquiposPorTipoMantenimiento(""));
     }
 
     // =====================================================
@@ -160,12 +146,8 @@ public class ConsultasControllerTest {
 
     @Test
     public void testNativo1ClienteIdInvalido() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.resumenAlquileresPorCliente(-1)
-        );
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.resumenAlquileresPorCliente(0)
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorCliente(-1));
+        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorCliente(0));
     }
 
     // =====================================================
@@ -177,15 +159,14 @@ public class ConsultasControllerTest {
                 .filter(e -> "GE-004".equals(e.getCodigo()))
                 .findFirst().orElseGet(() -> equipoRepository.findAll().get(0));
 
-        List<ResumenMantenimientoEquipoDTO> resultados = consultasService.resumenMantenimientosPorEquipo(equipo.getId());
+        List<ResumenMantenimientoEquipoDTO> resultados = consultasService
+                .resumenMantenimientosPorEquipo(equipo.getId());
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());
     }
 
     @Test
     public void testNativo2EquipoIdInvalido() {
-        assertThrows(ResponseStatusException.class, () -> 
-            consultasService.resumenMantenimientosPorEquipo(-5)
-        );
+        assertThrows(ResponseStatusException.class, () -> consultasService.resumenMantenimientosPorEquipo(-5));
     }
 }

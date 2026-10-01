@@ -12,9 +12,13 @@ public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 
     // QUERY 1 (JPQL - 2 Entities: Alquiler + Cliente): Buscar alquileres por nombre
     // de cliente y estado
-    @Query("SELECT DISTINCT a FROM Alquiler a JOIN a.cliente c WHERE LOWER(c.nombre) LIKE LOWER(CONCAT('%', :nombreCliente, '%')) AND LOWER(a.estado) = LOWER(:estado)")
-    List<Alquiler> findAlquileresPorClienteNombreYEstado(@Param("nombreCliente") String nombreCliente,
-            @Param("estado") String estado);
+    @Query("""
+                    SELECT DISTINCT a FROM Alquiler a
+                    JOIN a.cliente c
+                    WHERE LOWER(c.nombre) LIKE LOWER(CONCAT('%', :nombreCliente, '%'))
+                    AND LOWER(a.estado) = LOWER(:estado)
+            """)
+    List<Alquiler> findAlquileresPorClienteNombreYEstado(String nombreCliente, String estado);
 
     // QUERY 2 (JPQL - 3 Entities: Alquiler + AlquilerDetalle + Equipo): Buscar
     // alquileres por modelo de equipo

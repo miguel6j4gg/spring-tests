@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,6 +40,7 @@ public class AlquilerDetalle {
 
     @ManyToOne
     @JoinColumn(name = "alquiler_id", nullable = false)
+    @JsonBackReference
     private Alquiler alquiler;
 
     @ManyToOne
@@ -45,11 +48,7 @@ public class AlquilerDetalle {
     private Equipo equipo;
 
     @ManyToMany
-    @JoinTable(
-        name = "alquiler_detalle_productos",
-        joinColumns = @JoinColumn(name = "alquiler_detalle_id"),
-        inverseJoinColumns = @JoinColumn(name = "producto_id")
-    )
+    @JoinTable(name = "alquiler_detalle_productos", joinColumns = @JoinColumn(name = "alquiler_detalle_id"), inverseJoinColumns = @JoinColumn(name = "producto_id"))
     private List<Producto> productos = new ArrayList<>();
 
     public int getId() {

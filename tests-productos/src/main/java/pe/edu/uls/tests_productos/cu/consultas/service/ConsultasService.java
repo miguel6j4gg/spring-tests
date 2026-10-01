@@ -1,5 +1,7 @@
 package pe.edu.uls.tests_productos.cu.consultas.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,6 +28,8 @@ public class ConsultasService {
     private final ProductoRepository productoRepository;
     private final EquipoRepository equipoRepository;
 
+    Logger logger = LoggerFactory.getLogger(ConsultasService.class);
+
     public ConsultasService(
             AlquilerRepository alquilerRepository,
             MantenimientoRepository mantenimientoRepository,
@@ -40,12 +44,16 @@ public class ConsultasService {
     // JPQL 1: Alquileres por nombre de cliente y estado
     public List<Alquiler> buscarAlquileresPorClienteYEstado(String nombreCliente, String estado) {
         if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'nombreCliente' no puede estar vacío");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El parámetro 'nombreCliente' no puede estar vacío");
         }
         if (estado == null || estado.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'estado' no puede estar vacío");
         }
-        return alquilerRepository.findAlquileresPorClienteNombreYEstado(nombreCliente.trim(), estado.trim());
+
+        List<Alquiler> alquilers = alquilerRepository.findAlquileresPorClienteNombreYEstado(nombreCliente.trim(),
+                estado.trim());
+        return alquilers;
     }
 
     // JPQL 2: Alquileres por modelo de equipo
@@ -67,7 +75,8 @@ public class ConsultasService {
     // JPQL 4: Mantenimientos por código de producto
     public List<Mantenimiento> buscarMantenimientosPorCodigoProducto(String codigoProducto) {
         if (codigoProducto == null || codigoProducto.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'codigoProducto' no puede estar vacío");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El parámetro 'codigoProducto' no puede estar vacío");
         }
         return mantenimientoRepository.findMantenimientosPorCodigoProducto(codigoProducto.trim());
     }
@@ -75,10 +84,12 @@ public class ConsultasService {
     // JPQL 5: Productos alquilados en rango de fechas
     public List<Producto> buscarProductosAlquiladosEnFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         if (fechaInicio == null || fechaFin == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las fechas 'fechaInicio' y 'fechaFin' no pueden ser nulas");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Las fechas 'fechaInicio' y 'fechaFin' no pueden ser nulas");
         }
         if (fechaInicio.isAfter(fechaFin)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La 'fechaInicio' no puede ser posterior a 'fechaFin'");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La 'fechaInicio' no puede ser posterior a 'fechaFin'");
         }
         return productoRepository.findProductosAlquiladosEnRangoFechas(fechaInicio, fechaFin);
     }
@@ -86,7 +97,8 @@ public class ConsultasService {
     // JPQL 6: Equipos por tipo de mantenimiento
     public List<Equipo> buscarEquiposPorTipoMantenimiento(String tipoMantenimiento) {
         if (tipoMantenimiento == null || tipoMantenimiento.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'tipoMantenimiento' no puede estar vacío");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El parámetro 'tipoMantenimiento' no puede estar vacío");
         }
         return equipoRepository.findEquiposPorTipoMantenimiento(tipoMantenimiento.trim());
     }
@@ -101,8 +113,7 @@ public class ConsultasService {
                 (String) row[0],
                 ((Number) row[1]).intValue(),
                 (String) row[2],
-                ((Number) row[3]).longValue()
-        )).toList();
+                ((Number) row[3]).longValue())).toList();
     }
 
     // NATIVO 2: Resumen mantenimientos por equipo
@@ -116,7 +127,6 @@ public class ConsultasService {
                 (String) row[1],
                 ((Number) row[2]).intValue(),
                 (String) row[3],
-                ((Number) row[4]).longValue()
-        )).toList();
+                ((Number) row[4]).longValue())).toList();
     }
 }

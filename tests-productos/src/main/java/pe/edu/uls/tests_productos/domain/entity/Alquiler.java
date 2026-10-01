@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class Alquiler {
     private Cliente cliente;
 
     @OneToMany(mappedBy = "alquiler", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<AlquilerDetalle> detalles = new ArrayList<>();
 
     public int getId() {

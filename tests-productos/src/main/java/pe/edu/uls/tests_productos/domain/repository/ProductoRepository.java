@@ -17,8 +17,12 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     // QUERY 5 (JPQL con Join - 3 Entities: AlquilerDetalle + Producto + Alquiler):
     // Productos alquilados en rango de fechas
-    @Query("SELECT DISTINCT p FROM AlquilerDetalle d JOIN d.productos p JOIN d.alquiler a WHERE a.fechaInicio >= :fechaInicio AND a.fechaFin <= :fechaFin")
-    List<Producto> findProductosAlquiladosEnRangoFechas(@Param("fechaInicio") LocalDate fechaInicio,
-            @Param("fechaFin") LocalDate fechaFin);
-
+    @Query("""
+                SELECT DISTINCT p
+                FROM AlquilerDetalle ad
+                JOIN ad.productos p
+                JOIN ad.alquiler a
+                WHERE a.fechaInicio >= :fechaInicio AND a.fechaFin <= :fechaFin
+            """)
+    List<Producto> findProductosAlquiladosEnRangoFechas(LocalDate fechaInicio, LocalDate fechaFin);
 }
