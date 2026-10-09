@@ -138,7 +138,9 @@ public class ConsultasControllerTest {
     // =====================================================
     @Test
     public void testNativo1ResumenAlquileresPorCliente() {
-        Cliente cliente = clienteRepository.findAll().get(0);
+        Cliente cliente = clienteRepository.findAll().stream()
+                .filter(c -> "20100012345".equals(c.getDocumento()))
+                .findFirst().orElseGet(() -> clienteRepository.findAll().get(0));
         List<ResumenAlquilerClienteDTO> resultados = consultasService.resumenAlquileresPorCliente(cliente.getId());
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());

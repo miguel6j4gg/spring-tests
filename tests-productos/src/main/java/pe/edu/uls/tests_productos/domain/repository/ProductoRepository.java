@@ -15,8 +15,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     boolean existsByCodigo(String codigo);
 
-    // QUERY 5 (JPQL con Join - 3 Entities: AlquilerDetalle + Producto + Alquiler):
-    // Productos alquilados en rango de fechas
     @Query("""
                 SELECT DISTINCT p
                 FROM AlquilerDetalle ad

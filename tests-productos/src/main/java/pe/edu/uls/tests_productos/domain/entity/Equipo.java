@@ -26,6 +26,10 @@ public class Equipo {
     private String combustible;
     private String estado;
 
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "almacen_id", nullable = true)
+    private Almacen almacen;
+
     public int getId() {
         return id;
     }
@@ -96,5 +100,13 @@ public class Equipo {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Almacen getAlmacen() {
+        return almacen;
+    }
+
+    public void setAlmacen(Almacen almacen) {
+        this.almacen = almacen;
     }
 }

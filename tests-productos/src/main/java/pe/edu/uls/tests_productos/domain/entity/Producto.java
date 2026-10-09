@@ -25,6 +25,10 @@ public class Producto {
     private int stock;
     private String estado;
 
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "proveedor_id", nullable = true)
+    private Proveedor proveedor;
+
     public int getId() {
         return id;
     }
@@ -87,5 +91,13 @@ public class Producto {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
     }
 }

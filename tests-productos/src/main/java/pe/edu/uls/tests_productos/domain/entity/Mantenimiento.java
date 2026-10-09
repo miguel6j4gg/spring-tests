@@ -32,6 +32,10 @@ public class Mantenimiento {
     @JoinColumn(name = "equipo_id", nullable = false)
     private Equipo equipo;
 
+    @ManyToOne
+    @JoinColumn(name = "empleado_id", nullable = true)
+    private Empleado empleado;
+
     @OneToMany(mappedBy = "mantenimiento", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<MantenimientoDetalle> detalles = new ArrayList<>();
@@ -74,6 +78,14 @@ public class Mantenimiento {
 
     public void setEquipo(Equipo equipo) {
         this.equipo = equipo;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
 
     public List<MantenimientoDetalle> getDetalles() {

@@ -8,18 +8,24 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import pe.edu.uls.tests_productos.domain.entity.Almacen;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 import pe.edu.uls.tests_productos.domain.entity.Cliente;
+import pe.edu.uls.tests_productos.domain.entity.Empleado;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
 import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 import pe.edu.uls.tests_productos.domain.entity.MantenimientoDetalle;
 import pe.edu.uls.tests_productos.domain.entity.Producto;
+import pe.edu.uls.tests_productos.domain.entity.Proveedor;
+import pe.edu.uls.tests_productos.domain.repository.AlmacenRepository;
 import pe.edu.uls.tests_productos.domain.repository.AlquilerRepository;
 import pe.edu.uls.tests_productos.domain.repository.ClienteRepository;
+import pe.edu.uls.tests_productos.domain.repository.EmpleadoRepository;
 import pe.edu.uls.tests_productos.domain.repository.EquipoRepository;
 import pe.edu.uls.tests_productos.domain.repository.MantenimientoRepository;
 import pe.edu.uls.tests_productos.domain.repository.ProductoRepository;
+import pe.edu.uls.tests_productos.domain.repository.ProveedorRepository;
 
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
@@ -29,26 +35,161 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final ProductoRepository productoRepository;
     private final AlquilerRepository alquilerRepository;
     private final MantenimientoRepository mantenimientoRepository;
+    private final ProveedorRepository proveedorRepository;
+    private final AlmacenRepository almacenRepository;
+    private final EmpleadoRepository empleadoRepository;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     public DatabaseInitializer(
             ClienteRepository clienteRepository,
             EquipoRepository equipoRepository,
             ProductoRepository productoRepository,
             AlquilerRepository alquilerRepository,
-            MantenimientoRepository mantenimientoRepository) {
+            MantenimientoRepository mantenimientoRepository,
+            ProveedorRepository proveedorRepository,
+            AlmacenRepository almacenRepository,
+            EmpleadoRepository empleadoRepository,
+            org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         this.clienteRepository = clienteRepository;
         this.equipoRepository = equipoRepository;
         this.productoRepository = productoRepository;
         this.alquilerRepository = alquilerRepository;
         this.mantenimientoRepository = mantenimientoRepository;
+        this.proveedorRepository = proveedorRepository;
+        this.almacenRepository = almacenRepository;
+        this.empleadoRepository = empleadoRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        try {
+            jdbcTemplate.execute("ALTER TABLE IF EXISTS alquiler_detalle ALTER COLUMN producto_id DROP NOT NULL");
+        } catch (Exception e) {
+            // Columna ya modificada o inexistente
+        }
+        try {
+            jdbcTemplate.execute("ALTER TABLE IF EXISTS mantenimiento_detalle ALTER COLUMN producto_id DROP NOT NULL");
+        } catch (Exception e) {
+            // Columna ya modificada o inexistente
+        }
+
         System.out.println("Inicializando/verificando datos de prueba en Neon DB...");
 
-        // 1. Clientes
+        // 1. Proveedores
+        Proveedor prov1 = proveedorRepository.findAll().stream()
+                .filter(p -> "20100055441".equals(p.getRuc()))
+                .findFirst().orElseGet(() -> {
+                    Proveedor p = new Proveedor();
+                    p.setRuc("20100055441");
+                    p.setRazonSocial("Ferreyros S.A. - Caterpillar Perú");
+                    p.setContacto("Carlos Ramos");
+                    p.setTelefono("988776655");
+                    p.setEmail("contacto@ferreyros.com.pe");
+                    p.setDireccion("Av. Industrial 450, Lima");
+                    p.setEstado("Activo");
+                    return proveedorRepository.save(p);
+                });
+
+        Proveedor prov2 = proveedorRepository.findAll().stream()
+                .filter(p -> "20200088992".equals(p.getRuc()))
+                .findFirst().orElseGet(() -> {
+                    Proveedor p = new Proveedor();
+                    p.setRuc("20200088992");
+                    p.setRazonSocial("Distribuidora Cummins del Perú S.A.C.");
+                    p.setContacto("Mariana Silva");
+                    p.setTelefono("977665544");
+                    p.setEmail("ventas@cummins.pe");
+                    p.setDireccion("Carretera Central Km 8.5, Ate");
+                    p.setEstado("Activo");
+                    return proveedorRepository.save(p);
+                });
+
+        Proveedor prov3 = proveedorRepository.findAll().stream()
+                .filter(p -> "20300099881".equals(p.getRuc()))
+                .findFirst().orElseGet(() -> {
+                    Proveedor p = new Proveedor();
+                    p.setRuc("20300099881");
+                    p.setRazonSocial("Insumos & Filtros Industriales S.A.C.");
+                    p.setContacto("Pedro Gutierrez");
+                    p.setTelefono("966554433");
+                    p.setEmail("operaciones@filtrosperu.com");
+                    p.setDireccion("Av. Argentina 2100, Callao");
+                    p.setEstado("Activo");
+                    return proveedorRepository.save(p);
+                });
+
+        // 2. Almacenes
+        Almacen alm1 = almacenRepository.findAll().stream()
+                .filter(a -> "ALM-01".equals(a.getCodigo()))
+                .findFirst().orElseGet(() -> {
+                    Almacen a = new Almacen();
+                    a.setCodigo("ALM-01");
+                    a.setNombre("Patio Central de Maquinaria Lima");
+                    a.setDireccion("Av. Néstor Gambetta 1500");
+                    a.setCiudad("Lima");
+                    a.setCapacidad(50.0);
+                    a.setEstado("Operativo");
+                    return almacenRepository.save(a);
+                });
+
+        Almacen alm2 = almacenRepository.findAll().stream()
+                .filter(a -> "ALM-02".equals(a.getCodigo()))
+                .findFirst().orElseGet(() -> {
+                    Almacen a = new Almacen();
+                    a.setCodigo("ALM-02");
+                    a.setNombre("Base Operativa Arequipa Sur");
+                    a.setDireccion("Parque Industrial Río Seco Mz. B");
+                    a.setCiudad("Arequipa");
+                    a.setCapacidad(30.0);
+                    a.setEstado("Operativo");
+                    return almacenRepository.save(a);
+                });
+
+        Almacen alm3 = almacenRepository.findAll().stream()
+                .filter(a -> "ALM-03".equals(a.getCodigo()))
+                .findFirst().orElseGet(() -> {
+                    Almacen a = new Almacen();
+                    a.setCodigo("ALM-03");
+                    a.setNombre("Sede Logística Cusco");
+                    a.setDireccion("Av. Huayruropata 890");
+                    a.setCiudad("Cusco");
+                    a.setCapacidad(20.0);
+                    a.setEstado("Operativo");
+                    return almacenRepository.save(a);
+                });
+
+        // 3. Empleados
+        Empleado emp1 = empleadoRepository.findAll().stream()
+                .filter(e -> "45871234".equals(e.getDni()))
+                .findFirst().orElseGet(() -> {
+                    Empleado e = new Empleado();
+                    e.setDni("45871234");
+                    e.setNombre("Carlos");
+                    e.setApellido("Mendoza Rojas");
+                    e.setCargo("Técnico Especialista en Motores Diésel");
+                    e.setTelefono("944332211");
+                    e.setEmail("cmendoza@empresa.pe");
+                    e.setEstado("Activo");
+                    return empleadoRepository.save(e);
+                });
+
+        Empleado emp2 = empleadoRepository.findAll().stream()
+                .filter(e -> "48923456".equals(e.getDni()))
+                .findFirst().orElseGet(() -> {
+                    Empleado e = new Empleado();
+                    e.setDni("48923456");
+                    e.setNombre("Jorge");
+                    e.setApellido("Vega Castillo");
+                    e.setCargo("Técnico Electricista Industrial");
+                    e.setTelefono("933221100");
+                    e.setEmail("jvega@empresa.pe");
+                    e.setEstado("Activo");
+                    return empleadoRepository.save(e);
+                });
+
+        // 4. Clientes
         Cliente c1 = clienteRepository.findAll().stream()
                 .filter(c -> "20100012345".equals(c.getDocumento()))
                 .findFirst().orElseGet(() -> {
@@ -77,7 +218,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     return clienteRepository.save(c);
                 });
 
-        // 2. Equipos
+        // 5. Equipos
         Equipo e1 = equipoRepository.findAll().stream()
                 .filter(e -> "GE-001".equals(e.getCodigo()))
                 .findFirst().orElseGet(() -> {
@@ -90,6 +231,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setUbicacion("Arequipa");
                     e.setCombustible("Diesel");
                     e.setEstado("Disponible");
+                    e.setAlmacen(alm2);
                     return equipoRepository.save(e);
                 });
 
@@ -105,6 +247,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setUbicacion("Lima");
                     e.setCombustible("Diesel");
                     e.setEstado("Alquilado");
+                    e.setAlmacen(alm1);
                     return equipoRepository.save(e);
                 });
 
@@ -120,10 +263,11 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setUbicacion("Cusco");
                     e.setCombustible("Diesel");
                     e.setEstado("Mantenimiento");
+                    e.setAlmacen(alm3);
                     return equipoRepository.save(e);
                 });
 
-        // 3. Productos (Insumos / Añadidos para funcionamiento o mantenimientos)
+        // 6. Productos (Insumos / Añadidos para funcionamiento o mantenimientos)
         Producto p1 = productoRepository.findAll().stream()
                 .filter(p -> "PROD-001".equals(p.getCodigo()))
                 .findFirst().orElseGet(() -> {
@@ -135,6 +279,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(150.0);
                     p.setStock(20);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov1);
                     return productoRepository.save(p);
                 });
 
@@ -149,6 +294,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(500.0);
                     p.setStock(10);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov2);
                     return productoRepository.save(p);
                 });
 
@@ -163,6 +309,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(350.0);
                     p.setStock(8);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov1);
                     return productoRepository.save(p);
                 });
 
@@ -177,6 +324,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(45.0);
                     p.setStock(50);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
 
@@ -191,6 +339,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(60.0);
                     p.setStock(40);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
 
@@ -205,10 +354,11 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setPrecio(25.0);
                     p.setStock(100);
                     p.setEstado("Disponible");
+                    p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
 
-        // 4. Alquileres
+        // 7. Alquileres
         if (alquilerRepository.count() == 0) {
             Alquiler a1 = new Alquiler();
             a1.setCliente(c1);
@@ -251,10 +401,11 @@ public class DatabaseInitializer implements CommandLineRunner {
             alquilerRepository.save(a2);
         }
 
-        // 5. Mantenimientos
+        // 8. Mantenimientos
         if (mantenimientoRepository.count() == 0) {
             Mantenimiento m1 = new Mantenimiento();
             m1.setEquipo(e4);
+            m1.setEmpleado(emp1);
             m1.setFecha(LocalDate.of(2026, 9, 15));
             m1.setTipo("Preventivo");
             m1.setObservaciones("Mantenimiento rutinario con reemplazo de insumos");
@@ -269,6 +420,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             Mantenimiento m2 = new Mantenimiento();
             m2.setEquipo(e1);
+            m2.setEmpleado(emp2);
             m2.setFecha(LocalDate.of(2026, 9, 26));
             m2.setTipo("Correctivo");
             m2.setObservaciones("Cambio de cableado deteriorado y filtro de aceite");
