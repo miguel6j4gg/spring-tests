@@ -78,8 +78,12 @@ public class AlquilerController {
     private ResponseAlquiler.DetalleAlquilerResponse convertirDetalle(
             AlquilerDetalle detalle) {
 
-        List<ResponseProducto> productos = detalle.getProductos() != null
-                ? detalle.getProductos().stream().map(this::convertirProducto).toList()
+        List<ResponseAlquiler.DetalleAlquilerResponse.ProductoAlquiladoResponse> productos = detalle.getProductos() != null
+                ? detalle.getProductos().stream()
+                        .map(detalleProducto -> new ResponseAlquiler.DetalleAlquilerResponse.ProductoAlquiladoResponse(
+                                convertirProducto(detalleProducto.getProducto()),
+                                detalleProducto.getPrecio()))
+                        .toList()
                 : List.of();
 
         return new ResponseAlquiler.DetalleAlquilerResponse(

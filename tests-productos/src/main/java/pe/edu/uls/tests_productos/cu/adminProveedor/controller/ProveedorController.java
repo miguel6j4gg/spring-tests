@@ -30,6 +30,16 @@ public class ProveedorController {
         return proveedorService.listarProveedores();
     }
 
+    @GetMapping("/estado/{estado}")
+    public List<Proveedor> buscarPorEstado(@PathVariable Integer estado) {
+        return proveedorService.buscarPorEstado(estado);
+    }
+
+    @GetMapping("/empresa/{empresaId}")
+    public List<Proveedor> listarPorEmpresa(@PathVariable Integer empresaId) {
+        return proveedorService.listarPorEmpresa(empresaId);
+    }
+
     @PostMapping
     public Proveedor registrarProveedor(@RequestBody Proveedor proveedor) {
         return proveedorService.registrarProveedor(proveedor);

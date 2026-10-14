@@ -48,7 +48,7 @@ public class ClienteService {
     // BUSCAR CLIENTES POR ESTADO
     // =====================================================
 
-    public List<Cliente> buscarPorEstado(String estado) {
+    public List<Cliente> buscarPorEstado(Integer estado) {
         return repoCliente.findByEstado(estado);
     }
 

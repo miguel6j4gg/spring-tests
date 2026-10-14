@@ -9,5 +9,5 @@ public record ResponseEquipo(
 		double horometro,
 		String ubicacion,
 		String combustible,
-		String estado) {
+		Integer estado) {
 }

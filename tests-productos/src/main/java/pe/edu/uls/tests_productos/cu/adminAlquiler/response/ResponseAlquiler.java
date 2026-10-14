@@ -10,7 +10,7 @@ public record ResponseAlquiler(
         int id,
         LocalDate fechaInicio,
         LocalDate fechaFin,
-        String estado,
+        Integer estado,
         int clienteId,
         String clienteNombre,
         List<DetalleAlquilerResponse> detalles
@@ -22,7 +22,7 @@ public record ResponseAlquiler(
             int equipoId,
             String codigoEquipo,
             String nombreEquipo,
-            List<ResponseProducto> productos,
+            List<ProductoAlquiladoResponse> productos,
             int cantidad,
             double precioUnitario,
             double horometroSalida,
@@ -30,5 +30,10 @@ public record ResponseAlquiler(
             LocalDateTime fechaSalida,
             LocalDateTime fechaRetorno,
             String lugar) {
+
+        public record ProductoAlquiladoResponse(
+                ResponseProducto producto,
+                double precio) {
+        }
     }
 }

@@ -25,6 +25,10 @@ public class AlmacenService {
         return almacenRepository.findAll();
     }
 
+    public List<Almacen> buscarPorEstado(Integer estado) {
+        return almacenRepository.findByEstado(estado);
+    }
+
     public Almacen registrarAlmacen(Almacen almacen) {
         if (almacenRepository.existsByCodigo(almacen.getCodigo())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un almacén con el código: " + almacen.getCodigo());

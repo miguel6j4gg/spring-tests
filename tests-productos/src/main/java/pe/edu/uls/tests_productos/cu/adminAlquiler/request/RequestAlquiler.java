@@ -10,7 +10,7 @@ public record RequestAlquiler(
 
         LocalDate fechaFin,
 
-        String estado,
+        Integer estado,
 
         int clienteId,
 
@@ -23,6 +23,8 @@ public record RequestAlquiler(
             int equipoId,
 
             List<Integer> productoIds,
+
+            List<ProductoAlquilerRequest> productos,
 
             int cantidad,
 
@@ -39,5 +41,14 @@ public record RequestAlquiler(
             LocalDateTime fechaRetorno
 
     ) {
+
+        public record ProductoAlquilerRequest(
+
+                int productoId,
+
+                Double precio
+
+        ) {
+        }
     }
 }

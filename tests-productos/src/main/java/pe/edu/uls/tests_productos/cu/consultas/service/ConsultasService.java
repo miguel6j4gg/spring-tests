@@ -42,18 +42,16 @@ public class ConsultasService {
     }
 
     // JPQL 1: Alquileres por nombre de cliente y estado
-    public List<Alquiler> buscarAlquileresPorClienteYEstado(String nombreCliente, String estado) {
+    public List<Alquiler> buscarAlquileresPorClienteYEstado(String nombreCliente, Integer estado) {
         if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "El parámetro 'nombreCliente' no puede estar vacío");
         }
-        if (estado == null || estado.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'estado' no puede estar vacío");
+        if (estado == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'estado' no puede ser nulo");
         }
 
-        List<Alquiler> alquilers = alquilerRepository.findAlquileresPorClienteNombreYEstado(nombreCliente.trim(),
-                estado.trim());
-        return alquilers;
+        return alquilerRepository.findAlquileresPorClienteNombreYEstado(nombreCliente.trim(), estado);
     }
 
     // JPQL 2: Alquileres por modelo de equipo
@@ -112,7 +110,7 @@ public class ConsultasService {
         return resultados.stream().map(row -> new ResumenAlquilerClienteDTO(
                 (String) row[0],
                 ((Number) row[1]).intValue(),
-                (String) row[2],
+                ((Number) row[2]).intValue(),
                 ((Number) row[3]).longValue())).toList();
     }
 

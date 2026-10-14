@@ -67,7 +67,7 @@ public class MantenimientoController {
 
                 return new ResponseMantenimiento(
                                 mantenimiento.getId(),
-                                mantenimiento.getFecha(),
+                                mantenimiento.getFechaMantenimientoRealizado(),
                                 mantenimiento.getTipo(),
                                 mantenimiento.getObservaciones(),
                                 mantenimiento.getEquipo().getId(),

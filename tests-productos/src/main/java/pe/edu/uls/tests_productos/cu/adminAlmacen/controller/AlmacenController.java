@@ -30,6 +30,11 @@ public class AlmacenController {
         return almacenService.listarAlmacenes();
     }
 
+    @GetMapping("/estado/{estado}")
+    public List<Almacen> buscarPorEstado(@PathVariable Integer estado) {
+        return almacenService.buscarPorEstado(estado);
+    }
+
     @PostMapping
     public Almacen registrarAlmacen(@RequestBody Almacen almacen) {
         return almacenService.registrarAlmacen(almacen);

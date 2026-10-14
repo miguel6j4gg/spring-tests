@@ -53,7 +53,7 @@ public class ClienteController {
     // =====================================================
 
     @GetMapping("/estado/{estado}")
-    public List<ResponseCliente> buscarPorEstado(@PathVariable String estado) {
+    public List<ResponseCliente> buscarPorEstado(@PathVariable Integer estado) {
         return clienteService.buscarPorEstado(estado)
                 .stream()
                 .map(clienteMapper::toResponse)

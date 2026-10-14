@@ -25,6 +25,10 @@ public class EmpleadoService {
         return empleadoRepository.findAll();
     }
 
+    public List<Empleado> buscarPorEstado(Integer estado) {
+        return empleadoRepository.findByEstado(estado);
+    }
+
     public Empleado registrarEmpleado(Empleado empleado) {
         if (empleadoRepository.existsByDni(empleado.getDni())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un empleado con el DNI: " + empleado.getDni());

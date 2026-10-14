@@ -7,5 +7,5 @@ public record RequestProducto(
                 String categoria,
                 double precio,
                 int stock,
-                String estado) {
+                Integer estado) {
 }

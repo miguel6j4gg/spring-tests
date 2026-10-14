@@ -18,16 +18,26 @@ public class ProveedorService {
 
     public Proveedor obtenerProveedor(int id) {
         return proveedorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proveedor no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Proveedor no encontrado con ID: " + id));
     }
 
     public List<Proveedor> listarProveedores() {
         return proveedorRepository.findAll();
     }
 
+    public List<Proveedor> buscarPorEstado(Integer estado) {
+        return proveedorRepository.findByEstado(estado);
+    }
+
+    public List<Proveedor> listarPorEmpresa(Integer empresaId) {
+        return proveedorRepository.findByEmpresa_Id(empresaId);
+    }
+
     public Proveedor registrarProveedor(Proveedor proveedor) {
         if (proveedorRepository.existsByRuc(proveedor.getRuc())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un proveedor con el RUC: " + proveedor.getRuc());
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Ya existe un proveedor con el RUC: " + proveedor.getRuc());
         }
         return proveedorRepository.save(proveedor);
     }

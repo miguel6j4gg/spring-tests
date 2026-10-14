@@ -32,7 +32,7 @@ public class ConsultasController {
     @GetMapping("/jpql/alquileres-cliente-estado")
     public List<Alquiler> buscarAlquileresPorClienteYEstado(
             @RequestParam String nombreCliente,
-            @RequestParam String estado) {
+            @RequestParam Integer estado) {
         return consultasService.buscarAlquileresPorClienteYEstado(nombreCliente, estado);
     }
 

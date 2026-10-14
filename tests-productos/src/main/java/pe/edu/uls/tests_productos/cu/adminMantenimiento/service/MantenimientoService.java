@@ -45,7 +45,7 @@ public class MantenimientoService {
 
                 Mantenimiento mantenimiento = new Mantenimiento();
 
-                mantenimiento.setFecha(request.fecha());
+                mantenimiento.setFechaMantenimientoRealizado(request.fecha());
                 mantenimiento.setTipo(request.tipo());
                 mantenimiento.setObservaciones(request.observaciones());
                 mantenimiento.setEquipo(equipo);

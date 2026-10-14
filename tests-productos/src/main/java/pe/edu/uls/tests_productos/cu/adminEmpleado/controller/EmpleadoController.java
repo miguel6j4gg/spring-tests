@@ -30,6 +30,11 @@ public class EmpleadoController {
         return empleadoService.listarEmpleados();
     }
 
+    @GetMapping("/estado/{estado}")
+    public List<Empleado> buscarPorEstado(@PathVariable Integer estado) {
+        return empleadoService.buscarPorEstado(estado);
+    }
+
     @PostMapping
     public Empleado registrarEmpleado(@RequestBody Empleado empleado) {
         return empleadoService.registrarEmpleado(empleado);
