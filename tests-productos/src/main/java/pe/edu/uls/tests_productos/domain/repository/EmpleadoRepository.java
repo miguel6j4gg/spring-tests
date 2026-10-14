@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pe.edu.uls.tests_productos.domain.entity.Empleado;
 
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
-    List<Empleado> findByEstado(String estado);
+    List<Empleado> findByEstado(Integer estado);
     boolean existsByDni(String dni);
 }

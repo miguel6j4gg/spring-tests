@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pe.edu.uls.tests_productos.domain.entity.Proveedor;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Integer> {
-    List<Proveedor> findByEstado(String estado);
+    List<Proveedor> findByEstado(Integer estado);
+    List<Proveedor> findByEmpresa_Id(Integer empresaId);
     boolean existsByRuc(String ruc);
 }
