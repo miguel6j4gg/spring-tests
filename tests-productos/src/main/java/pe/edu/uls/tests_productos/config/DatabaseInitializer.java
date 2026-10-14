@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import pe.edu.uls.tests_productos.domain.entity.Almacen;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
+import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalleProducto;
 import pe.edu.uls.tests_productos.domain.entity.Cliente;
 import pe.edu.uls.tests_productos.domain.entity.Empleado;
+import pe.edu.uls.tests_productos.domain.entity.Entidad;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
 import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 import pe.edu.uls.tests_productos.domain.entity.MantenimientoDetalle;
@@ -64,16 +66,6 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        try {
-            jdbcTemplate.execute("ALTER TABLE IF EXISTS alquiler_detalle ALTER COLUMN producto_id DROP NOT NULL");
-        } catch (Exception e) {
-            // Columna ya modificada o inexistente
-        }
-        try {
-            jdbcTemplate.execute("ALTER TABLE IF EXISTS mantenimiento_detalle ALTER COLUMN producto_id DROP NOT NULL");
-        } catch (Exception e) {
-            // Columna ya modificada o inexistente
-        }
 
         System.out.println("Inicializando/verificando datos de prueba en Neon DB...");
 
@@ -88,7 +80,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setTelefono("988776655");
                     p.setEmail("contacto@ferreyros.com.pe");
                     p.setDireccion("Av. Industrial 450, Lima");
-                    p.setEstado("Activo");
+                    p.setEstado(1);
                     return proveedorRepository.save(p);
                 });
 
@@ -102,7 +94,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setTelefono("977665544");
                     p.setEmail("ventas@cummins.pe");
                     p.setDireccion("Carretera Central Km 8.5, Ate");
-                    p.setEstado("Activo");
+                    p.setEstado(1);
                     return proveedorRepository.save(p);
                 });
 
@@ -116,7 +108,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setTelefono("966554433");
                     p.setEmail("operaciones@filtrosperu.com");
                     p.setDireccion("Av. Argentina 2100, Callao");
-                    p.setEstado("Activo");
+                    p.setEstado(1);
                     return proveedorRepository.save(p);
                 });
 
@@ -130,7 +122,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     a.setDireccion("Av. Néstor Gambetta 1500");
                     a.setCiudad("Lima");
                     a.setCapacidad(50.0);
-                    a.setEstado("Operativo");
+                    a.setEstado(1);
                     return almacenRepository.save(a);
                 });
 
@@ -143,7 +135,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     a.setDireccion("Parque Industrial Río Seco Mz. B");
                     a.setCiudad("Arequipa");
                     a.setCapacidad(30.0);
-                    a.setEstado("Operativo");
+                    a.setEstado(1);
                     return almacenRepository.save(a);
                 });
 
@@ -156,7 +148,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     a.setDireccion("Av. Huayruropata 890");
                     a.setCiudad("Cusco");
                     a.setCapacidad(20.0);
-                    a.setEstado("Operativo");
+                    a.setEstado(1);
                     return almacenRepository.save(a);
                 });
 
@@ -171,7 +163,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setCargo("Técnico Especialista en Motores Diésel");
                     e.setTelefono("944332211");
                     e.setEmail("cmendoza@empresa.pe");
-                    e.setEstado("Activo");
+                    e.setEstado(1);
                     return empleadoRepository.save(e);
                 });
 
@@ -185,7 +177,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setCargo("Técnico Electricista Industrial");
                     e.setTelefono("933221100");
                     e.setEmail("jvega@empresa.pe");
-                    e.setEstado("Activo");
+                    e.setEstado(1);
                     return empleadoRepository.save(e);
                 });
 
@@ -197,10 +189,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     c.setDocumento("20100012345");
                     c.setNombre("Constructora Graña y Montero S.A.");
                     c.setApellido("Empresa");
-                    c.setEmail("contacto@gym.pe");
-                    c.setTelefono("987654321");
-                    c.setDireccion("Av. Javier Prado 123");
-                    c.setEstado("Activo");
+                    c.setEntidad(entidadCliente("987654321", "Av. Javier Prado 123", "contacto@gym.pe", 1));
                     return clienteRepository.save(c);
                 });
 
@@ -211,10 +200,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     c.setDocumento("20543210987");
                     c.setNombre("Mining Corp Perú S.A.C.");
                     c.setApellido("Empresa");
-                    c.setEmail("operaciones@miningcorp.pe");
-                    c.setTelefono("954321876");
-                    c.setDireccion("Av. Ejército 456");
-                    c.setEstado("Activo");
+                    c.setEntidad(entidadCliente("954321876", "Av. Ejército 456", "operaciones@miningcorp.pe", 1));
                     return clienteRepository.save(c);
                 });
 
@@ -230,7 +216,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setHorometro(1250.0);
                     e.setUbicacion("Arequipa");
                     e.setCombustible("Diesel");
-                    e.setEstado("Disponible");
+                    e.setEstado(1);
                     e.setAlmacen(alm2);
                     return equipoRepository.save(e);
                 });
@@ -246,7 +232,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setHorometro(850.0);
                     e.setUbicacion("Lima");
                     e.setCombustible("Diesel");
-                    e.setEstado("Alquilado");
+                    e.setEstado(2);
                     e.setAlmacen(alm1);
                     return equipoRepository.save(e);
                 });
@@ -262,7 +248,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     e.setHorometro(600.0);
                     e.setUbicacion("Cusco");
                     e.setCombustible("Diesel");
-                    e.setEstado("Mantenimiento");
+                    e.setEstado(3);
                     e.setAlmacen(alm3);
                     return equipoRepository.save(e);
                 });
@@ -278,7 +264,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Accesorios");
                     p.setPrecio(150.0);
                     p.setStock(20);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov1);
                     return productoRepository.save(p);
                 });
@@ -293,7 +279,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Tableros");
                     p.setPrecio(500.0);
                     p.setStock(10);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov2);
                     return productoRepository.save(p);
                 });
@@ -308,7 +294,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Tanques");
                     p.setPrecio(350.0);
                     p.setStock(8);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov1);
                     return productoRepository.save(p);
                 });
@@ -323,7 +309,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Filtros");
                     p.setPrecio(45.0);
                     p.setStock(50);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
@@ -338,7 +324,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Filtros");
                     p.setPrecio(60.0);
                     p.setStock(40);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
@@ -353,7 +339,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                     p.setCategoria("Repuestos");
                     p.setPrecio(25.0);
                     p.setStock(100);
-                    p.setEstado("Disponible");
+                    p.setEstado(1);
                     p.setProveedor(prov3);
                     return productoRepository.save(p);
                 });
@@ -364,11 +350,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             a1.setCliente(c1);
             a1.setFechaInicio(LocalDate.of(2026, 8, 1));
             a1.setFechaFin(LocalDate.of(2026, 8, 30));
-            a1.setEstado("Activo");
+            a1.setEstado(1);
 
             AlquilerDetalle ad1 = new AlquilerDetalle();
             ad1.setEquipo(e2);
-            ad1.setProductos(List.of(p1, p2));
+            ad1.agregarProducto(productoAlquilado(p1));
+            ad1.agregarProducto(productoAlquilado(p2));
             ad1.setCantidad(1);
             ad1.setPrecioUnitario(1500.0);
             ad1.setHorometroSalida(800.0);
@@ -376,6 +363,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             ad1.setFechaSalida(LocalDateTime.of(2026, 8, 1, 8, 0));
             ad1.setFechaRetorno(LocalDateTime.of(2026, 8, 30, 18, 0));
             ad1.setLugar("Mina Las Bambas");
+            ad1.setObservaciones("Entrega en buen estado, verificar horómetro al retorno");
             a1.agregarDetalle(ad1);
 
             alquilerRepository.save(a1);
@@ -384,11 +372,12 @@ public class DatabaseInitializer implements CommandLineRunner {
             a2.setCliente(c2);
             a2.setFechaInicio(LocalDate.of(2026, 9, 1));
             a2.setFechaFin(LocalDate.of(2026, 9, 25));
-            a2.setEstado("Finalizado");
+            a2.setEstado(2);
 
             AlquilerDetalle ad2 = new AlquilerDetalle();
             ad2.setEquipo(e1);
-            ad2.setProductos(List.of(p1, p3));
+            ad2.agregarProducto(productoAlquilado(p1));
+            ad2.agregarProducto(productoAlquilado(p3));
             ad2.setCantidad(1);
             ad2.setPrecioUnitario(1200.0);
             ad2.setHorometroSalida(1200.0);
@@ -396,6 +385,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             ad2.setFechaSalida(LocalDateTime.of(2026, 9, 1, 9, 0));
             ad2.setFechaRetorno(LocalDateTime.of(2026, 9, 25, 17, 0));
             ad2.setLugar("Planta Arequipa");
+            ad2.setObservaciones("Entrega en buen estado, verificar horómetro al retorno");
             a2.agregarDetalle(ad2);
 
             alquilerRepository.save(a2);
@@ -406,13 +396,14 @@ public class DatabaseInitializer implements CommandLineRunner {
             Mantenimiento m1 = new Mantenimiento();
             m1.setEquipo(e4);
             m1.setEmpleado(emp1);
-            m1.setFecha(LocalDate.of(2026, 9, 15));
+            m1.setFechaMantenimientoRealizado(LocalDate.of(2026, 9, 15));
             m1.setTipo("Preventivo");
             m1.setObservaciones("Mantenimiento rutinario con reemplazo de insumos");
 
             MantenimientoDetalle md1 = new MantenimientoDetalle();
             md1.setCantidad(3);
             md1.setDescripcion("Reemplazo de filtros de aceite, aire y kit de o-rings");
+            md1.setObservaciones("Se realizó el mantenimiento siguiendo el protocolo estándar");
             md1.setProductos(List.of(p4, p5, p6));
             m1.agregarDetalle(md1);
 
@@ -421,13 +412,14 @@ public class DatabaseInitializer implements CommandLineRunner {
             Mantenimiento m2 = new Mantenimiento();
             m2.setEquipo(e1);
             m2.setEmpleado(emp2);
-            m2.setFecha(LocalDate.of(2026, 9, 26));
+            m2.setFechaMantenimientoRealizado(LocalDate.of(2026, 9, 26));
             m2.setTipo("Correctivo");
             m2.setObservaciones("Cambio de cableado deteriorado y filtro de aceite");
 
             MantenimientoDetalle md2 = new MantenimientoDetalle();
             md2.setCantidad(2);
             md2.setDescripcion("Cambio de cables trifásicos y filtro");
+            md2.setObservaciones("Se reemplazaron los componentes defectuosos y se verificó el funcionamiento");
             md2.setProductos(List.of(p1, p4));
             m2.agregarDetalle(md2);
 
@@ -435,5 +427,21 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
 
         System.out.println("Base de datos de Neon actualizada con éxito con todos los registros necesarios.");
+    }
+
+    private AlquilerDetalleProducto productoAlquilado(Producto producto) {
+        AlquilerDetalleProducto detalleProducto = new AlquilerDetalleProducto();
+        detalleProducto.setProducto(producto);
+        detalleProducto.setPrecio(producto.getPrecio());
+        return detalleProducto;
+    }
+
+    private Entidad entidadCliente(String telefono, String direccion, String correo, Integer estado) {
+        Entidad entidad = new Entidad();
+        entidad.setTelefono(telefono);
+        entidad.setDireccion(direccion);
+        entidad.setCorreo(correo);
+        entidad.setEstado(estado);
+        return entidad;
     }
 }
