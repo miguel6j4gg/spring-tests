@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "b7f3c1a2-4d55-4e9b-9c10-8a2f5d6e7c31",
     "name": "Tests Productos",
-    "description": "Coleccion de pruebas para la API de alquiler de equipos.\n\nOrden sugerido de ejecucion:\n1. Producto -> 2. Equipo -> 3. Cliente -> 4. Alquiler -> 5. Mantenimiento -> 6. Consultas -> 7. Almacen -> 8. Proveedor -> 9. Empleado\n\nLos requests de registro guardan el id generado en variables de coleccion, por lo que los requests siguientes se encadenan automaticamente.\n\nLos endpoints POST responden 200 OK (salvo duplicados, que responden 409).",
+    "description": "Coleccion de pruebas para la API de alquiler de equipos.\n\nOrden sugerido de ejecucion:\n1. Producto -> 2. Equipo -> 3. Cliente -> 4. Alquiler -> 5. Mantenimiento -> 6. Consultas -> 7. Almacen -> 8. Proveedor -> 9. Empleado -> 10. Empresa\n\nLos requests de registro guardan el id generado en variables de coleccion, por lo que los requests siguientes se encadenan automaticamente.\n\nLos endpoints POST responden 200 OK (salvo duplicados, que responden 409).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -15,17 +15,22 @@
     { "key": "mantenimientoId", "value": "1" },
     { "key": "almacenId", "value": "1" },
     { "key": "proveedorId", "value": "1" },
+    { "key": "proveedorEmpresaId", "value": "1" },
     { "key": "empleadoId", "value": "1" },
     { "key": "alquilerDetalleId", "value": "1" },
     { "key": "mantenimientoDetalleId", "value": "1" },
     { "key": "nombreCliente", "value": "Juan" },
-    { "key": "estadoAlquiler", "value": "Activo" },
+    {
+      "key": "estadoAlquiler",
+      "value": 1
+    },
     { "key": "modeloEquipo", "value": "Cummins QSB" },
     { "key": "ubicacionEquipo", "value": "Arequipa" },
     { "key": "codigoProducto", "value": "PROD-001" },
     { "key": "tipoMantenimiento", "value": "Preventivo" },
     { "key": "fechaInicio", "value": "2026-09-24" },
-    { "key": "fechaFin", "value": "2026-10-01" }
+    { "key": "fechaFin", "value": "2026-10-01" },
+    { "key": "empresaId", "value": "1" }
   ],
   "item": [
     {
@@ -54,12 +59,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"PROD-001\",\n    \"nombre\": \"Filtro de aceite\",\n    \"descripcion\": \"Filtro de aceite para grupo electrogeno\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 45.50,\n    \"stock\": 100,\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"codigo\": \"PROD-001\",\n    \"nombre\": \"Filtro de aceite\",\n    \"descripcion\": \"Filtro de aceite para grupo electrogeno\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 45.50,\n    \"stock\": 100,\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] },
+            "url": {
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
             "description": "POST 1 - Registrar producto. Si el codigo ya existe responde 409."
           },
           "response": []
@@ -81,12 +99,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"PROD-001\",\n    \"nombre\": \"Filtro de aceite duplicado\",\n    \"descripcion\": \"Repite el codigo ya registrado\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 50.00,\n    \"stock\": 10,\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"codigo\": \"PROD-001\",\n    \"nombre\": \"Filtro de aceite duplicado\",\n    \"descripcion\": \"Repite el codigo ya registrado\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 50.00,\n    \"stock\": 10,\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] },
+            "url": {
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
             "description": "Valida el manejo de codigo duplicado."
           },
           "response": []
@@ -109,12 +140,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"PROD-002\",\n    \"nombre\": \"Filtro de aire\",\n    \"descripcion\": \"Filtro de aire para grupo electrogeno\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 60.00,\n    \"stock\": 80,\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"codigo\": \"PROD-002\",\n    \"nombre\": \"Filtro de aire\",\n    \"descripcion\": \"Filtro de aire para grupo electrogeno\",\n    \"categoria\": \"Repuestos\",\n    \"precio\": 60.00,\n    \"stock\": 80,\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] },
+            "url": {
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
             "description": "Segundo producto para probar relaciones ManyToMany."
           },
           "response": []
@@ -142,8 +186,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/productos/{{productoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["productos", "{{productoId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos",
+                "{{productoId}}"
+              ]
             },
             "description": "GET 2 - Buscar por ID. Responde 404 si no existe."
           },
@@ -169,8 +218,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/productos/categoria/Repuestos",
-              "host": ["{{baseUrl}}"],
-              "path": ["productos", "categoria", "Repuestos"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos",
+                "categoria",
+                "Repuestos"
+              ]
             },
             "description": "GET 3 - Buscar por categoria."
           },
@@ -194,7 +249,15 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] },
+            "url": {
+              "raw": "{{baseUrl}}/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos"
+              ]
+            },
             "description": "GET 4 - Listar todos."
           },
           "response": []
@@ -222,12 +285,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"GE-001\",\n    \"nombre\": \"Grupo Electrogeno 01\",\n    \"modelo\": \"Cummins QSB\",\n    \"potencia\": 300,\n    \"horometro\": 1250,\n    \"ubicacion\": \"Arequipa\",\n    \"combustible\": \"Diesel\",\n    \"estado\": \"Disponible\"\n}"
+              "raw": "{\n    \"codigo\": \"GE-001\",\n    \"nombre\": \"Grupo Electrogeno 01\",\n    \"modelo\": \"Cummins QSB\",\n    \"potencia\": 300,\n    \"horometro\": 1250,\n    \"ubicacion\": \"Arequipa\",\n    \"combustible\": \"Diesel\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/equipos", "host": ["{{baseUrl}}"], "path": ["equipos"] },
+            "url": {
+              "raw": "{{baseUrl}}/equipos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "equipos"
+              ]
+            },
             "description": "POST 1 - Registrar equipo."
           },
           "response": []
@@ -249,12 +325,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"GE-001\",\n    \"nombre\": \"Grupo Electrogeno 01 duplicado\",\n    \"modelo\": \"Cummins QSB\",\n    \"potencia\": 300,\n    \"horometro\": 1250,\n    \"ubicacion\": \"Arequipa\",\n    \"combustible\": \"Diesel\",\n    \"estado\": \"Disponible\"\n}"
+              "raw": "{\n    \"codigo\": \"GE-001\",\n    \"nombre\": \"Grupo Electrogeno 01 duplicado\",\n    \"modelo\": \"Cummins QSB\",\n    \"potencia\": 300,\n    \"horometro\": 1250,\n    \"ubicacion\": \"Arequipa\",\n    \"combustible\": \"Diesel\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/equipos", "host": ["{{baseUrl}}"], "path": ["equipos"] },
+            "url": {
+              "raw": "{{baseUrl}}/equipos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "equipos"
+              ]
+            },
             "description": "EquipoDuplicadoException -> 409."
           },
           "response": []
@@ -278,8 +367,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/equipos/{{equipoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["equipos", "{{equipoId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "equipos",
+                "{{equipoId}}"
+              ]
             },
             "description": "GET 2 - Buscar por ID."
           },
@@ -305,8 +399,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/equipos/ubicacion/{{ubicacionEquipo}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["equipos", "ubicacion", "{{ubicacionEquipo}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "equipos",
+                "ubicacion",
+                "{{ubicacionEquipo}}"
+              ]
             },
             "description": "GET 3 - Buscar por ubicacion."
           },
@@ -330,7 +430,15 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/equipos", "host": ["{{baseUrl}}"], "path": ["equipos"] },
+            "url": {
+              "raw": "{{baseUrl}}/equipos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "equipos"
+              ]
+            },
             "description": "GET 4 - Listar todos."
           },
           "response": []
@@ -351,19 +459,42 @@
                   "pm.test('200 OK', function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
-                  "pm.collectionVariables.set('clienteId', pm.response.json().id);"
+                  "",
+                  "const body = pm.response.json();",
+                  "pm.test('datos propios del cliente', function () {",
+                  "    pm.expect(body.documento).to.eql('70451234');",
+                  "});",
+                  "pm.test('datos comunes servidos desde Entidad', function () {",
+                  "    pm.expect(body.email).to.eql('juan.perez@example.com');",
+                  "    pm.expect(body.telefono).to.eql('987654321');",
+                  "    pm.expect(body.estado).to.eql(1);",
+                  "});",
+                  "pm.collectionVariables.set('clienteId', body.id);"
                 ]
               }
             }
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"documento\": \"70451234\",\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Perez\",\n    \"email\": \"juan.perez@example.com\",\n    \"telefono\": \"987654321\",\n    \"direccion\": \"Av. Arequipa 123\",\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"documento\": \"70451234\",\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Perez\",\n    \"email\": \"juan.perez@example.com\",\n    \"telefono\": \"987654321\",\n    \"direccion\": \"Av. Arequipa 123\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] },
+            "url": {
+              "raw": "{{baseUrl}}/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes"
+              ]
+            },
             "description": "POST 1 - Registrar cliente."
           },
           "response": []
@@ -387,8 +518,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/clientes/{{clienteId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["clientes", "{{clienteId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "{{clienteId}}"
+              ]
             },
             "description": "GET 2 - Buscar por ID."
           },
@@ -413,9 +549,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/clientes/estado/Activo",
-              "host": ["{{baseUrl}}"],
-              "path": ["clientes", "estado", "Activo"]
+              "raw": "{{baseUrl}}/clientes/estado/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "estado",
+                1
+              ]
             },
             "description": "GET 3 - Buscar por estado."
           },
@@ -439,7 +581,15 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/clientes", "host": ["{{baseUrl}}"], "path": ["clientes"] },
+            "url": {
+              "raw": "{{baseUrl}}/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes"
+              ]
+            },
             "description": "GET 4 - Listar todos."
           },
           "response": []
@@ -460,9 +610,16 @@
                   "pm.test('200 OK', function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
+                  "",
                   "const body = pm.response.json();",
-                  "pm.test('detalle trae la lista de productos', function () {",
+                  "pm.test('el detalle trae los productos alquilados', function () {",
                   "    pm.expect(body.detalles[0].productos).to.be.an('array').with.lengthOf(2);",
+                  "});",
+                  "pm.test('cada producto trae su precio propio', function () {",
+                  "    body.detalles[0].productos.forEach(function (item) {",
+                  "        pm.expect(item.producto).to.be.an('object');",
+                  "        pm.expect(item.precio).to.be.a('number');",
+                  "    });",
                   "});",
                   "pm.collectionVariables.set('alquilerId', body.id);"
                 ]
@@ -471,12 +628,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fechaInicio\": \"{{fechaInicio}}\",\n    \"fechaFin\": \"{{fechaFin}}\",\n    \"estado\": \"{{estadoAlquiler}}\",\n    \"clienteId\": {{clienteId}},\n    \"detalles\": [\n        {\n            \"equipoId\": {{equipoId}},\n            \"productoIds\": [{{productoId}}, {{productoId2}}],\n            \"cantidad\": 2,\n            \"precioUnitario\": 1500.00,\n            \"horometroSalida\": 1250.0,\n            \"horometroRetorno\": 0.0,\n            \"lugar\": \"Almacen Central\",\n            \"fechaSalida\": \"2026-09-24T08:00:00\",\n            \"fechaRetorno\": null\n        }\n    ]\n}"
+              "raw": "{\n    \"fechaInicio\": \"{{fechaInicio}}\",\n    \"fechaFin\": \"{{fechaFin}}\",\n    \"estado\": {{estadoAlquiler}},\n    \"clienteId\": {{clienteId}},\n    \"detalles\": [\n        {\n            \"equipoId\": {{equipoId}},\n            \"productos\": [\n                { \"productoId\": {{productoId}}, \"precio\": 45.50 },\n                { \"productoId\": {{productoId2}}, \"precio\": 58.00 }\n            ],\n            \"cantidad\": 2,\n            \"precioUnitario\": 1500.00,\n            \"horometroSalida\": 1250.0,\n            \"horometroRetorno\": 0.0,\n            \"lugar\": \"Almacen Central\",\n            \"fechaSalida\": \"2026-09-24T08:00:00\",\n            \"fechaRetorno\": null\n        }\n    ]\n}"
             },
-            "url": { "raw": "{{baseUrl}}/alquileres", "host": ["{{baseUrl}}"], "path": ["alquileres"] },
+            "url": {
+              "raw": "{{baseUrl}}/alquileres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alquileres"
+              ]
+            },
             "description": "POST 1 - Registrar alquiler con dos productos en el detalle (ManyToMany)."
           },
           "response": []
@@ -504,8 +674,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/alquileres/{{alquilerId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["alquileres", "{{alquilerId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alquileres",
+                "{{alquilerId}}"
+              ]
             },
             "description": "GET 2 - Buscar por ID."
           },
@@ -530,8 +705,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/alquiler-detalles/{{alquilerDetalleId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["alquiler-detalles", "{{alquilerDetalleId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alquiler-detalles",
+                "{{alquilerDetalleId}}"
+              ]
             },
             "description": "GET - Detalle de alquiler por ID (AlquilerDetalleController)."
           },
@@ -555,7 +735,15 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/alquileres", "host": ["{{baseUrl}}"], "path": ["alquileres"] },
+            "url": {
+              "raw": "{{baseUrl}}/alquileres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alquileres"
+              ]
+            },
             "description": "GET 3 - Listar todos."
           },
           "response": []
@@ -587,12 +775,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"fecha\": \"{{fechaInicio}}\",\n    \"tipo\": \"{{tipoMantenimiento}}\",\n    \"observaciones\": \"Cambio de filtros y revision general\",\n    \"equipoId\": {{equipoId}},\n    \"detalles\": [\n        {\n            \"productoIds\": [{{productoId}}, {{productoId2}}],\n            \"cantidad\": 2,\n            \"descripcion\": \"Cambio de filtro de aceite y aire\"\n        }\n    ]\n}"
             },
-            "url": { "raw": "{{baseUrl}}/mantenimientos", "host": ["{{baseUrl}}"], "path": ["mantenimientos"] },
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos"
+              ]
+            },
             "description": "POST 1 - Registrar mantenimiento con dos productos en el detalle."
           },
           "response": []
@@ -616,8 +817,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/mantenimientos/{{mantenimientoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["mantenimientos", "{{mantenimientoId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos",
+                "{{mantenimientoId}}"
+              ]
             },
             "description": "GET 2 - Buscar por ID."
           },
@@ -642,8 +848,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/mantenimiento-detalles/{{mantenimientoDetalleId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["mantenimiento-detalles", "{{mantenimientoDetalleId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimiento-detalles",
+                "{{mantenimientoDetalleId}}"
+              ]
             },
             "description": "GET - Detalle de mantenimiento por ID (MantenimientoDetalleController)."
           },
@@ -667,7 +878,15 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/mantenimientos", "host": ["{{baseUrl}}"], "path": ["mantenimientos"] },
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos"
+              ]
+            },
             "description": "GET 3 - Listar todos."
           },
           "response": []
@@ -697,11 +916,26 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/alquileres-cliente-estado?nombreCliente={{nombreCliente}}&estado={{estadoAlquiler}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "alquileres-cliente-estado"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "alquileres-cliente-estado"
+              ],
               "query": [
-                { "key": "nombreCliente", "value": "{{nombreCliente}}", "description": "Nombre del cliente" },
-                { "key": "estado", "value": "{{estadoAlquiler}}", "description": "Estado del alquiler" }
+                {
+                  "key": "nombreCliente",
+                  "value": "{{nombreCliente}}",
+                  "description": "Nombre del cliente"
+                },
+                {
+                  "key": "estado",
+                  "value": "{{estadoAlquiler}}",
+                  "description": "Estado del alquiler"
+                }
               ]
             },
             "description": "findAlquileresPorClienteNombreYEstado"
@@ -728,9 +962,22 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/alquileres-modelo-equipo?modelo={{modeloEquipo}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "alquileres-modelo-equipo"],
-              "query": [{ "key": "modelo", "value": "{{modeloEquipo}}", "description": "Modelo del equipo" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "alquileres-modelo-equipo"
+              ],
+              "query": [
+                {
+                  "key": "modelo",
+                  "value": "{{modeloEquipo}}",
+                  "description": "Modelo del equipo"
+                }
+              ]
             },
             "description": "findAlquileresPorModeloEquipo"
           },
@@ -756,9 +1003,22 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/mantenimientos-ubicacion?ubicacion={{ubicacionEquipo}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "mantenimientos-ubicacion"],
-              "query": [{ "key": "ubicacion", "value": "{{ubicacionEquipo}}", "description": "Ubicacion del equipo" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "mantenimientos-ubicacion"
+              ],
+              "query": [
+                {
+                  "key": "ubicacion",
+                  "value": "{{ubicacionEquipo}}",
+                  "description": "Ubicacion del equipo"
+                }
+              ]
             },
             "description": "findMantenimientosPorUbicacionEquipo"
           },
@@ -784,9 +1044,22 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/mantenimientos-producto?codigoProducto={{codigoProducto}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "mantenimientos-producto"],
-              "query": [{ "key": "codigoProducto", "value": "{{codigoProducto}}", "description": "Codigo del producto" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "mantenimientos-producto"
+              ],
+              "query": [
+                {
+                  "key": "codigoProducto",
+                  "value": "{{codigoProducto}}",
+                  "description": "Codigo del producto"
+                }
+              ]
             },
             "description": "findMantenimientosPorCodigoProducto"
           },
@@ -812,11 +1085,26 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/productos-alquilados-fechas?fechaInicio={{fechaInicio}}&fechaFin={{fechaFin}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "productos-alquilados-fechas"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "productos-alquilados-fechas"
+              ],
               "query": [
-                { "key": "fechaInicio", "value": "{{fechaInicio}}", "description": "Fecha inicio ISO (yyyy-MM-dd)" },
-                { "key": "fechaFin", "value": "{{fechaFin}}", "description": "Fecha fin ISO (yyyy-MM-dd)" }
+                {
+                  "key": "fechaInicio",
+                  "value": "{{fechaInicio}}",
+                  "description": "Fecha inicio ISO (yyyy-MM-dd)"
+                },
+                {
+                  "key": "fechaFin",
+                  "value": "{{fechaFin}}",
+                  "description": "Fecha fin ISO (yyyy-MM-dd)"
+                }
               ]
             },
             "description": "findProductosAlquiladosEnRangoFechas"
@@ -843,10 +1131,21 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/jpql/equipos-tipo-mantenimiento?tipoMantenimiento={{tipoMantenimiento}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "jpql", "equipos-tipo-mantenimiento"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "jpql",
+                "equipos-tipo-mantenimiento"
+              ],
               "query": [
-                { "key": "tipoMantenimiento", "value": "{{tipoMantenimiento}}", "description": "Tipo de mantenimiento" }
+                {
+                  "key": "tipoMantenimiento",
+                  "value": "{{tipoMantenimiento}}",
+                  "description": "Tipo de mantenimiento"
+                }
               ]
             },
             "description": "findEquiposPorTipoMantenimiento"
@@ -873,8 +1172,16 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/nativas/resumen-alquileres-cliente/{{clienteId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "nativas", "resumen-alquileres-cliente", "{{clienteId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "nativas",
+                "resumen-alquileres-cliente",
+                "{{clienteId}}"
+              ]
             },
             "description": "resumenAlquileresPorClienteNativo - tablas cliente, alquiler, alquiler_detalle"
           },
@@ -900,8 +1207,16 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/consultas/nativas/resumen-mantenimientos-equipo/{{equipoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "consultas", "nativas", "resumen-mantenimientos-equipo", "{{equipoId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "consultas",
+                "nativas",
+                "resumen-mantenimientos-equipo",
+                "{{equipoId}}"
+              ]
             },
             "description": "resumenMantenimientoEquipoNativo - tablas mantenimiento, equipo, mantenimiento_detalle, mantenimiento_detalle_productos"
           },
@@ -934,12 +1249,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"ALM-001\",\n    \"nombre\": \"Almacen Central\",\n    \"direccion\": \"Av. Los Andes 456\",\n    \"ciudad\": \"Arequipa\",\n    \"capacidad\": 5000,\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"codigo\": \"ALM-001\",\n    \"nombre\": \"Almacen Central\",\n    \"direccion\": \"Av. Los Andes 456\",\n    \"ciudad\": \"Arequipa\",\n    \"capacidad\": 5000,\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/almacenes", "host": ["{{baseUrl}}"], "path": ["almacenes"] },
+            "url": {
+              "raw": "{{baseUrl}}/almacenes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "almacenes"
+              ]
+            },
             "description": "POST - Registrar almacen. Si el codigo ya existe responde 409."
           },
           "response": []
@@ -961,12 +1289,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"codigo\": \"ALM-001\",\n    \"nombre\": \"Almacen duplicado\",\n    \"direccion\": \"Otra direccion\",\n    \"ciudad\": \"Lima\",\n    \"capacidad\": 100,\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"codigo\": \"ALM-001\",\n    \"nombre\": \"Almacen duplicado\",\n    \"direccion\": \"Otra direccion\",\n    \"ciudad\": \"Lima\",\n    \"capacidad\": 100,\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/almacenes", "host": ["{{baseUrl}}"], "path": ["almacenes"] },
+            "url": {
+              "raw": "{{baseUrl}}/almacenes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "almacenes"
+              ]
+            },
             "description": "Valida el manejo de codigo duplicado."
           },
           "response": []
@@ -990,8 +1331,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/almacenes/{{almacenId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["almacenes", "{{almacenId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "almacenes",
+                "{{almacenId}}"
+              ]
             },
             "description": "GET - Buscar almacen por ID."
           },
@@ -1015,8 +1361,49 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/almacenes", "host": ["{{baseUrl}}"], "path": ["almacenes"] },
+            "url": {
+              "raw": "{{baseUrl}}/almacenes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "almacenes"
+              ]
+            },
             "description": "GET - Listar todos los almacenes."
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar almacenes por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/almacenes/estado/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "almacenes",
+                "estado",
+                1
+              ]
+            },
+            "description": "GET - Buscar por estado (numerico, via estado en Entidad o entidad propia)."
           },
           "response": []
         }
@@ -1047,12 +1434,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"ruc\": \"20123456789\",\n    \"razonSocial\": \"Maquinarias del Sur SAC\",\n    \"contacto\": \"Carlos Gomez\",\n    \"telefono\": \"958112233\",\n    \"email\": \"contacto@maquinariasdelsur.com\",\n    \"direccion\": \"Parque Industrial 789\",\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"ruc\": \"20123456789\",\n    \"razonSocial\": \"Maquinarias del Sur SAC\",\n    \"contacto\": \"Carlos Gomez\",\n    \"telefono\": \"958112233\",\n    \"email\": \"contacto@maquinariasdelsur.com\",\n    \"direccion\": \"Parque Industrial 789\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/proveedores", "host": ["{{baseUrl}}"], "path": ["proveedores"] },
+            "url": {
+              "raw": "{{baseUrl}}/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores"
+              ]
+            },
             "description": "POST - Registrar proveedor. Si el RUC ya existe responde 409."
           },
           "response": []
@@ -1074,12 +1474,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"ruc\": \"20123456789\",\n    \"razonSocial\": \"Proveedor duplicado SAC\",\n    \"contacto\": \"Otro contacto\",\n    \"telefono\": \"999999999\",\n    \"email\": \"otro@example.com\",\n    \"direccion\": \"Otra direccion\",\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"ruc\": \"20123456789\",\n    \"razonSocial\": \"Proveedor duplicado SAC\",\n    \"contacto\": \"Otro contacto\",\n    \"telefono\": \"999999999\",\n    \"email\": \"otro@example.com\",\n    \"direccion\": \"Otra direccion\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/proveedores", "host": ["{{baseUrl}}"], "path": ["proveedores"] },
+            "url": {
+              "raw": "{{baseUrl}}/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores"
+              ]
+            },
             "description": "Valida el manejo de RUC duplicado."
           },
           "response": []
@@ -1103,8 +1516,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/proveedores/{{proveedorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["proveedores", "{{proveedorId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores",
+                "{{proveedorId}}"
+              ]
             },
             "description": "GET - Buscar proveedor por ID."
           },
@@ -1128,8 +1546,49 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/proveedores", "host": ["{{baseUrl}}"], "path": ["proveedores"] },
+            "url": {
+              "raw": "{{baseUrl}}/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores"
+              ]
+            },
             "description": "GET - Listar todos los proveedores."
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar proveedores por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/proveedores/estado/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores",
+                "estado",
+                1
+              ]
+            },
+            "description": "GET - Buscar por estado (numerico, via estado en Entidad o entidad propia)."
           },
           "response": []
         }
@@ -1160,12 +1619,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"dni\": \"72345678\",\n    \"nombre\": \"Luis\",\n    \"apellido\": \"Ramirez\",\n    \"cargo\": \"Tecnico\",\n    \"telefono\": \"951223344\",\n    \"email\": \"luis.ramirez@example.com\",\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"dni\": \"72345678\",\n    \"nombre\": \"Luis\",\n    \"apellido\": \"Ramirez\",\n    \"cargo\": \"Tecnico\",\n    \"telefono\": \"951223344\",\n    \"email\": \"luis.ramirez@example.com\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/empleados", "host": ["{{baseUrl}}"], "path": ["empleados"] },
+            "url": {
+              "raw": "{{baseUrl}}/empleados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empleados"
+              ]
+            },
             "description": "POST - Registrar empleado. Si el DNI ya existe responde 409."
           },
           "response": []
@@ -1187,12 +1659,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"dni\": \"72345678\",\n    \"nombre\": \"Empleado duplicado\",\n    \"apellido\": \"Test\",\n    \"cargo\": \"Tecnico\",\n    \"telefono\": \"900000000\",\n    \"email\": \"duplicado@example.com\",\n    \"estado\": \"Activo\"\n}"
+              "raw": "{\n    \"dni\": \"72345678\",\n    \"nombre\": \"Empleado duplicado\",\n    \"apellido\": \"Test\",\n    \"cargo\": \"Tecnico\",\n    \"telefono\": \"900000000\",\n    \"email\": \"duplicado@example.com\",\n    \"estado\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/empleados", "host": ["{{baseUrl}}"], "path": ["empleados"] },
+            "url": {
+              "raw": "{{baseUrl}}/empleados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empleados"
+              ]
+            },
             "description": "Valida el manejo de DNI duplicado."
           },
           "response": []
@@ -1216,8 +1701,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/empleados/{{empleadoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["empleados", "{{empleadoId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empleados",
+                "{{empleadoId}}"
+              ]
             },
             "description": "GET - Buscar empleado por ID."
           },
@@ -1241,8 +1731,323 @@
           ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/empleados", "host": ["{{baseUrl}}"], "path": ["empleados"] },
+            "url": {
+              "raw": "{{baseUrl}}/empleados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empleados"
+              ]
+            },
             "description": "GET - Listar todos los empleados."
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar empleados por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/empleados/estado/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empleados",
+                "estado",
+                1
+              ]
+            },
+            "description": "GET - Buscar por estado (numerico, via estado en Entidad o entidad propia)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10 Empresa",
+      "item": [
+        {
+          "name": "Registrar empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "pm.test('devuelve los datos de la empresa', function () {",
+                  "    pm.expect(body.ruc).to.eql('20556677888');",
+                  "    pm.expect(body.razonSocial).to.eql('Insumos Industriales del Sur SAC');",
+                  "    pm.expect(body.contacto).to.eql('Ana Quispe');",
+                  "    pm.expect(body.telefono).to.eql('987654321');",
+                  "});",
+                  "pm.collectionVariables.set('empresaId', body.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ruc\": \"20556677888\",\n    \"razonSocial\": \"Insumos Industriales del Sur SAC\",\n    \"contacto\": \"Ana Quispe\",\n    \"telefono\": \"987654321\",\n    \"direccion\": \"Av. Javier Prado Este 4200, Surco\",\n    \"correo\": \"contacto@empresa.com.pe\",\n    \"estado\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            },
+            "description": "POST 1 - Registrar empresa. El RUC es unico; la Entidad (telefono/direccion/correo/estado) se crea en cascada."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar empresa duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict por RUC duplicado', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ruc\": \"20556677888\",\n    \"razonSocial\": \"Empresa duplicada SAC\",\n    \"contacto\": \"Otro contacto\",\n    \"telefono\": \"987654321\",\n    \"direccion\": \"Av. Javier Prado Este 4200, Surco\",\n    \"correo\": \"contacto@empresa.com.pe\",\n    \"estado\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            },
+            "description": "POST - Repite el RUC ya registrado, por eso responde 409."
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar empresa por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/empresas/{{empresaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "{{empresaId}}"
+              ]
+            },
+            "description": "GET 2 - Consultar empresa por id."
+          },
+          "response": []
+        },
+        {
+          "name": "Consultar empresas por estado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/empresas/estado/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "estado",
+                1
+              ]
+            },
+            "description": "GET 3 - Buscar empresas por estado (numero)."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar empresas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            },
+            "description": "GET 4 - Listar todas las empresas."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar proveedor asociado a una empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "pm.test('el proveedor queda asociado a la empresa', function () {",
+                  "    pm.expect(body.empresa.id).to.eql(pm.collectionVariables.get('empresaId'));",
+                  "});",
+                  "pm.collectionVariables.set('proveedorEmpresaId', body.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ruc\": \"20999988877\",\n    \"razonSocial\": \"Comercial del Norte SAC\",\n    \"contacto\": \"Luis Ramirez\",\n    \"telefono\": \"955551111\",\n    \"email\": \"ventas@comercialnorte.pe\",\n    \"direccion\": \"Jr. Las Begonias 145, Lima\",\n    \"estado\": 1,\n    \"empresa\": { \"id\": {{empresaId}} }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/proveedores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores"
+              ]
+            },
+            "description": "POST - Demuestra la relacion Proveedor -> Empresa (ManyToOne)."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar proveedores de una empresa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('incluye el proveedor asociado', function () {",
+                  "    const id = pm.collectionVariables.get('proveedorEmpresaId');",
+                  "    const encontrados = pm.response.json().filter(function (p) { return String(p.id) === String(id); });",
+                  "    pm.expect(encontrados.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/proveedores/empresa/{{empresaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "proveedores",
+                "empresa",
+                "{{empresaId}}"
+              ]
+            },
+            "description": "GET - Proveedores que apuntan a la empresa indicada."
           },
           "response": []
         }
