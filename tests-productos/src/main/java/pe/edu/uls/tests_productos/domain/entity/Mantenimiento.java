@@ -4,9 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +28,7 @@ public class Mantenimiento {
     @SequenceGenerator(name = "sec_mantenimiento", sequenceName = "sec_mantenimiento", allocationSize = 1)
     private int id;
 
-    private LocalDate fecha;
+    private LocalDate fechaMantenimientoRealizado;
     private String tipo;
     private String observaciones;
 
@@ -40,6 +44,14 @@ public class Mantenimiento {
     @JsonManagedReference
     private List<MantenimientoDetalle> detalles = new ArrayList<>();
 
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
+
     public int getId() {
         return id;
     }
@@ -48,12 +60,12 @@ public class Mantenimiento {
         this.id = id;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public LocalDate getFechaMantenimientoRealizado() {
+        return fechaMantenimientoRealizado;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+    public void setFechaMantenimientoRealizado(LocalDate fechaMantenimientoRealizado) {
+        this.fechaMantenimientoRealizado = fechaMantenimientoRealizado;
     }
 
     public String getTipo() {
@@ -99,5 +111,13 @@ public class Mantenimiento {
     public void agregarDetalle(MantenimientoDetalle detalle) {
         detalles.add(detalle);
         detalle.setMantenimiento(this);
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
     }
 }

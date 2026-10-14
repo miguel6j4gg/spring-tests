@@ -27,6 +27,8 @@ public class MantenimientoDetalle {
 
     private String descripcion;
 
+    private String observaciones;
+
     @ManyToOne
     @JoinColumn(name = "mantenimiento_id", nullable = false)
     @JsonBackReference
@@ -74,5 +76,13 @@ public class MantenimientoDetalle {
 
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 }

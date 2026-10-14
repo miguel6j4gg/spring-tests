@@ -1,5 +1,10 @@
 package pe.edu.uls.tests_productos.domain.entity;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,11 +28,19 @@ public class Producto {
     private String categoria;
     private double precio;
     private int stock;
-    private String estado;
+    private Integer estado;
 
     @jakarta.persistence.ManyToOne
     @jakarta.persistence.JoinColumn(name = "proveedor_id", nullable = true)
     private Proveedor proveedor;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
 
     public int getId() {
         return id;
@@ -85,11 +98,11 @@ public class Producto {
         this.stock = stock;
     }
 
-    public String getEstado() {
+    public Integer getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Integer estado) {
         this.estado = estado;
     }
 
@@ -99,5 +112,13 @@ public class Producto {
 
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
     }
 }

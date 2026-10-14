@@ -1,10 +1,17 @@
 package pe.edu.uls.tests_productos.domain.entity;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
@@ -23,7 +30,19 @@ public class Proveedor {
     private String telefono;
     private String email;
     private String direccion;
-    private String estado;
+    private Integer estado;
+
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
 
     public int getId() {
         return id;
@@ -81,11 +100,27 @@ public class Proveedor {
         this.direccion = direccion;
     }
 
-    public String getEstado() {
+    public Integer getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
     }
 }

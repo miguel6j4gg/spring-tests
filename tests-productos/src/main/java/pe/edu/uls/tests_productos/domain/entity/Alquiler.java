@@ -4,9 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +32,7 @@ public class Alquiler {
 
     private LocalDate fechaFin;
 
-    private String estado;
+    private Integer estado;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -37,6 +41,14 @@ public class Alquiler {
     @OneToMany(mappedBy = "alquiler", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<AlquilerDetalle> detalles = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
 
     public int getId() {
         return id;
@@ -62,11 +74,11 @@ public class Alquiler {
         this.fechaFin = fechaFin;
     }
 
-    public String getEstado() {
+    public Integer getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Integer estado) {
         this.estado = estado;
     }
 
@@ -89,5 +101,13 @@ public class Alquiler {
     public void agregarDetalle(AlquilerDetalle detalle) {
         detalles.add(detalle);
         detalle.setAlquiler(this);
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
     }
 }

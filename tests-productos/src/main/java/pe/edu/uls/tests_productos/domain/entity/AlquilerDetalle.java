@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
@@ -34,9 +35,13 @@ public class AlquilerDetalle {
 
     private LocalDateTime fechaSalida;
 
+    private LocalDateTime fechaRetornoEstimada;
+
     private LocalDateTime fechaRetorno;
 
     private String lugar;
+
+    private String observaciones;
 
     @ManyToOne
     @JoinColumn(name = "alquiler_id", nullable = false)
@@ -47,9 +52,9 @@ public class AlquilerDetalle {
     @JoinColumn(name = "equipo_id", nullable = false)
     private Equipo equipo;
 
-    @ManyToMany
-    @JoinTable(name = "alquiler_detalle_productos", joinColumns = @JoinColumn(name = "alquiler_detalle_id"), inverseJoinColumns = @JoinColumn(name = "producto_id"))
-    private List<Producto> productos = new ArrayList<>();
+    @OneToMany(mappedBy = "alquilerDetalle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<AlquilerDetalleProducto> productos = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -107,6 +112,14 @@ public class AlquilerDetalle {
         this.fechaRetorno = fechaRetorno;
     }
 
+    public LocalDateTime getFechaRetornoEstimada() {
+        return fechaRetornoEstimada;
+    }
+
+    public void setFechaRetornoEstimada(LocalDateTime fechaRetornoEstimada) {
+        this.fechaRetornoEstimada = fechaRetornoEstimada;
+    }
+
     public Alquiler getAlquiler() {
         return alquiler;
     }
@@ -123,12 +136,17 @@ public class AlquilerDetalle {
         this.equipo = equipo;
     }
 
-    public List<Producto> getProductos() {
+    public List<AlquilerDetalleProducto> getProductos() {
         return productos;
     }
 
-    public void setProductos(List<Producto> productos) {
+    public void setProductos(List<AlquilerDetalleProducto> productos) {
         this.productos = productos;
+    }
+
+    public void agregarProducto(AlquilerDetalleProducto detalleProducto) {
+        productos.add(detalleProducto);
+        detalleProducto.setAlquilerDetalle(this);
     }
 
     public String getLugar() {
@@ -137,5 +155,13 @@ public class AlquilerDetalle {
 
     public void setLugar(String lugar) {
         this.lugar = lugar;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 }

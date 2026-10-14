@@ -1,5 +1,10 @@
 package pe.edu.uls.tests_productos.domain.entity;
 
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,11 +29,19 @@ public class Equipo {
     private double horometro;
     private String ubicacion;
     private String combustible;
-    private String estado;
+    private Integer estado;
 
     @jakarta.persistence.ManyToOne
     @jakarta.persistence.JoinColumn(name = "almacen_id", nullable = true)
     private Almacen almacen;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
 
     public int getId() {
         return id;
@@ -94,11 +107,11 @@ public class Equipo {
         this.combustible = combustible;
     }
 
-    public String getEstado() {
+    public Integer getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Integer estado) {
         this.estado = estado;
     }
 

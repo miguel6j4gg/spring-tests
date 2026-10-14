@@ -1,11 +1,18 @@
 package pe.edu.uls.tests_productos.domain.entity;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 public class Cliente {
@@ -20,10 +27,18 @@ public class Cliente {
 
     private String nombre;
     private String apellido;
-    private String email;
-    private String telefono;
-    private String direccion;
-    private String estado;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "entidad_id", unique = true)
+    private Entidad entidad;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_DATE", updatable = false)
+    private LocalDate createdDate;
+
+    @UpdateTimestamp
+    @Column(name = "UPDATED_DATE")
+    private LocalDate updatedDate;
 
     public int getId() {
         return id;
@@ -57,35 +72,19 @@ public class Cliente {
         this.apellido = apellido;
     }
 
-    public String getEmail() {
-        return email;
+    public Entidad getEntidad() {
+        return entidad;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEntidad(Entidad entidad) {
+        this.entidad = entidad;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public LocalDate getCreatedDate() {
+        return createdDate;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public LocalDate getUpdatedDate() {
+        return updatedDate;
     }
 }
