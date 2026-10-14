@@ -40,18 +40,18 @@ public class ConsultasControllerTest {
     // =====================================================
     @Test
     public void testJpql1AlquileresPorClienteYEstado() {
-        List<Alquiler> resultados = consultasService.buscarAlquileresPorClienteYEstado("Graña", "Activo");
+        List<Alquiler> resultados = consultasService.buscarAlquileresPorClienteYEstado("Graña", 1);
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());
-        assertEquals("Activo", resultados.get(0).getEstado());
+        assertEquals(Integer.valueOf(1), resultados.get(0).getEstado());
     }
 
     @Test
     public void testJpql1ParametrosInvalidos() {
         assertThrows(ResponseStatusException.class,
-                () -> consultasService.buscarAlquileresPorClienteYEstado("", "Activo"));
+                () -> consultasService.buscarAlquileresPorClienteYEstado("", 1));
         assertThrows(ResponseStatusException.class,
-                () -> consultasService.buscarAlquileresPorClienteYEstado("Graña", ""));
+                () -> consultasService.buscarAlquileresPorClienteYEstado("Graña", null));
     }
 
     // =====================================================

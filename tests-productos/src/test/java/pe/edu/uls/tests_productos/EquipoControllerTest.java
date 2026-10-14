@@ -71,7 +71,7 @@ public class EquipoControllerTest {
                     "horometro": 500.0,
                     "ubicacion": "Arequipa",
                     "combustible": "Diesel",
-                    "estado": "Disponible"
+                    "estado": 1
                 }
                 """.formatted(codigoUnico);
 
