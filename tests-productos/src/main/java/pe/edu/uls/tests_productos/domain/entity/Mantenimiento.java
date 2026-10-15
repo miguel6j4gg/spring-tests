@@ -28,7 +28,9 @@ public class Mantenimiento {
     @SequenceGenerator(name = "sec_mantenimiento", sequenceName = "sec_mantenimiento", allocationSize = 1)
     private int id;
 
-    private LocalDate fechaMantenimientoRealizado;
+    private LocalDate fechaSolicitud;
+    private LocalDate fechaProgramada;
+    private LocalDate fechaRealizado;
     private String tipo;
     private String observaciones;
 
@@ -60,12 +62,28 @@ public class Mantenimiento {
         this.id = id;
     }
 
-    public LocalDate getFechaMantenimientoRealizado() {
-        return fechaMantenimientoRealizado;
+    public LocalDate getFechaSolicitud() {
+        return fechaSolicitud;
     }
 
-    public void setFechaMantenimientoRealizado(LocalDate fechaMantenimientoRealizado) {
-        this.fechaMantenimientoRealizado = fechaMantenimientoRealizado;
+    public void setFechaSolicitud(LocalDate fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public LocalDate getFechaProgramada() {
+        return fechaProgramada;
+    }
+
+    public void setFechaProgramada(LocalDate fechaProgramada) {
+        this.fechaProgramada = fechaProgramada;
+    }
+
+    public LocalDate getFechaRealizado() {
+        return fechaRealizado;
+    }
+
+    public void setFechaRealizado(LocalDate fechaRealizado) {
+        this.fechaRealizado = fechaRealizado;
     }
 
     public String getTipo() {

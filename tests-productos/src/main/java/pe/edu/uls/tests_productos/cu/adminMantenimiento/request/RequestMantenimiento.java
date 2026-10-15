@@ -5,13 +5,19 @@ import java.util.List;
 
 public record RequestMantenimiento(
 
-                LocalDate fecha,
+                LocalDate fechaSolicitud,
+
+                LocalDate fechaProgramada,
+
+                LocalDate fechaRealizado,
 
                 String tipo,
 
                 String observaciones,
 
                 int equipoId,
+
+                Integer empleadoId,
 
                 List<DetalleMantenimientoRequest> detalles
 
@@ -23,7 +29,9 @@ public record RequestMantenimiento(
 
                         int cantidad,
 
-                        String descripcion
+                        String descripcion,
+
+                        String observaciones
 
         ) {
         }

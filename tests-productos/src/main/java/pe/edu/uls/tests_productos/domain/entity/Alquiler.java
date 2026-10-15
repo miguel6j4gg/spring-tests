@@ -34,6 +34,13 @@ public class Alquiler {
 
     private Integer estado;
 
+    // --- Garantía ---
+    private Double montoGarantia;
+    private String tipoGarantia;       // efectivo, cheque, carta_fianza
+    private Integer estadoGarantia;    // 0=pendiente, 1=devuelta, 2=ejecutada
+    private LocalDate fechaDevolucionGarantia;
+    private String observacionesGarantia;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
@@ -80,6 +87,46 @@ public class Alquiler {
 
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+
+    public Double getMontoGarantia() {
+        return montoGarantia;
+    }
+
+    public void setMontoGarantia(Double montoGarantia) {
+        this.montoGarantia = montoGarantia;
+    }
+
+    public String getTipoGarantia() {
+        return tipoGarantia;
+    }
+
+    public void setTipoGarantia(String tipoGarantia) {
+        this.tipoGarantia = tipoGarantia;
+    }
+
+    public Integer getEstadoGarantia() {
+        return estadoGarantia;
+    }
+
+    public void setEstadoGarantia(Integer estadoGarantia) {
+        this.estadoGarantia = estadoGarantia;
+    }
+
+    public LocalDate getFechaDevolucionGarantia() {
+        return fechaDevolucionGarantia;
+    }
+
+    public void setFechaDevolucionGarantia(LocalDate fechaDevolucionGarantia) {
+        this.fechaDevolucionGarantia = fechaDevolucionGarantia;
+    }
+
+    public String getObservacionesGarantia() {
+        return observacionesGarantia;
+    }
+
+    public void setObservacionesGarantia(String observacionesGarantia) {
+        this.observacionesGarantia = observacionesGarantia;
     }
 
     public Cliente getCliente() {

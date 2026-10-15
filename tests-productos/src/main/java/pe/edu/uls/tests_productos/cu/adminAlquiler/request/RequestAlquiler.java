@@ -14,6 +14,17 @@ public record RequestAlquiler(
 
         int clienteId,
 
+        // Garantía
+        double montoGarantia,
+
+        String tipoGarantia,
+
+        Integer estadoGarantia,
+
+        LocalDate fechaDevolucionGarantia,
+
+        String observacionesGarantia,
+
         List<DetalleAlquilerRequest> detalles
 
 ) {
@@ -38,7 +49,11 @@ public record RequestAlquiler(
 
             LocalDateTime fechaSalida,
 
-            LocalDateTime fechaRetorno
+            LocalDateTime fechaRetornoEstimada,
+
+            LocalDateTime fechaRetorno,
+
+            String observaciones
 
     ) {
 

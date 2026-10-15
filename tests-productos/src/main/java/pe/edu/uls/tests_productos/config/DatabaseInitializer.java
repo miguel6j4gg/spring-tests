@@ -69,6 +69,23 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         System.out.println("Inicializando/verificando datos de prueba en Neon DB...");
 
+        // Migración de columnas de garantía en alquiler si no existen
+        try {
+            jdbcTemplate.execute("ALTER TABLE alquiler ADD COLUMN IF NOT EXISTS monto_garantia double precision DEFAULT 0.0");
+            jdbcTemplate.execute("ALTER TABLE alquiler ADD COLUMN IF NOT EXISTS tipo_garantia varchar(255)");
+            jdbcTemplate.execute("ALTER TABLE alquiler ADD COLUMN IF NOT EXISTS estado_garantia integer");
+            jdbcTemplate.execute("ALTER TABLE alquiler ADD COLUMN IF NOT EXISTS fecha_devolucion_garantia date");
+            jdbcTemplate.execute("ALTER TABLE alquiler ADD COLUMN IF NOT EXISTS observaciones_garantia varchar(255)");
+            jdbcTemplate.execute("ALTER TABLE alquiler_detalle ADD COLUMN IF NOT EXISTS fecha_retorno_estimada timestamp");
+            jdbcTemplate.execute("ALTER TABLE mantenimiento ADD COLUMN IF NOT EXISTS fecha_solicitud date");
+            jdbcTemplate.execute("ALTER TABLE mantenimiento ADD COLUMN IF NOT EXISTS fecha_programada date");
+            jdbcTemplate.execute("ALTER TABLE mantenimiento ADD COLUMN IF NOT EXISTS fecha_realizado date");
+            jdbcTemplate.execute("ALTER TABLE mantenimiento ADD COLUMN IF NOT EXISTS empleado_id integer");
+            jdbcTemplate.execute("ALTER TABLE mantenimiento_detalle ADD COLUMN IF NOT EXISTS observaciones varchar(255)");
+        } catch (Exception ex) {
+            System.err.println("Advertencia al sincronizar columnas DDL: " + ex.getMessage());
+        }
+
         // 1. Proveedores
         Proveedor prov1 = proveedorRepository.findAll().stream()
                 .filter(p -> "20100055441".equals(p.getRuc()))
@@ -396,7 +413,9 @@ public class DatabaseInitializer implements CommandLineRunner {
             Mantenimiento m1 = new Mantenimiento();
             m1.setEquipo(e4);
             m1.setEmpleado(emp1);
-            m1.setFechaMantenimientoRealizado(LocalDate.of(2026, 9, 15));
+            m1.setFechaSolicitud(LocalDate.of(2026, 9, 10));
+            m1.setFechaProgramada(LocalDate.of(2026, 9, 14));
+            m1.setFechaRealizado(LocalDate.of(2026, 9, 15));
             m1.setTipo("Preventivo");
             m1.setObservaciones("Mantenimiento rutinario con reemplazo de insumos");
 
@@ -412,7 +431,9 @@ public class DatabaseInitializer implements CommandLineRunner {
             Mantenimiento m2 = new Mantenimiento();
             m2.setEquipo(e1);
             m2.setEmpleado(emp2);
-            m2.setFechaMantenimientoRealizado(LocalDate.of(2026, 9, 26));
+            m2.setFechaSolicitud(LocalDate.of(2026, 9, 20));
+            m2.setFechaProgramada(LocalDate.of(2026, 9, 25));
+            m2.setFechaRealizado(LocalDate.of(2026, 9, 26));
             m2.setTipo("Correctivo");
             m2.setObservaciones("Cambio de cableado deteriorado y filtro de aceite");
 

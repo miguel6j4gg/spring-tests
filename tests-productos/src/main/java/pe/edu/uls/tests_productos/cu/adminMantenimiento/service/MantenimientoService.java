@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import pe.edu.uls.tests_productos.cu.adminMantenimiento.request.RequestMantenimiento;
+import pe.edu.uls.tests_productos.domain.entity.Empleado;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
 import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 import pe.edu.uls.tests_productos.domain.entity.MantenimientoDetalle;
 import pe.edu.uls.tests_productos.domain.entity.Producto;
+import pe.edu.uls.tests_productos.domain.repository.EmpleadoRepository;
 import pe.edu.uls.tests_productos.domain.repository.EquipoRepository;
 import pe.edu.uls.tests_productos.domain.repository.MantenimientoRepository;
 import pe.edu.uls.tests_productos.domain.repository.ProductoRepository;
@@ -22,33 +24,45 @@ public class MantenimientoService {
         private final MantenimientoRepository mantenimientoRepository;
         private final EquipoRepository equipoRepository;
         private final ProductoRepository productoRepository;
+        private final EmpleadoRepository empleadoRepository;
 
         public MantenimientoService(
                         MantenimientoRepository mantenimientoRepository,
                         EquipoRepository equipoRepository,
-                        ProductoRepository productoRepository) {
+                        ProductoRepository productoRepository,
+                        EmpleadoRepository empleadoRepository) {
 
                 this.mantenimientoRepository = mantenimientoRepository;
                 this.equipoRepository = equipoRepository;
                 this.productoRepository = productoRepository;
+                this.empleadoRepository = empleadoRepository;
         }
 
         @Transactional
-        public Mantenimiento registrarMantenimiento(
-                        RequestMantenimiento request) {
+        public Mantenimiento registrarMantenimiento(RequestMantenimiento request) {
 
                 Equipo equipo = equipoRepository.findById(request.equipoId())
                                 .orElseThrow(() -> new ResponseStatusException(
                                                 HttpStatus.NOT_FOUND,
-                                                "Equipo no encontrado con ID: "
-                                                                + request.equipoId()));
+                                                "Equipo no encontrado con ID: " + request.equipoId()));
 
                 Mantenimiento mantenimiento = new Mantenimiento();
 
-                mantenimiento.setFechaMantenimientoRealizado(request.fecha());
+                mantenimiento.setFechaSolicitud(request.fechaSolicitud());
+                mantenimiento.setFechaProgramada(request.fechaProgramada());
+                mantenimiento.setFechaRealizado(request.fechaRealizado());
                 mantenimiento.setTipo(request.tipo());
                 mantenimiento.setObservaciones(request.observaciones());
                 mantenimiento.setEquipo(equipo);
+
+                // Empleado es opcional
+                if (request.empleadoId() != null) {
+                        Empleado empleado = empleadoRepository.findById(request.empleadoId())
+                                        .orElseThrow(() -> new ResponseStatusException(
+                                                        HttpStatus.NOT_FOUND,
+                                                        "Empleado no encontrado con ID: " + request.empleadoId()));
+                        mantenimiento.setEmpleado(empleado);
+                }
 
                 if (request.detalles() == null || request.detalles().isEmpty()) {
                         throw new ResponseStatusException(
@@ -67,6 +81,7 @@ public class MantenimientoService {
 
                         detalle.setCantidad(detalleRequest.cantidad());
                         detalle.setDescripcion(detalleRequest.descripcion());
+                        detalle.setObservaciones(detalleRequest.observaciones());
                         detalle.setProductos(productos);
 
                         mantenimiento.agregarDetalle(detalle);

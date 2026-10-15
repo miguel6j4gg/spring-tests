@@ -9,7 +9,11 @@ public record ResponseMantenimiento(
 
                 int id,
 
-                LocalDate fecha,
+                LocalDate fechaSolicitud,
+
+                LocalDate fechaProgramada,
+
+                LocalDate fechaRealizado,
 
                 String tipo,
 
@@ -18,6 +22,8 @@ public record ResponseMantenimiento(
                 int equipoId,
 
                 String codigoEquipo,
+
+                Integer empleadoId,
 
                 List<DetalleMantenimientoResponse> detalles
 
@@ -31,7 +37,9 @@ public record ResponseMantenimiento(
 
                         int cantidad,
 
-                        String descripcion
+                        String descripcion,
+
+                        String observaciones
 
         ) {
         }

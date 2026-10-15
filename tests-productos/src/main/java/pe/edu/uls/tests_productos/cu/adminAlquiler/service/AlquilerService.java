@@ -62,6 +62,11 @@ public class AlquilerService {
         alquiler.setFechaFin(request.fechaFin());
         alquiler.setEstado(request.estado());
         alquiler.setCliente(cliente);
+        alquiler.setMontoGarantia(request.montoGarantia());
+        alquiler.setTipoGarantia(request.tipoGarantia());
+        alquiler.setEstadoGarantia(request.estadoGarantia());
+        alquiler.setFechaDevolucionGarantia(request.fechaDevolucionGarantia());
+        alquiler.setObservacionesGarantia(request.observacionesGarantia());
 
         for (RequestAlquiler.DetalleAlquilerRequest detalleRequest : request.detalles()) {
 
@@ -76,17 +81,14 @@ public class AlquilerService {
 
             detalle.setEquipo(equipo);
             detalle.setCantidad(detalleRequest.cantidad());
-            detalle.setPrecioUnitario(
-                    detalleRequest.precioUnitario());
-            detalle.setHorometroSalida(
-                    detalleRequest.horometroSalida());
-            detalle.setHorometroRetorno(
-                    detalleRequest.horometroRetorno());
-            detalle.setFechaSalida(
-                    detalleRequest.fechaSalida());
-            detalle.setFechaRetorno(
-                    detalleRequest.fechaRetorno());
+            detalle.setPrecioUnitario(detalleRequest.precioUnitario());
+            detalle.setHorometroSalida(detalleRequest.horometroSalida());
+            detalle.setHorometroRetorno(detalleRequest.horometroRetorno());
+            detalle.setFechaSalida(detalleRequest.fechaSalida());
+            detalle.setFechaRetornoEstimada(detalleRequest.fechaRetornoEstimada());
+            detalle.setFechaRetorno(detalleRequest.fechaRetorno());
             detalle.setLugar(detalleRequest.lugar());
+            detalle.setObservaciones(detalleRequest.observaciones());
 
             for (AlquilerDetalleProducto detalleProducto : crearDetalleProductos(detalleRequest)) {
                 detalle.agregarProducto(detalleProducto);

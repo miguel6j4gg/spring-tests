@@ -67,11 +67,14 @@ public class MantenimientoController {
 
                 return new ResponseMantenimiento(
                                 mantenimiento.getId(),
-                                mantenimiento.getFechaMantenimientoRealizado(),
+                                mantenimiento.getFechaSolicitud(),
+                                mantenimiento.getFechaProgramada(),
+                                mantenimiento.getFechaRealizado(),
                                 mantenimiento.getTipo(),
                                 mantenimiento.getObservaciones(),
                                 mantenimiento.getEquipo().getId(),
                                 mantenimiento.getEquipo().getCodigo(),
+                                mantenimiento.getEmpleado() != null ? mantenimiento.getEmpleado().getId() : null,
                                 detalles);
         }
 
@@ -86,7 +89,8 @@ public class MantenimientoController {
                                 detalle.getId(),
                                 productos,
                                 detalle.getCantidad(),
-                                detalle.getDescripcion());
+                                detalle.getDescripcion(),
+                                detalle.getObservaciones());
         }
 
         private ResponseProducto convertirProducto(Producto producto) {

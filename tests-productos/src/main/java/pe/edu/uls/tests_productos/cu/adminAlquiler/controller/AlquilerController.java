@@ -72,6 +72,11 @@ public class AlquilerController {
                 alquiler.getEstado(),
                 alquiler.getCliente().getId(),
                 alquiler.getCliente().getNombre(),
+                alquiler.getMontoGarantia(),
+                alquiler.getTipoGarantia(),
+                alquiler.getEstadoGarantia(),
+                alquiler.getFechaDevolucionGarantia(),
+                alquiler.getObservacionesGarantia(),
                 detalles);
     }
 
@@ -101,8 +106,10 @@ public class AlquilerController {
                 detalle.getHorometroRetorno(),
 
                 detalle.getFechaSalida(),
+                detalle.getFechaRetornoEstimada(),
                 detalle.getFechaRetorno(),
-                detalle.getLugar());
+                detalle.getLugar(),
+                detalle.getObservaciones());
     }
 
     private ResponseProducto convertirProducto(Producto producto) {

@@ -13,6 +13,12 @@ public record ResponseAlquiler(
         Integer estado,
         int clienteId,
         String clienteNombre,
+        // Garantía
+        double montoGarantia,
+        String tipoGarantia,
+        Integer estadoGarantia,
+        LocalDate fechaDevolucionGarantia,
+        String observacionesGarantia,
         List<DetalleAlquilerResponse> detalles
 
 ) {
@@ -28,8 +34,10 @@ public record ResponseAlquiler(
             double horometroSalida,
             double horometroRetorno,
             LocalDateTime fechaSalida,
+            LocalDateTime fechaRetornoEstimada,
             LocalDateTime fechaRetorno,
-            String lugar) {
+            String lugar,
+            String observaciones) {
 
         public record ProductoAlquiladoResponse(
                 ResponseProducto producto,
