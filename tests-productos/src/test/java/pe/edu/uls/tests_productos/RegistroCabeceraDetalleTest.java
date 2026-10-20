@@ -23,6 +23,7 @@ import pe.edu.uls.tests_productos.cu.adminMantenimiento.request.RequestMantenimi
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.Cliente;
 import pe.edu.uls.tests_productos.domain.entity.Empleado;
+import pe.edu.uls.tests_productos.domain.entity.Entidad;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
 import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 import pe.edu.uls.tests_productos.domain.entity.Producto;
@@ -78,6 +79,7 @@ public class RegistroCabeceraDetalleTest {
     void testRegistrarAlquilerConDetalles() throws Exception {
         // 1. Obtener entidades relacionadas existentes
         Cliente cliente = repoCliente.findAll().stream().findFirst().orElseThrow();
+        Entidad entidad = cliente.getEntidad();
         Equipo equipo = repoEquipo.findAll().stream().findFirst().orElseThrow();
         Producto producto1 = repoProducto.findAll().stream().findFirst().orElseThrow();
 
@@ -106,7 +108,7 @@ public class RegistroCabeceraDetalleTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(15),
                 1,
-                cliente.getId(),
+                entidad.getId(),
                 2500.0,
                 "efectivo",
                 0,
@@ -121,7 +123,7 @@ public class RegistroCabeceraDetalleTest {
                 .content(objectMapper.writeValueAsString(requestAlquiler)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.clienteId").value(cliente.getId()))
+                .andExpect(jsonPath("$.entidadId").value(entidad.getId()))
                 .andExpect(jsonPath("$.montoGarantia").value(2500.0))
                 .andExpect(jsonPath("$.detalles").isArray())
                 .andExpect(jsonPath("$.detalles[0].equipoId").value(equipo.getId()))
@@ -134,7 +136,7 @@ public class RegistroCabeceraDetalleTest {
         int idAlquilerGenerado = objectMapper.readTree(responseContent).get("id").asInt();
         Alquiler alquilerPersistido = repoAlquiler.findById(idAlquilerGenerado).orElseThrow();
 
-        assertThat(alquilerPersistido.getCliente().getId()).isEqualTo(cliente.getId());
+        assertThat(alquilerPersistido.getEntidad().getId()).isEqualTo(entidad.getId());
         assertThat(alquilerPersistido.getDetalles()).isNotEmpty();
         assertThat(alquilerPersistido.getDetalles().get(0).getEquipo().getId()).isEqualTo(equipo.getId());
         assertThat(alquilerPersistido.getDetalles().get(0).getProductos()).isNotEmpty();

@@ -12,7 +12,7 @@ public record RequestAlquiler(
 
         Integer estado,
 
-        int clienteId,
+        int entidadId,
 
         // Garantía
         double montoGarantia,

@@ -1,7 +1,7 @@
 package pe.edu.uls.tests_productos.cu.consultas.dto;
 
-public record ResumenAlquilerClienteDTO(
-    String cliente,
+public record ResumenAlquilerEntidadDTO(
+    String entidad,
     int alquilerId,
     Integer estado,
     long totalDetalles

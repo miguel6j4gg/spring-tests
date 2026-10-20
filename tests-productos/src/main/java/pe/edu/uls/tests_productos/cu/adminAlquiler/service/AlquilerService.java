@@ -12,11 +12,11 @@ import pe.edu.uls.tests_productos.cu.adminAlquiler.request.RequestAlquiler;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalleProducto;
-import pe.edu.uls.tests_productos.domain.entity.Cliente;
+import pe.edu.uls.tests_productos.domain.entity.Entidad;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
 import pe.edu.uls.tests_productos.domain.entity.Producto;
 import pe.edu.uls.tests_productos.domain.repository.AlquilerRepository;
-import pe.edu.uls.tests_productos.domain.repository.ClienteRepository;
+import pe.edu.uls.tests_productos.domain.repository.EntidadRepository;
 import pe.edu.uls.tests_productos.domain.repository.EquipoRepository;
 import pe.edu.uls.tests_productos.domain.repository.ProductoRepository;
 
@@ -24,18 +24,18 @@ import pe.edu.uls.tests_productos.domain.repository.ProductoRepository;
 public class AlquilerService {
 
     private final AlquilerRepository alquilerRepository;
-    private final ClienteRepository clienteRepository;
+    private final EntidadRepository entidadRepository;
     private final EquipoRepository equipoRepository;
     private final ProductoRepository productoRepository;
 
     public AlquilerService(
             AlquilerRepository alquilerRepository,
-            ClienteRepository clienteRepository,
+            EntidadRepository entidadRepository,
             EquipoRepository equipoRepository,
             ProductoRepository productoRepository) {
 
         this.alquilerRepository = alquilerRepository;
-        this.clienteRepository = clienteRepository;
+        this.entidadRepository = entidadRepository;
         this.equipoRepository = equipoRepository;
         this.productoRepository = productoRepository;
     }
@@ -44,11 +44,11 @@ public class AlquilerService {
     public Alquiler registrarAlquiler(
             RequestAlquiler request) {
 
-        Cliente cliente = clienteRepository.findById(request.clienteId())
+        Entidad entidad = entidadRepository.findById(request.entidadId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Cliente no encontrado con ID: "
-                                + request.clienteId()));
+                        "Entidad no encontrada con ID: "
+                                + request.entidadId()));
 
         if (request.detalles() == null || request.detalles().isEmpty()) {
             throw new ResponseStatusException(
@@ -61,7 +61,7 @@ public class AlquilerService {
         alquiler.setFechaInicio(request.fechaInicio());
         alquiler.setFechaFin(request.fechaFin());
         alquiler.setEstado(request.estado());
-        alquiler.setCliente(cliente);
+        alquiler.setEntidad(entidad);
         alquiler.setMontoGarantia(request.montoGarantia());
         alquiler.setTipoGarantia(request.tipoGarantia());
         alquiler.setEstadoGarantia(request.estadoGarantia());

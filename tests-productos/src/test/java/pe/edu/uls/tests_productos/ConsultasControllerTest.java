@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerClienteDTO;
+import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerEntidadDTO;
 import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenMantenimientoEquipoDTO;
 import pe.edu.uls.tests_productos.cu.consultas.service.ConsultasService;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
@@ -36,11 +36,11 @@ public class ConsultasControllerTest {
     private EquipoRepository equipoRepository;
 
     // =====================================================
-    // TEST 1: JPQL 1 - Alquileres por Cliente y Estado
+    // TEST 1: JPQL 1 - Alquileres por Entidad y Estado
     // =====================================================
     @Test
-    public void testJpql1AlquileresPorClienteYEstado() {
-        List<Alquiler> resultados = consultasService.buscarAlquileresPorClienteYEstado("Graña", 1);
+    public void testJpql1AlquileresPorEntidadYEstado() {
+        List<Alquiler> resultados = consultasService.buscarAlquileresPorEntidadYEstado("contacto@gym.pe", 1);
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());
         assertEquals(Integer.valueOf(1), resultados.get(0).getEstado());
@@ -49,9 +49,9 @@ public class ConsultasControllerTest {
     @Test
     public void testJpql1ParametrosInvalidos() {
         assertThrows(ResponseStatusException.class,
-                () -> consultasService.buscarAlquileresPorClienteYEstado("", 1));
+                () -> consultasService.buscarAlquileresPorEntidadYEstado("", 1));
         assertThrows(ResponseStatusException.class,
-                () -> consultasService.buscarAlquileresPorClienteYEstado("Graña", null));
+                () -> consultasService.buscarAlquileresPorEntidadYEstado("contacto@gym.pe", null));
     }
 
     // =====================================================
@@ -134,22 +134,23 @@ public class ConsultasControllerTest {
     }
 
     // =====================================================
-    // TEST 7: NATIVO 1 - Resumen Alquileres por Cliente
+    // TEST 7: NATIVO 1 - Resumen Alquileres por Entidad
     // =====================================================
     @Test
-    public void testNativo1ResumenAlquileresPorCliente() {
+    public void testNativo1ResumenAlquileresPorEntidad() {
         Cliente cliente = clienteRepository.findAll().stream()
                 .filter(c -> "20100012345".equals(c.getDocumento()))
                 .findFirst().orElseGet(() -> clienteRepository.findAll().get(0));
-        List<ResumenAlquilerClienteDTO> resultados = consultasService.resumenAlquileresPorCliente(cliente.getId());
+        List<ResumenAlquilerEntidadDTO> resultados = consultasService
+                .resumenAlquileresPorEntidad(cliente.getEntidad().getId());
         assertNotNull(resultados);
         assertFalse(resultados.isEmpty());
     }
 
     @Test
-    public void testNativo1ClienteIdInvalido() {
-        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorCliente(-1));
-        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorCliente(0));
+    public void testNativo1EntidadIdInvalido() {
+        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorEntidad(-1));
+        assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorEntidad(0));
     }
 
     // =====================================================

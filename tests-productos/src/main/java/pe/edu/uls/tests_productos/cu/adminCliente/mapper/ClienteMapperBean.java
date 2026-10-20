@@ -36,6 +36,7 @@ public class ClienteMapperBean implements ClienteMapper {
         Entidad entidad = cliente.getEntidad();
         return new ResponseCliente(
                 cliente.getId(),
+                entidad != null ? entidad.getId() : 0,
                 cliente.getDocumento(),
                 cliente.getNombre(),
                 cliente.getApellido(),

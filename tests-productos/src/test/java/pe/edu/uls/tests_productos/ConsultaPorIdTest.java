@@ -193,7 +193,7 @@ public class ConsultaPorIdTest {
 
         assertThat(encontrado).isPresent();
         assertThat(encontrado.get().getId()).isEqualTo(muestra.getId());
-        assertThat(encontrado.get().getCliente()).isNotNull();
+        assertThat(encontrado.get().getEntidad()).isNotNull();
     }
 
     @Test
