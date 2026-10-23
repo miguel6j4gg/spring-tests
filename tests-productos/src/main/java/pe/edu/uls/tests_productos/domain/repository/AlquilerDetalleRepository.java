@@ -7,4 +7,5 @@ import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 public interface AlquilerDetalleRepository
         extends JpaRepository<AlquilerDetalle, Integer> {
 
+    long countByEquipoId(int equipoId);
 }

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import pe.edu.uls.tests_productos.cu.adminAlquiler.request.RequestActualizarAlquiler;
 import pe.edu.uls.tests_productos.cu.adminAlquiler.request.RequestAlquiler;
+import pe.edu.uls.tests_productos.cu.adminAlquiler.response.DetalleEquiposProductosResponse;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalle;
 import pe.edu.uls.tests_productos.domain.entity.AlquilerDetalleProducto;
@@ -41,14 +43,32 @@ public class AlquilerService {
     }
 
     @Transactional
-    public Alquiler registrarAlquiler(
-            RequestAlquiler request) {
+    public Alquiler registrarAlquilerConLock(RequestAlquiler request) {
+        return procesarRegistroAlquiler(request, true);
+    }
+
+    @Transactional
+    public Alquiler registrarAlquilerSinLock(RequestAlquiler request) {
+        return procesarRegistroAlquiler(request, false);
+    }
+
+    @Transactional
+    public Alquiler registrarAlquiler(RequestAlquiler request) {
+        return registrarAlquilerConLock(request);
+    }
+
+    private Alquiler procesarRegistroAlquiler(RequestAlquiler request, boolean usarBloqueo) {
+        // Validacion de fechas: fin no puede ser anterior a inicio
+        if (request.fechaInicio() != null && request.fechaFin() != null && request.fechaFin().isBefore(request.fechaInicio())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La fecha de fin no puede ser anterior a la fecha de inicio");
+        }
 
         Cliente cliente = clienteRepository.findById(request.clienteId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Cliente no encontrado con ID: "
-                                + request.clienteId()));
+                        "Cliente no encontrado con ID: " + request.clienteId()));
 
         if (request.detalles() == null || request.detalles().isEmpty()) {
             throw new ResponseStatusException(
@@ -57,10 +77,9 @@ public class AlquilerService {
         }
 
         Alquiler alquiler = new Alquiler();
-
         alquiler.setFechaInicio(request.fechaInicio());
         alquiler.setFechaFin(request.fechaFin());
-        alquiler.setEstado(request.estado());
+        alquiler.setEstado(request.estado() != null ? request.estado() : 1);
         alquiler.setCliente(cliente);
         alquiler.setMontoGarantia(request.montoGarantia());
         alquiler.setTipoGarantia(request.tipoGarantia());
@@ -70,15 +89,35 @@ public class AlquilerService {
 
         for (RequestAlquiler.DetalleAlquilerRequest detalleRequest : request.detalles()) {
 
-            Equipo equipo = equipoRepository
-                    .findById(detalleRequest.equipoId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Equipo no encontrado con ID: "
-                                    + detalleRequest.equipoId()));
+            // Se decide si usar lock o no
+            Equipo equipo = usarBloqueo
+                    ? equipoRepository.findByIdWithLock(detalleRequest.equipoId())
+                            .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    "Equipo no encontrado con ID: " + detalleRequest.equipoId()))
+                    : equipoRepository.findByIdSinLock(detalleRequest.equipoId())
+                            .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    "Equipo no encontrado con ID: " + detalleRequest.equipoId()));
+
+            // Comprobacion de disponibilidad: estado 1 = Disponible
+            if (equipo.getEstado() != null && equipo.getEstado() != 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "El equipo '" + equipo.getNombre() + "' (Código: " + equipo.getCodigo()
+                                + ") no se encuentra disponible para alquiler. Estado actual: " + equipo.getEstado());
+            }
+
+            try {
+                Thread.sleep(800);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            equipo.setEstado(2); // 2 = Alquilado
+            equipoRepository.save(equipo);
 
             AlquilerDetalle detalle = new AlquilerDetalle();
-
             detalle.setEquipo(equipo);
             detalle.setCantidad(detalleRequest.cantidad());
             detalle.setPrecioUnitario(detalleRequest.precioUnitario());
@@ -134,7 +173,6 @@ public class AlquilerService {
     }
 
     public Alquiler obtenerAlquiler(int id) {
-
         return alquilerRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -142,7 +180,135 @@ public class AlquilerService {
     }
 
     public List<Alquiler> listarAlquileres() {
-
         return alquilerRepository.findAll();
+    }
+
+    @Transactional
+    public Alquiler actualizarAlquiler(int id, RequestActualizarAlquiler request) {
+        Alquiler alquiler = alquilerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Alquiler no encontrado con ID: " + id));
+
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El cuerpo de la solicitud no puede ser nulo");
+        }
+
+        boolean camposActualizados = false;
+
+        if (request.fechaFin() != null) {
+            if (alquiler.getFechaInicio() != null && request.fechaFin().isBefore(alquiler.getFechaInicio())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "La fecha de fin no puede ser anterior a la fecha de inicio");
+            }
+            alquiler.setFechaFin(request.fechaFin());
+            camposActualizados = true;
+        }
+
+        if (request.estado() != null) {
+            alquiler.setEstado(request.estado());
+            camposActualizados = true;
+
+            // Si el estado pasa a 2 (Finalizado), liberamos los equipos del alquiler a estado 1 (Disponible)
+            if (request.estado() == 2 && alquiler.getDetalles() != null) {
+                for (AlquilerDetalle d : alquiler.getDetalles()) {
+                    Equipo eq = d.getEquipo();
+                    if (eq != null) {
+                        eq.setEstado(1);
+                        equipoRepository.save(eq);
+                    }
+                }
+            }
+        }
+
+        if (request.estadoGarantia() != null) {
+            alquiler.setEstadoGarantia(request.estadoGarantia());
+            camposActualizados = true;
+        }
+
+        if (request.fechaDevolucionGarantia() != null) {
+            alquiler.setFechaDevolucionGarantia(request.fechaDevolucionGarantia());
+            camposActualizados = true;
+        }
+
+        if (request.observacionesGarantia() != null) {
+            alquiler.setObservacionesGarantia(request.observacionesGarantia());
+            camposActualizados = true;
+        }
+
+        if (request.fechaRetorno() != null || request.horometroRetorno() != null) {
+            if (alquiler.getDetalles() != null) {
+                for (AlquilerDetalle d : alquiler.getDetalles()) {
+                    if (request.fechaRetorno() != null) {
+                        d.setFechaRetorno(request.fechaRetorno());
+                    }
+                    if (request.horometroRetorno() != null) {
+                        d.setHorometroRetorno(request.horometroRetorno());
+                    }
+                }
+            }
+            camposActualizados = true;
+        }
+
+        if (!camposActualizados) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Debe proporcionar al menos un campo válido para actualizar");
+        }
+
+        return alquilerRepository.save(alquiler);
+    }
+
+    public List<Alquiler> buscarPorModeloEquipo(String modelo) {
+        if (modelo == null || modelo.trim().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El parámetro 'modelo' no puede estar vacío");
+        }
+
+        List<Alquiler> resultados = alquilerRepository.findAlquileresPorModeloEquipo(modelo.trim());
+        if (resultados.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontraron alquileres para el modelo de equipo: " + modelo);
+        }
+        return resultados;
+    }
+
+    @Transactional(readOnly = true)
+    public DetalleEquiposProductosResponse obtenerDetalleEquiposProductos(int id) {
+        Alquiler alquiler = alquilerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Alquiler no encontrado con ID: " + id));
+
+        List<DetalleEquiposProductosResponse.ItemDetalleResponse> items = alquiler.getDetalles() != null
+                ? alquiler.getDetalles().stream().map(d -> {
+                    List<DetalleEquiposProductosResponse.ProductoAsociadoResponse> prods = d.getProductos() != null
+                            ? d.getProductos().stream().map(p -> new DetalleEquiposProductosResponse.ProductoAsociadoResponse(
+                                    p.getProducto().getId(),
+                                    p.getProducto().getCodigo(),
+                                    p.getProducto().getNombre(),
+                                    p.getPrecio()
+                            )).toList()
+                            : List.of();
+
+                    return new DetalleEquiposProductosResponse.ItemDetalleResponse(
+                            d.getId(),
+                            d.getEquipo() != null ? d.getEquipo().getId() : 0,
+                            d.getEquipo() != null ? d.getEquipo().getCodigo() : "",
+                            d.getEquipo() != null ? d.getEquipo().getNombre() : "",
+                            d.getEquipo() != null ? d.getEquipo().getModelo() : "",
+                            d.getHorometroSalida(),
+                            d.getHorometroRetorno(),
+                            prods
+                    );
+                }).toList()
+                : List.of();
+
+        return new DetalleEquiposProductosResponse(alquiler.getId(), items);
     }
 }
