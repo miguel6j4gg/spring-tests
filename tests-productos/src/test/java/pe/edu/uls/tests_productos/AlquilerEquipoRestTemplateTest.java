@@ -79,39 +79,70 @@ public class AlquilerEquipoRestTemplateTest {
     @Autowired
     private AlquilerDetalleRepository alquilerDetalleRepository;
 
+    @Autowired
+    private pe.edu.uls.tests_productos.domain.repository.EntidadRepository entidadRepository;
+
     private Cliente cliente1;
     private Cliente cliente2;
     private Producto producto;
+    private pe.edu.uls.tests_productos.domain.entity.Entidad entidad1;
+    private pe.edu.uls.tests_productos.domain.entity.Entidad entidad2;
 
     @BeforeEach
-    void setUp() {
-        // Calentar DispatcherServlet y pool de conexiones para evitar latencia de
-        // arranque frío
-        try {
-            restTemplate.getForEntity("/equipos", String.class);
-        } catch (Exception ignored) {
+        void setUp() {
+            // Calentar DispatcherServlet y pool de conexiones para evitar latencia de
+            // arranque frío
+            try {
+                restTemplate.getForEntity("/equipos", String.class);
+            } catch (Exception ignored) {
+            }
+
+            List<Cliente> clientes = clienteRepository.findAll();
+            for (Cliente c : clientes) {
+                if (c.getEntidad() != null) {
+                    if (cliente1 == null) {
+                        cliente1 = c;
+                        entidad1 = c.getEntidad();
+                    } else if (cliente2 == null && c.getId() != cliente1.getId()) {
+                        cliente2 = c;
+                        entidad2 = c.getEntidad();
+                        break;
+                    }
+                }
+            }
+
+            if (cliente1 == null) {
+                pe.edu.uls.tests_productos.domain.entity.Entidad e1 = new pe.edu.uls.tests_productos.domain.entity.Entidad();
+                e1.setCorreo("carlos@empresa.com");
+                e1.setTelefono("911222333");
+                e1.setEstado(1);
+                entidad1 = entidadRepository.save(e1);
+
+                Cliente c1 = new Cliente();
+                c1.setNombre("Carlos");
+                c1.setApellido("Mendoza");
+                c1.setDocumento("10293" + (System.currentTimeMillis() % 1000));
+                c1.setEntidad(entidad1);
+                cliente1 = clienteRepository.save(c1);
+            }
+
+            if (cliente2 == null) {
+                pe.edu.uls.tests_productos.domain.entity.Entidad e2 = new pe.edu.uls.tests_productos.domain.entity.Entidad();
+                e2.setCorreo("lucia@empresa.com");
+                e2.setTelefono("944555666");
+                e2.setEstado(1);
+                entidad2 = entidadRepository.save(e2);
+
+                Cliente c2 = new Cliente();
+                c2.setNombre("Lucia");
+                c2.setApellido("Paredes");
+                c2.setDocumento("87654" + ((System.currentTimeMillis() + 1) % 1000));
+                c2.setEntidad(entidad2);
+                cliente2 = clienteRepository.save(c2);
+            }
+
+            producto = productoRepository.findAll().stream().findFirst().orElse(null);
         }
-
-        List<Cliente> clientes = clienteRepository.findAll();
-        if (clientes.size() >= 2) {
-            cliente1 = clientes.get(0);
-            cliente2 = clientes.get(1);
-        } else {
-            Cliente c1 = new Cliente();
-            c1.setNombre("Carlos");
-            c1.setApellido("Mendoza");
-            c1.setDocumento("10293847");
-            cliente1 = clienteRepository.save(c1);
-
-            Cliente c2 = new Cliente();
-            c2.setNombre("Lucia");
-            c2.setApellido("Paredes");
-            c2.setDocumento("87654321");
-            cliente2 = clienteRepository.save(c2);
-        }
-
-        producto = productoRepository.findAll().stream().findFirst().orElse(null);
-    }
 
     private Equipo crearGrupoElectrogenoDisponible(String prefijo, String nombre) {
         Equipo equipo = new Equipo();
@@ -175,8 +206,8 @@ public class AlquilerEquipoRestTemplateTest {
         System.out.printf("[ESTADO INICIAL] Equipo ID: %d | Código: %s | Nombre: %s | Estado: %d (DISPONIBLE)%n",
                 equipo.getId(), equipo.getCodigo(), equipo.getNombre(), equipo.getEstado());
 
-        RequestAlquiler requestCliente1 = construirRequestAlquiler(cliente1.getId(), equipo.getId());
-        RequestAlquiler requestCliente2 = construirRequestAlquiler(cliente2.getId(), equipo.getId());
+        RequestAlquiler requestCliente1 = construirRequestAlquiler(entidad1.getId(), equipo.getId());
+        RequestAlquiler requestCliente2 = construirRequestAlquiler(entidad2.getId(), equipo.getId());
 
         int numHilos = 2;
         ExecutorService executor = Executors.newFixedThreadPool(numHilos);
@@ -255,8 +286,8 @@ public class AlquilerEquipoRestTemplateTest {
         System.out.printf(" Equipo ID: %d | Código: %s | Nombre: %s | Estado: %d Disponible%n",
                 equipo.getId(), equipo.getCodigo(), equipo.getNombre(), equipo.getEstado());
 
-        RequestAlquiler requestCliente1 = construirRequestAlquiler(cliente1.getId(), equipo.getId());
-        RequestAlquiler requestCliente2 = construirRequestAlquiler(cliente2.getId(), equipo.getId());
+        RequestAlquiler requestCliente1 = construirRequestAlquiler(entidad1.getId(), equipo.getId());
+        RequestAlquiler requestCliente2 = construirRequestAlquiler(entidad2.getId(), equipo.getId());
 
         int numHilos = 2;
         ExecutorService executor = Executors.newFixedThreadPool(numHilos);

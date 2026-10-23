@@ -1,10 +1,14 @@
 package pe.edu.uls.tests_productos;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,17 +21,26 @@ import pe.edu.uls.tests_productos.domain.repository.EquipoRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class EquipoControllerTest {
+public class TestEquipo {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private EquipoRepository equipoRepository;
+    private EquipoRepository repoEquipo;
 
-    // =====================================================
-    // TEST 1 - GET LISTAR EQUIPOS
-    // =====================================================
+    @Test
+    @DisplayName("7. Consulta por ID de Entity Equipo")
+    void testConsultaPorIdEquipo() {
+        Equipo muestra = repoEquipo.findAll().stream().findFirst().orElseThrow();
+        Optional<Equipo> encontrado = repoEquipo.findById(muestra.getId());
+
+        assertThat(encontrado).isPresent();
+        assertThat(encontrado.get().getId()).isEqualTo(muestra.getId());
+        assertThat(encontrado.get().getCodigo()).isEqualTo(muestra.getCodigo());
+        assertThat(encontrado.get().getModelo()).isNotBlank();
+    }
+
     @Test
     public void testListarEquipos() throws Exception {
         mockMvc.perform(get("/equipos"))
@@ -35,20 +48,14 @@ public class EquipoControllerTest {
                 .andExpect(jsonPath("$").isArray());
     }
 
-    // =====================================================
-    // TEST 2 - GET BUSCAR POR ID
-    // =====================================================
     @Test
     public void testObtenerEquipo() throws Exception {
-        Equipo equipo = equipoRepository.findAll().get(0);
+        Equipo equipo = repoEquipo.findAll().get(0);
         mockMvc.perform(get("/equipos/" + equipo.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(equipo.getId()));
     }
 
-    // =====================================================
-    // TEST 3 - GET BUSCAR POR UBICACION
-    // =====================================================
     @Test
     public void testBuscarPorUbicacion() throws Exception {
         mockMvc.perform(get("/equipos/ubicacion/Arequipa"))
@@ -56,9 +63,6 @@ public class EquipoControllerTest {
                 .andExpect(jsonPath("$").isArray());
     }
 
-    // =====================================================
-    // TEST 4 - POST REGISTRAR EQUIPO
-    // =====================================================
     @Test
     public void testRegistrarEquipo() throws Exception {
         String codigoUnico = "GE-TST-" + System.currentTimeMillis();

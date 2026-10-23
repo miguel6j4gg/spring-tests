@@ -46,7 +46,7 @@ El modelo de datos gestiona el alquiler y mantenimiento de maquinaria pesada/equ
 
 ##  Parte A: Consulta por ID de cada Entity 
 
-**Archivo:** `pe.edu.uls.tests_productos.ConsultaPorIdTest`
+**Archivos:** una clase por caso de uso en `pe.edu.uls.tests_productos`: `TestAlmacen`, `TestAlquiler`, `TestCliente`, `TestEmpleado`, `TestEmpresa`, `TestEntidad`, `TestEquipo`, `TestMantenimiento`, `TestProducto` y `TestProveedor`.
 
 ### ¿Cómo funciona la prueba?
 Cada método de prueba obtiene un registro representativo mediante el repositorio Spring Data JPA (aprovechando los datos sembrados por `DatabaseInitializer` en PostgreSQL Neon), invoca el método estándar `repo.findById(id)` y comprueba mediante `AssertJ` (`assertThat`):
@@ -121,7 +121,7 @@ void testConsultaPorIdEmpresa() {
 
 ##  Parte B: Registro de Entities Cabecera-Detalle (2 Tests)
 
-**Archivo:** `pe.edu.uls.tests_productos.RegistroCabeceraDetalleTest`
+**Archivos:** `pe.edu.uls.tests_productos.TestAlquiler` (caso Alquiler) y `pe.edu.uls.tests_productos.TestMantenimiento` (caso Mantenimiento).
 
 Para la consigna B se siguió el patrón del ejemplo del profesor:
 1. Pruebas de integración con `@SpringBootTest` y `@AutoConfigureMockMvc`.
@@ -312,10 +312,10 @@ Desde la terminal en el directorio raíz del proyecto:
 
 ### 1. Ejecutar solo las pruebas de esta tarea (Consignas A y B):
 ```bash
-./mvnw test -Dtest=ConsultaPorIdTest,RegistroCabeceraDetalleTest
+./mvnw test -Dtest='Test*'
 ```
 
 ### 2. Ejecutar individualmente la Parte A (Consultas por ID):
 ```bash
-./mvnw test -Dtest=ConsultaPorIdTest
+./mvnw test -Dtest=TestAlmacen,TestAlquiler,TestCliente,TestEmpleado,TestEmpresa,TestEntidad,TestEquipo,TestMantenimiento,TestProducto,TestProveedor
 ```

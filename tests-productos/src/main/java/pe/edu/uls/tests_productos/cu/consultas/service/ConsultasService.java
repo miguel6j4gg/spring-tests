@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerClienteDTO;
+import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerEntidadDTO;
 import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenMantenimientoEquipoDTO;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 import pe.edu.uls.tests_productos.domain.entity.Equipo;
@@ -41,17 +41,17 @@ public class ConsultasService {
         this.equipoRepository = equipoRepository;
     }
 
-    // JPQL 1: Alquileres por nombre de cliente y estado
-    public List<Alquiler> buscarAlquileresPorClienteYEstado(String nombreCliente, Integer estado) {
-        if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
+    // JPQL 1: Alquileres por correo de entidad y estado
+    public List<Alquiler> buscarAlquileresPorEntidadYEstado(String correoEntidad, Integer estado) {
+        if (correoEntidad == null || correoEntidad.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "El parámetro 'nombreCliente' no puede estar vacío");
+                    "El parámetro 'correoEntidad' no puede estar vacío");
         }
         if (estado == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El parámetro 'estado' no puede ser nulo");
         }
 
-        return alquilerRepository.findAlquileresPorClienteNombreYEstado(nombreCliente.trim(), estado);
+        return alquilerRepository.findAlquileresPorEntidadCorreoYEstado(correoEntidad.trim(), estado);
     }
 
     // JPQL 2: Alquileres por modelo de equipo
@@ -101,13 +101,13 @@ public class ConsultasService {
         return equipoRepository.findEquiposPorTipoMantenimiento(tipoMantenimiento.trim());
     }
 
-    // NATIVO 1: Resumen alquileres por cliente
-    public List<ResumenAlquilerClienteDTO> resumenAlquileresPorCliente(Integer clienteId) {
-        if (clienteId == null || clienteId <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El 'clienteId' debe ser un entero mayor a 0");
+    // NATIVO 1: Resumen alquileres por entidad
+    public List<ResumenAlquilerEntidadDTO> resumenAlquileresPorEntidad(Integer entidadId) {
+        if (entidadId == null || entidadId <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El 'entidadId' debe ser un entero mayor a 0");
         }
-        List<Object[]> resultados = alquilerRepository.resumenAlquileresPorClienteNativo(clienteId);
-        return resultados.stream().map(row -> new ResumenAlquilerClienteDTO(
+        List<Object[]> resultados = alquilerRepository.resumenAlquileresPorEntidadNativo(entidadId);
+        return resultados.stream().map(row -> new ResumenAlquilerEntidadDTO(
                 (String) row[0],
                 ((Number) row[1]).intValue(),
                 ((Number) row[2]).intValue(),

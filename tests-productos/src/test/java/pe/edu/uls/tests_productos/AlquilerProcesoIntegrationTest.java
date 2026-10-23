@@ -58,12 +58,16 @@ public class AlquilerProcesoIntegrationTest {
     private ClienteRepository clienteRepository;
 
     @Autowired
+    private pe.edu.uls.tests_productos.domain.repository.EntidadRepository entidadRepository;
+
+    @Autowired
     private EquipoRepository equipoRepository;
 
     @Autowired
     private ProductoRepository productoRepository;
 
     private Cliente clienteTest;
+    private pe.edu.uls.tests_productos.domain.entity.Entidad entidadTest;
     private static Equipo equipoDisponible;
     private static Integer equipoIdDisponible;
     private Producto productoTest;
@@ -71,15 +75,29 @@ public class AlquilerProcesoIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Garantizar cliente existente
+        // Garantizar entidad y cliente existente
         List<Cliente> clientes = clienteRepository.findAll();
-        if (!clientes.isEmpty()) {
-            clienteTest = clientes.get(0);
-        } else {
+        for (Cliente c : clientes) {
+            if (c.getEntidad() != null) {
+                clienteTest = c;
+                entidadTest = c.getEntidad();
+                break;
+            }
+        }
+
+        if (clienteTest == null) {
+            pe.edu.uls.tests_productos.domain.entity.Entidad entidad = new pe.edu.uls.tests_productos.domain.entity.Entidad();
+            entidad.setCorreo("constructora@test.com");
+            entidad.setTelefono("987654321");
+            entidad.setDireccion("Av. Principal 123");
+            entidad.setEstado(1);
+            entidadTest = entidadRepository.save(entidad);
+
             Cliente nuevo = new Cliente();
             nuevo.setNombre("Constructora");
             nuevo.setApellido("Nacional SAC");
-            nuevo.setDocumento("20485963211");
+            nuevo.setDocumento("20485963" + (System.currentTimeMillis() % 1000));
+            nuevo.setEntidad(entidadTest);
             clienteTest = clienteRepository.save(nuevo);
         }
 
@@ -147,7 +165,7 @@ public class AlquilerProcesoIntegrationTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(30),
                 1,
-                clienteTest.getId(),
+                entidadTest.getId(),
                 5000.0,
                 "carta_fianza",
                 0,
@@ -165,7 +183,7 @@ public class AlquilerProcesoIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertThat(response.getBody().id()).isGreaterThan(0);
-        assertThat(response.getBody().clienteId()).isEqualTo(clienteTest.getId());
+        assertThat(response.getBody().entidadId()).isEqualTo(entidadTest.getId());
         assertThat(response.getBody().detalles()).isNotEmpty();
         assertThat(response.getBody().detalles().get(0).equipoId()).isEqualTo(equipoDisponible.getId());
 
@@ -203,7 +221,7 @@ public class AlquilerProcesoIntegrationTest {
                 LocalDate.now(),
                 LocalDate.now().plusDays(10),
                 1,
-                clienteTest.getId(),
+                entidadTest.getId(),
                 2000.0,
                 "efectivo",
                 0,

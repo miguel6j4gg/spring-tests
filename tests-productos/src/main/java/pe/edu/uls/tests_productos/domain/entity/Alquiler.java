@@ -36,14 +36,14 @@ public class Alquiler {
 
     // --- Garantía ---
     private Double montoGarantia;
-    private String tipoGarantia;       // efectivo, cheque, carta_fianza
-    private Integer estadoGarantia;    // 0=pendiente, 1=devuelta, 2=ejecutada
+    private String tipoGarantia; // efectivo, cheque, carta_fianza
+    private Integer estadoGarantia; // 0=pendiente, 1=devuelta, 2=ejecutada
     private LocalDate fechaDevolucionGarantia;
     private String observacionesGarantia;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    @JoinColumn(name = "entidad_id", nullable = false)
+    private Entidad entidad;
 
     @OneToMany(mappedBy = "alquiler", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -129,12 +129,12 @@ public class Alquiler {
         this.observacionesGarantia = observacionesGarantia;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Entidad getEntidad() {
+        return entidad;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setEntidad(Entidad entidad) {
+        this.entidad = entidad;
     }
 
     public List<AlquilerDetalle> getDetalles() {

@@ -364,7 +364,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         // 7. Alquileres
         if (alquilerRepository.count() == 0) {
             Alquiler a1 = new Alquiler();
-            a1.setCliente(c1);
+            a1.setEntidad(c1.getEntidad());
             a1.setFechaInicio(LocalDate.of(2026, 8, 1));
             a1.setFechaFin(LocalDate.of(2026, 8, 30));
             a1.setEstado(1);
@@ -386,7 +386,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             alquilerRepository.save(a1);
 
             Alquiler a2 = new Alquiler();
-            a2.setCliente(c2);
+            a2.setEntidad(c2.getEntidad());
             a2.setFechaInicio(LocalDate.of(2026, 9, 1));
             a2.setFechaFin(LocalDate.of(2026, 9, 25));
             a2.setEstado(2);

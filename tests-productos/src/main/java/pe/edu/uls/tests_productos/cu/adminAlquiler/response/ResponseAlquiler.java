@@ -11,8 +11,8 @@ public record ResponseAlquiler(
         LocalDate fechaInicio,
         LocalDate fechaFin,
         Integer estado,
-        int clienteId,
-        String clienteNombre,
+        int entidadId,
+        String entidadCorreo,
         // Garantía
         double montoGarantia,
         String tipoGarantia,

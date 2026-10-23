@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerClienteDTO;
+import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenAlquilerEntidadDTO;
 import pe.edu.uls.tests_productos.cu.consultas.dto.ResumenMantenimientoEquipoDTO;
 import pe.edu.uls.tests_productos.cu.consultas.service.ConsultasService;
 import pe.edu.uls.tests_productos.domain.entity.Alquiler;
@@ -28,12 +28,12 @@ public class ConsultasController {
         this.consultasService = consultasService;
     }
 
-    // 1. JPQL: Buscar alquileres por cliente y estado
-    @GetMapping("/jpql/alquileres-cliente-estado")
-    public List<Alquiler> buscarAlquileresPorClienteYEstado(
-            @RequestParam String nombreCliente,
+    // 1. JPQL: Buscar alquileres por entidad y estado
+    @GetMapping("/jpql/alquileres-entidad-estado")
+    public List<Alquiler> buscarAlquileresPorEntidadYEstado(
+            @RequestParam String correoEntidad,
             @RequestParam Integer estado) {
-        return consultasService.buscarAlquileresPorClienteYEstado(nombreCliente, estado);
+        return consultasService.buscarAlquileresPorEntidadYEstado(correoEntidad, estado);
     }
 
     // 2. JPQL: Buscar alquileres por modelo de equipo
@@ -72,11 +72,11 @@ public class ConsultasController {
         return consultasService.buscarEquiposPorTipoMantenimiento(tipoMantenimiento);
     }
 
-    // 7. NATIVO 1: Resumen de alquileres por cliente
-    @GetMapping("/nativas/resumen-alquileres-cliente/{clienteId}")
-    public List<ResumenAlquilerClienteDTO> resumenAlquileresPorCliente(
-            @PathVariable Integer clienteId) {
-        return consultasService.resumenAlquileresPorCliente(clienteId);
+    // 7. NATIVO 1: Resumen de alquileres por entidad
+    @GetMapping("/nativas/resumen-alquileres-entidad/{entidadId}")
+    public List<ResumenAlquilerEntidadDTO> resumenAlquileresPorEntidad(
+            @PathVariable Integer entidadId) {
+        return consultasService.resumenAlquileresPorEntidad(entidadId);
     }
 
     // 8. NATIVO 2: Resumen de mantenimientos por equipo
