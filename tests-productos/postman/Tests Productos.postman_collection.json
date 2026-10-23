@@ -29,8 +29,11 @@
     { "key": "ubicacionEquipo", "value": "Arequipa" },
     { "key": "codigoProducto", "value": "PROD-001" },
     { "key": "tipoMantenimiento", "value": "Preventivo" },
+    { "key": "dniTecnico", "value": "45871234" },
+    { "key": "codigoEquipo", "value": "GE-004" },
     { "key": "fechaInicio", "value": "2026-09-24" },
     { "key": "fechaFin", "value": "2026-10-01" },
+    { "key": "fechaProgramada", "value": "2026-12-01" },
     { "key": "empresaId", "value": "1" }
   ],
   "item": [
@@ -759,6 +762,17 @@
           "name": "Registrar mantenimiento",
           "event": [
             {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const programada = new Date();",
+                  "programada.setDate(programada.getDate() + 1);",
+                  "pm.collectionVariables.set('fechaProgramada', programada.toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
@@ -769,6 +783,14 @@
                   "const body = pm.response.json();",
                   "pm.test('detalle trae la lista de productos', function () {",
                   "    pm.expect(body.detalles[0].productos).to.be.an('array').with.lengthOf(2);",
+                  "});",
+                  "pm.test('fechaSolicitud es la de hoy', function () {",
+                  "    const hoy = new Date();",
+                  "    const fechaHoy = [hoy.getFullYear(), String(hoy.getMonth() + 1).padStart(2, '0'), String(hoy.getDate()).padStart(2, '0')].join('-');",
+                  "    pm.expect(body.fechaSolicitud).to.eql(fechaHoy);",
+                  "});",
+                  "pm.test('fechaProgramada es la enviada', function () {",
+                  "    pm.expect(body.fechaProgramada).to.eql(pm.collectionVariables.get('fechaProgramada'));",
                   "});",
                   "pm.collectionVariables.set('mantenimientoId', body.id);"
                 ]
@@ -785,7 +807,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fecha\": \"{{fechaInicio}}\",\n    \"tipo\": \"{{tipoMantenimiento}}\",\n    \"observaciones\": \"Cambio de filtros y revision general\",\n    \"equipoId\": {{equipoId}},\n    \"detalles\": [\n        {\n            \"productoIds\": [{{productoId}}, {{productoId2}}],\n            \"cantidad\": 2,\n            \"descripcion\": \"Cambio de filtro de aceite y aire\"\n        }\n    ]\n}"
+              "raw": "{\n    \"fechaSolicitud\": \"{{fechaInicio}}\",\n    \"fechaProgramada\": \"{{fechaProgramada}}\",\n    \"fechaRealizado\": \"{{fechaInicio}}\",\n    \"tipo\": \"{{tipoMantenimiento}}\",\n    \"observaciones\": \"Cambio de filtros y revision general\",\n    \"equipoId\": {{equipoId}},\n    \"detalles\": [\n        {\n            \"productoIds\": [{{productoId}}, {{productoId2}}],\n            \"cantidad\": 2,\n            \"descripcion\": \"Cambio de filtro de aceite y aire\"\n        }\n    ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/mantenimientos",
@@ -797,6 +819,92 @@
               ]
             },
             "description": "POST 1 - Registrar mantenimiento con dos productos en el detalle."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar mantenimiento - producto inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 NOT FOUND', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('mensaje de producto inexistente', function () {",
+                  "    pm.expect(pm.response.text()).to.eql('El producto con ID 999999 no existe');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fechaSolicitud\": \"{{fechaInicio}}\",\n    \"fechaProgramada\": \"{{fechaProgramada}}\",\n    \"fechaRealizado\": \"{{fechaInicio}}\",\n    \"tipo\": \"{{tipoMantenimiento}}\",\n    \"observaciones\": \"Validacion de producto inexistente\",\n    \"equipoId\": {{equipoId}},\n    \"detalles\": [\n        {\n            \"productoIds\": [999999],\n            \"cantidad\": 1,\n            \"descripcion\": \"Producto inexistente\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos"
+              ]
+            },
+            "description": "Valida que un producto inexistente responda 404 con el mensaje correspondiente."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar mantenimiento - fecha programada invalida (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 BAD REQUEST', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('mensaje de fecha programada invalida', function () {",
+                  "    pm.expect(pm.response.text()).to.eql('La fecha programada debe ser posterior al día de hoy');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fechaSolicitud\": \"{{fechaInicio}}\",\n    \"fechaProgramada\": \"2020-01-01\",\n    \"fechaRealizado\": \"{{fechaInicio}}\",\n    \"tipo\": \"{{tipoMantenimiento}}\",\n    \"observaciones\": \"Validacion de fecha programada invalida\",\n    \"equipoId\": {{equipoId}},\n    \"detalles\": [\n        {\n            \"productoIds\": [{{productoId}}],\n            \"cantidad\": 1,\n            \"descripcion\": \"Fecha invalida\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos"
+              ]
+            },
+            "description": "Valida que una fecha programada de hoy o pasada responda 400 con el mensaje correspondiente."
           },
           "response": []
         },
@@ -828,6 +936,52 @@
               ]
             },
             "description": "GET 2 - Buscar por ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar fecha realizado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const body = pm.response.json();",
+                  "pm.test('la fecha realizado fue actualizada', function () {",
+                  "    pm.expect(body.fechaRealizado).to.eql(pm.collectionVariables.get('fechaInicio'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fechaRealizado\": \"{{fechaInicio}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos/{{mantenimientoId}}/fecha-realizado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos",
+                "{{mantenimientoId}}",
+                "fecha-realizado"
+              ]
+            },
+            "description": "PATCH - Actualizar únicamente la fechaRealizado de un mantenimiento."
           },
           "response": []
         },
@@ -890,6 +1044,96 @@
               ]
             },
             "description": "GET 3 - Listar todos."
+          },
+          "response": []
+        },
+        {
+          "name": "Mantenimientos por tecnico y tipo (JPQL)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y no vacio', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty;",
+                  "});",
+                  "pm.test('cada mantenimiento tiene tecnico y tipo', function () {",
+                  "    pm.response.json().forEach(function (m) {",
+                  "        pm.expect(m.empleadoId).to.not.be.null;",
+                  "        pm.expect(m.tipo).to.eql(pm.collectionVariables.get('tipoMantenimiento'));",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos/por-tecnico?dni={{dniTecnico}}&tipo={{tipoMantenimiento}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos",
+                "por-tecnico"
+              ],
+              "query": [
+                {
+                  "key": "dni",
+                  "value": "{{dniTecnico}}",
+                  "description": "DNI del tecnico responsable"
+                },
+                {
+                  "key": "tipo",
+                  "value": "{{tipoMantenimiento}}",
+                  "description": "Tipo de mantenimiento"
+                }
+              ]
+            },
+            "description": "findMantenimientosPorTecnicoYTipo - JPQL con 3 entidades: mantenimiento, empleado y equipo."
+          },
+          "response": []
+        },
+        {
+          "name": "Resumen de productos consumidos por equipo (Nativa)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK y es lista', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('los productos tienen codigo, nombre y usos', function () {",
+                  "    pm.response.json().forEach(function (p) {",
+                  "        pm.expect(p.codigoProducto).to.be.a('string').that.is.not.empty;",
+                  "        pm.expect(p.nombreProducto).to.be.a('string').that.is.not.empty;",
+                  "        pm.expect(p.totalUsos).to.be.above(0);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/mantenimientos/resumen-productos/{{codigoEquipo}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mantenimientos",
+                "resumen-productos",
+                "{{codigoEquipo}}"
+              ]
+            },
+            "description": "resumenProductosConsumidosPorEquipo - nativa con 5 tablas: equipo, mantenimiento, mantenimiento_detalle, mantenimiento_detalle_productos y producto."
           },
           "response": []
         }

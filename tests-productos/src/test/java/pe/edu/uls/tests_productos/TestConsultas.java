@@ -24,7 +24,7 @@ import pe.edu.uls.tests_productos.domain.repository.ClienteRepository;
 import pe.edu.uls.tests_productos.domain.repository.EquipoRepository;
 
 @SpringBootTest
-public class ConsultasControllerTest {
+public class TestConsultas {
 
     @Autowired
     private ConsultasService consultasService;
@@ -35,9 +35,6 @@ public class ConsultasControllerTest {
     @Autowired
     private EquipoRepository equipoRepository;
 
-    // =====================================================
-    // TEST 1: JPQL 1 - Alquileres por Entidad y Estado
-    // =====================================================
     @Test
     public void testJpql1AlquileresPorEntidadYEstado() {
         List<Alquiler> resultados = consultasService.buscarAlquileresPorEntidadYEstado("contacto@gym.pe", 1);
@@ -54,9 +51,6 @@ public class ConsultasControllerTest {
                 () -> consultasService.buscarAlquileresPorEntidadYEstado("contacto@gym.pe", null));
     }
 
-    // =====================================================
-    // TEST 2: JPQL 2 - Alquileres por Modelo de Equipo
-    // =====================================================
     @Test
     public void testJpql2AlquileresPorModeloEquipo() {
         List<Alquiler> resultados = consultasService.buscarAlquileresPorModeloEquipo("Caterpillar");
@@ -69,9 +63,6 @@ public class ConsultasControllerTest {
         assertThrows(ResponseStatusException.class, () -> consultasService.buscarAlquileresPorModeloEquipo("   "));
     }
 
-    // =====================================================
-    // TEST 3: JPQL 3 - Mantenimientos por Ubicación
-    // =====================================================
     @Test
     public void testJpql3MantenimientosPorUbicacion() {
         List<Mantenimiento> resultados = consultasService.buscarMantenimientosPorUbicacion("Cusco");
@@ -84,9 +75,6 @@ public class ConsultasControllerTest {
         assertThrows(ResponseStatusException.class, () -> consultasService.buscarMantenimientosPorUbicacion(null));
     }
 
-    // =====================================================
-    // TEST 4: JPQL 4 - Mantenimientos por Código de Producto
-    // =====================================================
     @Test
     public void testJpql4MantenimientosPorCodigoProducto() {
         List<Mantenimiento> resultados = consultasService.buscarMantenimientosPorCodigoProducto("PROD-004");
@@ -99,9 +87,6 @@ public class ConsultasControllerTest {
         assertThrows(ResponseStatusException.class, () -> consultasService.buscarMantenimientosPorCodigoProducto(""));
     }
 
-    // =====================================================
-    // TEST 5: JPQL 5 - Productos Alquilados en Rango de Fechas
-    // =====================================================
     @Test
     public void testJpql5ProductosAlquiladosEnFechas() {
         List<Producto> resultados = consultasService.buscarProductosAlquiladosEnFechas(
@@ -118,9 +103,6 @@ public class ConsultasControllerTest {
                 LocalDate.of(2026, 8, 1)));
     }
 
-    // =====================================================
-    // TEST 6: JPQL 6 - Equipos por Tipo de Mantenimiento
-    // =====================================================
     @Test
     public void testJpql6EquiposPorTipoMantenimiento() {
         List<Equipo> resultados = consultasService.buscarEquiposPorTipoMantenimiento("Preventivo");
@@ -133,9 +115,6 @@ public class ConsultasControllerTest {
         assertThrows(ResponseStatusException.class, () -> consultasService.buscarEquiposPorTipoMantenimiento(""));
     }
 
-    // =====================================================
-    // TEST 7: NATIVO 1 - Resumen Alquileres por Entidad
-    // =====================================================
     @Test
     public void testNativo1ResumenAlquileresPorEntidad() {
         Cliente cliente = clienteRepository.findAll().stream()
@@ -153,9 +132,6 @@ public class ConsultasControllerTest {
         assertThrows(ResponseStatusException.class, () -> consultasService.resumenAlquileresPorEntidad(0));
     }
 
-    // =====================================================
-    // TEST 8: NATIVO 2 - Resumen Mantenimientos por Equipo
-    // =====================================================
     @Test
     public void testNativo2ResumenMantenimientosPorEquipo() {
         Equipo equipo = equipoRepository.findAll().stream()

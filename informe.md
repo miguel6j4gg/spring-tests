@@ -126,7 +126,7 @@ Consultas derivadas que consultan `estado`: `ClienteRepository` (join a `Entidad
 
 Los casos de uso se ejercitan con la colección de Postman (`postman/Tests Productos.postman_collection.json`), que cubre los 10 casos de uso y encadena los ids generados en variables de colección. También hay requests por caso en `requests/*.http` y `request.http`.
 
-Los tests de integración son `ConsultasControllerTest` (cubre las 6 JPQL y las 2 nativas) y `EquipoControllerTest`. Se ejecutan con:
+Los tests de integración están organizados por caso de uso: `TestAlmacen`, `TestAlquiler`, `TestCliente`, `TestConsultas` (6 JPQL y 2 nativas), `TestEmpleado`, `TestEmpresa`, `TestEntidad`, `TestEquipo`, `TestMantenimiento`, `TestProducto` y `TestProveedor`. Se ejecutan con:
 
 ```
 ./mvnw test

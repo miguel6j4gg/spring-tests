@@ -23,6 +23,7 @@ public class MantenimientoDetalleController {
     @GetMapping("/{id}")
     public MantenimientoDetalle obtenerDetalle(@PathVariable int id) {
         return mantenimientoDetalleRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Detalle de mantenimiento no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Detalle de mantenimiento no encontrado con ID: " + id));
     }
 }

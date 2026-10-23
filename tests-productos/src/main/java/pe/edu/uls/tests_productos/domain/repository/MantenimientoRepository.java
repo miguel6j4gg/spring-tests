@@ -10,6 +10,9 @@ import pe.edu.uls.tests_productos.domain.entity.Mantenimiento;
 
 public interface MantenimientoRepository extends JpaRepository<Mantenimiento, Integer> {
 
+    @Query("SELECT DISTINCT m FROM Mantenimiento m LEFT JOIN FETCH m.detalles WHERE m.id = :id")
+    java.util.Optional<Mantenimiento> findByIdWithDetalles(@Param("id") Integer id);
+
     // QUERY 3 (JPQL con Join - 2 Entities: Mantenimiento + Equipo): Mantenimientos
     // por ubicación del equipo
     @Query("SELECT DISTINCT m FROM Mantenimiento m JOIN m.equipo e WHERE LOWER(e.ubicacion) = LOWER(:ubicacion)")
@@ -19,6 +22,29 @@ public interface MantenimientoRepository extends JpaRepository<Mantenimiento, In
     // Producto): Mantenimientos por código de producto cambiado
     @Query("SELECT DISTINCT m FROM Mantenimiento m JOIN m.detalles d JOIN d.productos p WHERE LOWER(p.codigo) = LOWER(:codigoProducto)")
     List<Mantenimiento> findMantenimientosPorCodigoProducto(@Param("codigoProducto") String codigoProducto);
+
+    // QUERY 5 (JPQL con Join - 3 Entities: Mantenimiento + Empleado + Equipo):
+    // Mantenimientos realizados por un técnico según su DNI y el tipo de
+    // mantenimiento
+    @Query("SELECT DISTINCT m FROM Mantenimiento m JOIN m.empleado emp JOIN m.equipo eq WHERE LOWER(emp.dni) = LOWER(:dni) AND LOWER(m.tipo) = LOWER(:tipo)")
+    List<Mantenimiento> findMantenimientosPorTecnicoYTipo(
+            @Param("dni") String dni,
+            @Param("tipo") String tipo);
+
+    // QUERY NATIVO 3 (Native Query - 5 Tablas: equipo, mantenimiento,
+    // mantenimiento_detalle, mantenimiento_detalle_productos, producto):
+    // Resumen de productos consumidos en los mantenimientos de un equipo
+    @Query(value = "SELECT p.codigo, p.nombre, COUNT(DISTINCT md.id) AS total_usos "
+            +
+            "FROM equipo e " +
+            "JOIN mantenimiento m ON m.equipo_id = e.id " +
+            "JOIN mantenimiento_detalle md ON md.mantenimiento_id = m.id " +
+            "JOIN mantenimiento_detalle_productos mdp ON mdp.mantenimiento_detalle_id = md.id " +
+            "JOIN producto p ON p.id = mdp.producto_id " +
+            "WHERE LOWER(e.codigo) = LOWER(:codigoEquipo) " +
+            "GROUP BY p.codigo, p.nombre " +
+            "ORDER BY COUNT(DISTINCT md.id) DESC", nativeQuery = true)
+    List<Object[]> resumenProductosConsumidosPorEquipo(@Param("codigoEquipo") String codigoEquipo);
 
     // QUERY NATIVO 2 (Native Query - 4 Tablas: mantenimiento, equipo,
     // mantenimiento_detalle, mantenimiento_detalle_productos)
