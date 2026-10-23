@@ -10,8 +10,17 @@ import pe.edu.uls.tests_productos.domain.entity.Alquiler;
 
 public interface AlquilerRepository extends JpaRepository<Alquiler, Integer> {
 
-    // QUERY 1 (JPQL - 2 Entities: Alquiler + Entidad): Buscar alquileres por
-    // correo de entidad y estado
+    // QUERY 1 (JPQL - 3 Entities: Alquiler + Entidad + AlquilerDetalle + Equipo): Alquileres por cliente/entidad y equipo
+    @Query("""
+            SELECT DISTINCT a FROM Alquiler a
+            JOIN a.entidad e
+            JOIN a.detalles d
+            JOIN d.equipo eq
+            WHERE e.id = :entidadId AND eq.id = :equipoId
+    """)
+    List<Alquiler> findAlquileresPorEntidadYEquipo(@Param("entidadId") Integer entidadId, @Param("equipoId") Integer equipoId);
+
+    // QUERY JPQL (2 Entities: Alquiler + Entidad): Buscar alquileres por correo de entidad y estado
     @Query("""
                     SELECT DISTINCT a FROM Alquiler a
                     JOIN a.entidad e

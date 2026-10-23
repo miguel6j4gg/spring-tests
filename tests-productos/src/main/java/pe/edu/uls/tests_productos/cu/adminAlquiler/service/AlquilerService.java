@@ -153,13 +153,33 @@ public class AlquilerService {
                                 HttpStatus.NOT_FOUND,
                                 "Producto no encontrado con ID: "
                                         + item.productoId()));
+
+                if (producto.getStock() <= 0) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Cantidad de productos insuficiente. El producto '" + producto.getNombre()
+                                    + "' no tiene stock disponible (Stock: " + producto.getStock() + ")");
+                }
+
                 detalleProductos.add(detalleProducto(producto, item.precio()));
             }
             return detalleProductos;
         }
 
         if (detalleRequest.productoIds() != null && !detalleRequest.productoIds().isEmpty()) {
-            for (Producto producto : productoRepository.findAllById(detalleRequest.productoIds())) {
+            for (Integer pId : detalleRequest.productoIds()) {
+                Producto producto = productoRepository.findById(pId)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Producto no encontrado con ID: " + pId));
+
+                if (producto.getStock() <= 0) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Cantidad de productos insuficiente. El producto '" + producto.getNombre()
+                                    + "' no tiene stock disponible (Stock: " + producto.getStock() + ")");
+                }
+
                 detalleProductos.add(detalleProducto(producto, null));
             }
         }
@@ -241,6 +261,13 @@ public class AlquilerService {
         }
 
         if (request.fechaRetorno() != null || request.horometroRetorno() != null) {
+            if (request.fechaRetorno() != null && alquiler.getFechaInicio() != null 
+                    && request.fechaRetorno().toLocalDate().isBefore(alquiler.getFechaInicio())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Fecha de retorno inválida: no puede ser anterior a la fecha de inicio del alquiler");
+            }
+
             if (alquiler.getDetalles() != null) {
                 for (AlquilerDetalle d : alquiler.getDetalles()) {
                     if (request.fechaRetorno() != null) {
@@ -261,6 +288,23 @@ public class AlquilerService {
         }
 
         return alquilerRepository.save(alquiler);
+    }
+
+    public List<Alquiler> buscarPorEntidadYEquipo(int entidadId, int equipoId) {
+        if (!entidadRepository.existsById(entidadId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente / Entidad no encontrado con ID: " + entidadId);
+        }
+        if (!equipoRepository.existsById(equipoId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipo no encontrado con ID: " + equipoId);
+        }
+
+        List<Alquiler> resultados = alquilerRepository.findAlquileresPorEntidadYEquipo(entidadId, equipoId);
+        if (resultados.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontraron alquileres para la entidad ID " + entidadId + " y equipo ID " + equipoId);
+        }
+        return resultados;
     }
 
     public List<Alquiler> buscarPorModeloEquipo(String modelo) {

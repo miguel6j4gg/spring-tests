@@ -84,7 +84,19 @@ public class AlquilerController {
                 return convertirResponse(alquiler);
         }
 
-        // 4. Operación REST 4 (Query 1): Alquileres por modelo de equipo
+        // Query: Alquileres por cliente (entidad) y equipo
+        @GetMapping("/por-cliente-equipo")
+        public List<ResponseAlquiler> buscarPorClienteYEquipo(
+                        @RequestParam int entidadId,
+                        @RequestParam int equipoId) {
+
+                return alquilerService.buscarPorEntidadYEquipo(entidadId, equipoId)
+                                .stream()
+                                .map(this::convertirResponse)
+                                .toList();
+        }
+
+        // 4. Operación REST 4: Alquileres por modelo de equipo
         @GetMapping("/por-modelo")
         public List<ResponseAlquiler> buscarPorModeloEquipo(
                         @RequestParam String modelo) {

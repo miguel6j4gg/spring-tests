@@ -240,12 +240,167 @@ public class AlquilerProcesoIntegrationTest {
                 "Debe rechazar con 409 CONFLICT cuando el equipo no se encuentra disponible");
     }
 
+    @Test
+    @Order(3)
+    @DisplayName("1.3 POST /alquileres [FLUJO ALTERNO - FALLIDO] - Cliente/Entidad no encontrado (404 Not Found)")
+    void test02b_RegistrarAlquiler_ClienteNoEncontrado_NotFound() {
+        Equipo eq = crearEquipo("EQ-CLI-NF-", "Generador Test", "GEN-NF", 1);
+
+        RequestAlquiler.DetalleAlquilerRequest detalle = new RequestAlquiler.DetalleAlquilerRequest(
+                eq.getId(),
+                List.of(),
+                List.of(),
+                1, 1000.0, 0.0, 0.0,
+                "Sede Central",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                null,
+                "Prueba cliente no existe"
+        );
+
+        RequestAlquiler request = new RequestAlquiler(
+                LocalDate.now(),
+                LocalDate.now().plusDays(5),
+                1,
+                999999, // Entidad ID inexistente
+                1000.0,
+                "efectivo",
+                0,
+                null,
+                null,
+                List.of(detalle)
+        );
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/alquileres", request, String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Debe responder 404 cuando el cliente/entidad no existe");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("1.4 POST /alquileres [FLUJO ALTERNO - FALLIDO] - Fecha fin anterior a fecha inicio (400 Bad Request)")
+    void test02c_RegistrarAlquiler_FechaFinAnteriorAFechaInicio_BadRequest() {
+        Equipo eq = crearEquipo("EQ-FECHA-", "Generador Fechas", "GEN-FECHA", 1);
+
+        RequestAlquiler.DetalleAlquilerRequest detalle = new RequestAlquiler.DetalleAlquilerRequest(
+                eq.getId(),
+                List.of(),
+                List.of(),
+                1, 1000.0, 0.0, 0.0,
+                "Sede Central",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                null,
+                "Prueba fecha inválida"
+        );
+
+        RequestAlquiler request = new RequestAlquiler(
+                LocalDate.now().plusDays(10), // Inicio: dentro de 10 días
+                LocalDate.now().plusDays(2),  // Fin: dentro de 2 días (ANTERIOR AL INICIO)
+                1,
+                entidadTest.getId(),
+                1000.0,
+                "efectivo",
+                0,
+                null,
+                null,
+                List.of(detalle)
+        );
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/alquileres", request, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Debe responder 400 cuando fecha fin es anterior a fecha inicio");
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("1.5 POST /alquileres [FLUJO ALTERNO - FALLIDO] - Cantidad de productos insuficiente / sin stock (400 Bad Request)")
+    void test02d_RegistrarAlquiler_StockProductoInsuficiente_BadRequest() {
+        Equipo eq = crearEquipo("EQ-STOCK-", "Compresor Atlas", "ATLAS-100", 1);
+
+        // Crear producto sin stock (stock = 0)
+        Producto prodSinStock = new Producto();
+        prodSinStock.setCodigo("PROD-NOSTOCK-" + System.currentTimeMillis());
+        prodSinStock.setNombre("Aceite Sintético Especial");
+        prodSinStock.setStock(0);
+        prodSinStock.setPrecio(150.0);
+        prodSinStock.setEstado(1);
+        prodSinStock = productoRepository.save(prodSinStock);
+
+        RequestAlquiler.DetalleAlquilerRequest.ProductoAlquilerRequest prodReq =
+                new RequestAlquiler.DetalleAlquilerRequest.ProductoAlquilerRequest(prodSinStock.getId(), prodSinStock.getPrecio());
+
+        RequestAlquiler.DetalleAlquilerRequest detalle = new RequestAlquiler.DetalleAlquilerRequest(
+                eq.getId(),
+                List.of(prodSinStock.getId()),
+                List.of(prodReq),
+                1, 1000.0, 0.0, 0.0,
+                "Sede Central",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                null,
+                "Prueba stock insuficiente"
+        );
+
+        RequestAlquiler request = new RequestAlquiler(
+                LocalDate.now(),
+                LocalDate.now().plusDays(5),
+                1,
+                entidadTest.getId(),
+                1000.0,
+                "efectivo",
+                0,
+                null,
+                null,
+                List.of(detalle)
+        );
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/alquileres", request, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Debe responder 400 cuando el producto no cuenta con stock");
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("1.6 POST /alquileres [FLUJO ALTERNO - FALLIDO] - Producto inválido/inexistente en el detalle (404 Not Found)")
+    void test02e_RegistrarAlquiler_ProductoInexistente_NotFound() {
+        Equipo eq = crearEquipo("EQ-PROD-NF-", "Torre Iluminación", "TORRE-10", 1);
+
+        RequestAlquiler.DetalleAlquilerRequest.ProductoAlquilerRequest prodReq =
+                new RequestAlquiler.DetalleAlquilerRequest.ProductoAlquilerRequest(999999, 100.0);
+
+        RequestAlquiler.DetalleAlquilerRequest detalle = new RequestAlquiler.DetalleAlquilerRequest(
+                eq.getId(),
+                List.of(999999),
+                List.of(prodReq),
+                1, 1000.0, 0.0, 0.0,
+                "Sede Central",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                null,
+                "Prueba producto inexistente"
+        );
+
+        RequestAlquiler request = new RequestAlquiler(
+                LocalDate.now(),
+                LocalDate.now().plusDays(5),
+                1,
+                entidadTest.getId(),
+                1000.0,
+                "efectivo",
+                0,
+                null,
+                null,
+                List.of(detalle)
+        );
+
+        ResponseEntity<String> response = restTemplate.postForEntity("/alquileres", request, String.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Debe responder 404 cuando el producto del detalle no existe");
+    }
+
     // =========================================================================
     // OPERACIÓN REST 2: GET /alquileres/{id}
     // =========================================================================
 
     @Test
-    @Order(3)
+    @Order(7)
     @DisplayName("2.1 GET /alquileres/{id} [EXITOSO] - Devuelve un Alquiler existente con cabecera y detalles")
     void test03_ObtenerAlquilerPorId_Exitoso() {
         assertNotNull(alquilerIdCreado, "Debe existir un alquiler creado en el test 1");
@@ -263,7 +418,7 @@ public class AlquilerProcesoIntegrationTest {
     }
 
     @Test
-    @Order(4)
+    @Order(8)
     @DisplayName("2.2 GET /alquileres/{id} [FALLIDO] - Debe responder (404 Not Found) con ID inexistente")
     void test04_ObtenerAlquilerPorId_Inexistente_NotFound() {
         ResponseEntity<String> response = restTemplate.getForEntity(
@@ -279,7 +434,7 @@ public class AlquilerProcesoIntegrationTest {
     // =========================================================================
 
     @Test
-    @Order(5)
+    @Order(9)
     @DisplayName("3.1 PATCH /alquileres/{id} [EXITOSO] - Debe actualizar la fecha de retorno y estado (devolución)")
     void test05_ActualizarAlquiler_DevolucionYFinalizacion_Exitoso() {
         assertNotNull(alquilerIdCreado, "Debe existir un alquiler creado en el test 1");
@@ -314,7 +469,7 @@ public class AlquilerProcesoIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Order(10)
     @DisplayName("3.2 PATCH /alquileres/{id} [FALLIDO] - Debe responder (404 Not Found) si el alquiler no existe")
     void test06_ActualizarAlquiler_Inexistente_NotFound() {
         RequestActualizarAlquiler requestActualizar = new RequestActualizarAlquiler(
@@ -339,14 +494,78 @@ public class AlquilerProcesoIntegrationTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    @Order(11)
+    @DisplayName("3.3 PATCH /alquileres/{id} [FLUJO ALTERNO - FALLIDO] - Fecha de retorno inválida/anterior a fecha inicio (400 Bad Request)")
+    void test06b_ActualizarAlquiler_FechaRetornoInvalida_BadRequest() {
+        assertNotNull(alquilerIdCreado, "Debe existir un alquiler creado en el test 1");
+
+        // Intentar registrar retorno con fecha de hace 1 año (anterior al inicio)
+        RequestActualizarAlquiler requestActualizar = new RequestActualizarAlquiler(
+                null,
+                LocalDateTime.now().minusYears(1),
+                null,
+                null,
+                null,
+                null,
+                "Fecha de retorno errónea"
+        );
+
+        HttpEntity<RequestActualizarAlquiler> requestEntity = new HttpEntity<>(requestActualizar);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                "/alquileres/" + alquilerIdCreado,
+                HttpMethod.PATCH,
+                requestEntity,
+                String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(),
+                "Debe responder 400 cuando la fecha de retorno es anterior al inicio del alquiler");
+    }
+
     // =========================================================================
-    // OPERACIÓN REST 4: GET /alquileres/por-modelo?modelo={modelo} (QUERY 1)
+    // QUERY 1: GET /alquileres/por-cliente-equipo
     // =========================================================================
 
     @Test
-    @Order(7)
+    @Order(12)
+    @DisplayName("QUERY 1.1 GET /alquileres/por-cliente-equipo [EXITOSO] - Listar alquileres por cliente y equipo")
+    void test07_BuscarAlquileresPorClienteYEquipo_Exitoso() {
+        assertNotNull(alquilerIdCreado, "Debe existir un alquiler creado en el test 1");
+
+        ResponseEntity<List<ResponseAlquiler>> response = restTemplate.exchange(
+                "/alquileres/por-cliente-equipo?entidadId=" + entidadTest.getId() + "&equipoId=" + equipoIdDisponible,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ResponseAlquiler>>() {}
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty(), "Debe encontrar al menos un alquiler para el cliente y equipo");
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("QUERY 1.2 GET /alquileres/por-cliente-equipo [FALLIDO] - Entidad/Equipo inexistente (404 Not Found)")
+    void test07b_BuscarAlquileresPorClienteYEquipo_Inexistente_NotFound() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                "/alquileres/por-cliente-equipo?entidadId=999999&equipoId=999999",
+                String.class
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    // =========================================================================
+    // OPERACIÓN REST 4: GET /alquileres/por-modelo?modelo={modelo}
+    // =========================================================================
+
+    @Test
+    @Order(14)
     @DisplayName("4.1 GET /alquileres/por-modelo [EXITOSO] - Debe listar alquileres asociados al modelo de equipo")
-    void test07_BuscarAlquileresPorModelo_Exitoso() {
+    void test08_BuscarAlquileresPorModelo_Exitoso() {
         ResponseEntity<List<ResponseAlquiler>> response = restTemplate.exchange(
                 "/alquileres/por-modelo?modelo=CAT-320D-HD",
                 HttpMethod.GET,
@@ -360,9 +579,9 @@ public class AlquilerProcesoIntegrationTest {
     }
 
     @Test
-    @Order(8)
+    @Order(15)
     @DisplayName("4.2 GET /alquileres/por-modelo [FALLIDO] - Debe responder (404 Not Found) al buscar modelo inexistente")
-    void test08_BuscarAlquileresPorModelo_Inexistente_NotFound() {
+    void test08b_BuscarAlquileresPorModelo_Inexistente_NotFound() {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 "/alquileres/por-modelo?modelo=MODELO_INEXISTENTE_XYZ",
                 String.class
@@ -376,7 +595,7 @@ public class AlquilerProcesoIntegrationTest {
     // =========================================================================
 
     @Test
-    @Order(9)
+    @Order(16)
     @DisplayName("5.1 GET /alquileres/{id}/detalle-equipos-productos [EXITOSO] - Devuelve detalle consolidado de equipos y productos")
     void test09_ObtenerDetalleEquiposProductos_Exitoso() {
         assertNotNull(alquilerIdCreado, "Debe existir un alquiler creado en el test 1");
@@ -400,7 +619,7 @@ public class AlquilerProcesoIntegrationTest {
     }
 
     @Test
-    @Order(10)
+    @Order(17)
     @DisplayName("5.2 GET /alquileres/{id}/detalle-equipos-productos [FALLIDO] - Debe responder (404 Not Found) con ID inexistente")
     void test10_ObtenerDetalleEquiposProductos_Inexistente_NotFound() {
         ResponseEntity<String> response = restTemplate.getForEntity(
