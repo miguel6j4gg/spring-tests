@@ -1,0 +1,41 @@
+{
+  "name": "Java 25 + Spring Boot + Angular 20",
+  "image": "mcr.microsoft.com/devcontainers/java:25-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
+  "postCreateCommand": "npm install -g @angular/cli@20",
+  "forwardPorts": [
+    8080,
+    4200
+  ],
+  "portsAttributes": {
+    "8080": {
+      "label": "Spring Boot API",
+      "onAutoForward": "notify",
+      "visibility": "public"
+    },
+    "4200": {
+      "label": "Angular App",
+      "onAutoForward": "notify",
+      "visibility": "public"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "java.import.gradle.java.home": "/opt/java/openjdk"
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr",
+        "humao.rest-client",
+        "angular.ng-template"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}
