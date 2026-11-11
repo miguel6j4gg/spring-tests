@@ -1,0 +1,215 @@
+<div class="page-container">
+
+  <section class="form-card">
+
+    <div class="form-header">
+      <span class="eyebrow">SERVICIO DE ALQUILER</span>
+      <h1>Solicitud de alquiler</h1>
+      <p>
+        Indica las características del equipo y el periodo
+        durante el cual necesitas el servicio.
+      </p>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+
+      <h3 class="section-title">01. Datos del cliente</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Nombre o razón social *</label>
+          <input
+            type="text"
+            formControlName="nombreEmpresa"
+            placeholder="Nombre de la empresa"
+            [class.invalid]="tieneError('nombreEmpresa')"
+          >
+          @if (tieneError('nombreEmpresa')) {
+            <span class="error">Ingrese al menos 3 caracteres.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>RUC *</label>
+          <input
+            type="text"
+            formControlName="ruc"
+            maxlength="11"
+            inputmode="numeric"
+            placeholder="11 dígitos"
+            [class.invalid]="tieneError('ruc')"
+          >
+          @if (tieneError('ruc')) {
+            <span class="error">El RUC debe tener exactamente 11 dígitos.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Persona de contacto *</label>
+          <input
+            type="text"
+            formControlName="contacto"
+            placeholder="Nombre del responsable"
+            [class.invalid]="tieneError('contacto')"
+          >
+          @if (tieneError('contacto')) {
+            <span class="error">Ingrese el nombre del contacto.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico *</label>
+          <input
+            type="email"
+            formControlName="correo"
+            placeholder="correo@empresa.com"
+            [class.invalid]="tieneError('correo')"
+          >
+          @if (tieneError('correo')) {
+            <span class="error">Ingrese un correo válido.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Teléfono celular *</label>
+          <input
+            type="tel"
+            formControlName="telefono"
+            maxlength="9"
+            inputmode="numeric"
+            placeholder="9XXXXXXXX"
+            [class.invalid]="tieneError('telefono')"
+          >
+          @if (tieneError('telefono')) {
+            <span class="error">Ingrese un celular válido de 9 dígitos.</span>
+          }
+        </div>
+
+      </div>
+
+      <h3 class="section-title">02. Características del alquiler</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Potencia requerida (kW) *</label>
+          <input
+            type="number"
+            formControlName="potencia"
+            min="1"
+            max="2000"
+            step="0.1"
+            placeholder="Ej. 150"
+            [class.invalid]="tieneError('potencia')"
+          >
+          @if (tieneError('potencia')) {
+            <span class="error">Ingrese una potencia entre 1 y 2000 kW.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Tipo de generador *</label>
+          <select formControlName="tipoGenerador">
+            <option value="">Seleccione</option>
+            <option value="monofasico">Monofásico</option>
+            <option value="trifasico">Trifásico</option>
+          </select>
+          @if (tieneError('tipoGenerador')) {
+            <span class="error">Seleccione el tipo de generador.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Fecha de inicio *</label>
+          <input
+            type="date"
+            formControlName="fechaInicio"
+            [min]="hoy"
+            [class.invalid]="tieneError('fechaInicio')"
+          >
+          @if (tieneError('fechaInicio')) {
+            <span class="error">Seleccione una fecha de inicio.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Fecha de finalización *</label>
+          <input
+            type="date"
+            formControlName="fechaFin"
+            [min]="formulario.get('fechaInicio')?.value || hoy"
+            [class.invalid]="tieneError('fechaFin') || periodoInvalido"
+          >
+          @if (tieneError('fechaFin')) {
+            <span class="error">Seleccione una fecha de finalización.</span>
+          }
+          @if (periodoInvalido) {
+            <span class="error">La fecha final debe ser posterior a la inicial.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Modalidad de alquiler *</label>
+          <select formControlName="modalidad">
+            <option value="">Seleccione</option>
+            <option value="maquina_seca">Máquina seca</option>
+            <option value="con_operador">Con operador</option>
+          </select>
+          @if (tieneError('modalidad')) {
+            <span class="error">Seleccione una modalidad.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Lugar de instalación *</label>
+          <input
+            type="text"
+            formControlName="ubicacion"
+            placeholder="Dirección o ubicación del servicio"
+            [class.invalid]="tieneError('ubicacion')"
+          >
+          @if (tieneError('ubicacion')) {
+            <span class="error">Ingrese una ubicación válida.</span>
+          }
+        </div>
+
+        <div class="field full">
+          <label>Descripción del servicio *</label>
+          <textarea
+            formControlName="descripcion"
+            placeholder="Indique el uso del equipo y otros requerimientos..."
+            [class.invalid]="tieneError('descripcion')"
+          ></textarea>
+          @if (tieneError('descripcion')) {
+            <span class="error">La descripción debe tener entre 10 y 500 caracteres.</span>
+          }
+        </div>
+
+      </div>
+
+      <div class="notice">
+        <strong>Nota:</strong>
+        La disponibilidad del equipo y las condiciones económicas
+        serán evaluadas por Skylight Generadores.
+      </div>
+
+      @if (enviado) {
+        <div class="success-message">
+          ✓ Solicitud de alquiler registrada correctamente.
+          Los datos fueron enviados a la consola.
+        </div>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/inicio" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">
+          Enviar solicitud →
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+</div>

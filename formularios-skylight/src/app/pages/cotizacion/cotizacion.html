@@ -1,0 +1,191 @@
+<div class="page-container">
+
+  <section class="form-card">
+
+    <div class="form-header">
+      <span class="eyebrow">SERVICIO DE VENTA</span>
+      <h1>Solicitud de cotización</h1>
+      <p>
+        Completa los siguientes datos para solicitar una cotización
+        de grupos electrógenos.
+      </p>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+
+      <h3 class="section-title">01. Información del cliente</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Tipo de cliente *</label>
+          <select formControlName="tipoCliente">
+            <option value="empresa">Empresa</option>
+            <option value="persona">Persona natural</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Nombre o razón social *</label>
+          <input
+            type="text"
+            formControlName="nombreCliente"
+            placeholder="Ingrese nombre o razón social"
+            [class.invalid]="tieneError('nombreCliente')"
+          >
+          @if (tieneError('nombreCliente')) {
+            <span class="error">Ingrese al menos 3 caracteres.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>RUC o DNI *</label>
+          <input
+            type="text"
+            formControlName="documento"
+            maxlength="11"
+            inputmode="numeric"
+            placeholder="8 u 11 dígitos"
+            [class.invalid]="tieneError('documento')"
+          >
+          @if (tieneError('documento')) {
+            <span class="error">Ingrese un DNI de 8 o RUC de 11 dígitos.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Persona de contacto *</label>
+          <input
+            type="text"
+            formControlName="contacto"
+            placeholder="Nombre del contacto"
+            [class.invalid]="tieneError('contacto')"
+          >
+          @if (tieneError('contacto')) {
+            <span class="error">El contacto es obligatorio.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico *</label>
+          <input
+            type="email"
+            formControlName="correo"
+            placeholder="correo@empresa.com"
+            [class.invalid]="tieneError('correo')"
+          >
+          @if (tieneError('correo')) {
+            <span class="error">Ingrese un correo válido.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Teléfono celular *</label>
+          <input
+            type="tel"
+            formControlName="telefono"
+            maxlength="9"
+            inputmode="numeric"
+            placeholder="9XXXXXXXX"
+            [class.invalid]="tieneError('telefono')"
+          >
+          @if (tieneError('telefono')) {
+            <span class="error">Ingrese un celular peruano de 9 dígitos.</span>
+          }
+        </div>
+
+      </div>
+
+      <h3 class="section-title">02. Características del equipo</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Tipo de equipo *</label>
+          <select formControlName="tipoEquipo">
+            <option value="">Seleccione</option>
+            <option value="grupo_electrogeno">Grupo electrógeno</option>
+            <option value="torre_iluminacion">Torre de iluminación</option>
+          </select>
+          @if (tieneError('tipoEquipo')) {
+            <span class="error">Seleccione un equipo.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Potencia requerida (kW) *</label>
+          <input
+            type="number"
+            formControlName="potencia"
+            min="1"
+            max="2000"
+            step="0.1"
+            placeholder="Ej. 100"
+            [class.invalid]="tieneError('potencia')"
+          >
+          @if (tieneError('potencia')) {
+            <span class="error">Ingrese una potencia entre 1 y 2000 kW.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Tipo de fase *</label>
+          <select formControlName="fase">
+            <option value="">Seleccione</option>
+            <option value="monofasico">Monofásico</option>
+            <option value="trifasico">Trifásico</option>
+            <option value="no_aplica">No aplica</option>
+          </select>
+          @if (tieneError('fase')) {
+            <span class="error">Seleccione el tipo de fase.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Aplicación del equipo *</label>
+          <select formControlName="aplicacion">
+            <option value="">Seleccione</option>
+            <option value="respaldo">Respaldo eléctrico</option>
+            <option value="principal">Fuente principal</option>
+            <option value="industrial">Uso industrial</option>
+            <option value="construccion">Construcción</option>
+            <option value="otro">Otro</option>
+          </select>
+          @if (tieneError('aplicacion')) {
+            <span class="error">Seleccione una aplicación.</span>
+          }
+        </div>
+
+        <div class="field full">
+          <label>Descripción del requerimiento *</label>
+          <textarea
+            formControlName="descripcion"
+            placeholder="Describa las características o necesidades del equipo..."
+            [class.invalid]="tieneError('descripcion')"
+          ></textarea>
+          @if (tieneError('descripcion')) {
+            <span class="error">La descripción debe tener entre 10 y 500 caracteres.</span>
+          }
+        </div>
+
+      </div>
+
+      @if (enviado) {
+        <div class="success-message">
+          ✓ Solicitud de cotización registrada correctamente.
+          Los datos fueron enviados a la consola.
+        </div>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/inicio" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">
+          Enviar cotización →
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+</div>

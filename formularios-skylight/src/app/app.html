@@ -1,0 +1,28 @@
+<header class="topbar">
+  <a routerLink="/inicio" class="brand">
+    <span class="brand-icon">⚡</span>
+    <span>
+      <strong>SKYLIGHT</strong>
+      <small>GENERADORES</small>
+    </span>
+  </a>
+
+  <nav class="navigation">
+    <a routerLink="/inicio" routerLinkActive="active"
+       [routerLinkActiveOptions]="{exact:true}">Inicio</a>
+
+    <a routerLink="/cotizacion" routerLinkActive="active">Venta</a>
+
+    <a routerLink="/alquiler" routerLinkActive="active">Alquiler</a>
+
+    <a routerLink="/mantenimiento" routerLinkActive="active">Mantenimiento</a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer">
+  <p>© 2026 Skylight Generadores E.I.R.L. | Soluciones energéticas</p>
+</footer>

@@ -1,0 +1,90 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.topbar {
+  min-height: 76px;
+  padding: 12px 7%;
+  background: #101d29;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.brand-icon {
+  font-size: 32px;
+  color: #fad201;
+}
+
+.brand strong {
+  display: block;
+  font-size: 19px;
+  letter-spacing: 1.5px;
+}
+
+.brand small {
+  display: block;
+  color: #fad201;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+.navigation {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: #dce5ed;
+  padding: 10px 13px;
+  border-radius: 7px;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.navigation a:hover,
+.navigation a.active {
+  background: #fad201;
+  color: #101d29;
+  font-weight: 700;
+}
+
+main {
+  min-height: calc(100vh - 140px);
+}
+
+.footer {
+  padding: 18px;
+  text-align: center;
+  background: #101d29;
+  color: #aab7c4;
+  font-size: 13px;
+}
+
+@media(max-width: 650px) {
+  .topbar {
+    justify-content: center;
+  }
+
+  .navigation {
+    justify-content: center;
+  }
+
+  .navigation a {
+    font-size: 12px;
+    padding: 8px;
+  }
+}

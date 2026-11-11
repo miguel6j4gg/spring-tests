@@ -1,0 +1,216 @@
+<div class="page-container">
+
+  <section class="form-card">
+
+    <div class="form-header">
+      <span class="eyebrow">SERVICIO TÉCNICO</span>
+      <h1>Solicitud de mantenimiento</h1>
+      <p>
+        Registra tu solicitud para recibir atención técnica
+        de nuestros especialistas.
+      </p>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+
+      <h3 class="section-title">01. Información del cliente</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Tipo de cliente *</label>
+          <select formControlName="tipoCliente">
+            <option value="empresa">Empresa</option>
+            <option value="persona">Persona natural</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Nombre o razón social *</label>
+          <input
+            type="text"
+            formControlName="nombreCliente"
+            placeholder="Nombre del cliente"
+            [class.invalid]="tieneError('nombreCliente')"
+          >
+          @if (tieneError('nombreCliente')) {
+            <span class="error">Ingrese al menos 3 caracteres.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>RUC o DNI *</label>
+          <input
+            type="text"
+            formControlName="documento"
+            maxlength="11"
+            inputmode="numeric"
+            placeholder="8 u 11 dígitos"
+            [class.invalid]="tieneError('documento')"
+          >
+          @if (tieneError('documento')) {
+            <span class="error">Ingrese un DNI de 8 o RUC de 11 dígitos.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico *</label>
+          <input
+            type="email"
+            formControlName="correo"
+            placeholder="correo@empresa.com"
+            [class.invalid]="tieneError('correo')"
+          >
+          @if (tieneError('correo')) {
+            <span class="error">Ingrese un correo válido.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Teléfono celular *</label>
+          <input
+            type="tel"
+            formControlName="telefono"
+            maxlength="9"
+            inputmode="numeric"
+            placeholder="9XXXXXXXX"
+            [class.invalid]="tieneError('telefono')"
+          >
+          @if (tieneError('telefono')) {
+            <span class="error">Ingrese un celular válido de 9 dígitos.</span>
+          }
+        </div>
+
+      </div>
+
+      <h3 class="section-title">02. Información del equipo</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Tipo de equipo *</label>
+          <select formControlName="tipoEquipo">
+            <option value="">Seleccione</option>
+            <option value="monofasico">Generador monofásico</option>
+            <option value="trifasico">Generador trifásico</option>
+            <option value="torre_iluminacion">Torre de iluminación</option>
+            <option value="otro">Otro equipo</option>
+          </select>
+          @if (tieneError('tipoEquipo')) {
+            <span class="error">Seleccione el tipo de equipo.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Marca *</label>
+          <input
+            type="text"
+            formControlName="marca"
+            placeholder="Ej. Perkins, Cummins, etc."
+            [class.invalid]="tieneError('marca')"
+          >
+          @if (tieneError('marca')) {
+            <span class="error">Ingrese la marca del equipo.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Modelo *</label>
+          <input
+            type="text"
+            formControlName="modelo"
+            placeholder="Modelo del generador"
+            [class.invalid]="tieneError('modelo')"
+          >
+          @if (tieneError('modelo')) {
+            <span class="error">Ingrese el modelo del equipo.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Horómetro actual *</label>
+          <input
+            type="number"
+            formControlName="horometro"
+            min="0"
+            max="1000000"
+            step="0.1"
+            placeholder="Ej. 1250.5"
+            [class.invalid]="tieneError('horometro')"
+          >
+          @if (tieneError('horometro')) {
+            <span class="error">Ingrese un horómetro igual o mayor a cero.</span>
+          }
+        </div>
+
+      </div>
+
+      <h3 class="section-title">03. Detalles del servicio</h3>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Tipo de mantenimiento *</label>
+          <select formControlName="tipoMantenimiento">
+            <option value="">Seleccione</option>
+            <option value="preventivo">Preventivo</option>
+            <option value="correctivo">Correctivo</option>
+          </select>
+          @if (tieneError('tipoMantenimiento')) {
+            <span class="error">Seleccione el tipo de mantenimiento.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Fecha solicitada *</label>
+          <input
+            type="date"
+            formControlName="fechaSolicitada"
+            [min]="hoy"
+            [class.invalid]="tieneError('fechaSolicitada')"
+          >
+          @if (tieneError('fechaSolicitada')) {
+            <span class="error">La fecha no puede ser anterior a hoy.</span>
+          }
+        </div>
+
+        <div class="field full">
+          <label>Descripción de la falla o trabajo requerido *</label>
+          <textarea
+            formControlName="descripcion"
+            placeholder="Describa el problema, los síntomas o el mantenimiento requerido..."
+            [class.invalid]="tieneError('descripcion')"
+          ></textarea>
+          @if (tieneError('descripcion')) {
+            <span class="error">La descripción debe tener entre 10 y 500 caracteres.</span>
+          }
+        </div>
+
+      </div>
+
+      <div class="notice">
+        <strong>Importante:</strong>
+        Para una evaluación técnica adecuada, registre el horómetro
+        actual del generador y describa detalladamente el problema
+        o trabajo requerido.
+      </div>
+
+      @if (enviado) {
+        <div class="success-message">
+          ✓ Solicitud de mantenimiento registrada correctamente.
+          Los datos fueron enviados a la consola.
+        </div>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/inicio" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">
+          Enviar solicitud →
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+
+</div>
