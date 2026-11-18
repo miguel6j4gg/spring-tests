@@ -1,5 +1,5 @@
 <header class="topbar">
-  <a routerLink="/inicio" class="brand">
+  <a routerLink="/inicio" class="brand" (click)="closeMenu()">
     <span class="brand-icon">⚡</span>
     <span>
       <strong>SKYLIGHT</strong>
@@ -7,15 +7,28 @@
     </span>
   </a>
 
-  <nav class="navigation">
+  <button
+    type="button"
+    class="menu-toggle"
+    [class.open]="menuOpen"
+    [attr.aria-expanded]="menuOpen"
+    aria-label="Abrir menú"
+    (click)="toggleMenu()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <nav class="navigation" [class.open]="menuOpen">
     <a routerLink="/inicio" routerLinkActive="active"
-       [routerLinkActiveOptions]="{exact:true}">Inicio</a>
+       [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">Inicio</a>
 
-    <a routerLink="/cotizacion" routerLinkActive="active">Venta</a>
+    <a routerLink="/cotizacion" routerLinkActive="active" (click)="closeMenu()">Venta</a>
 
-    <a routerLink="/alquiler" routerLinkActive="active">Alquiler</a>
+    <a routerLink="/alquiler" routerLinkActive="active" (click)="closeMenu()">Alquiler</a>
 
-    <a routerLink="/mantenimiento" routerLinkActive="active">Mantenimiento</a>
+    <a routerLink="/mantenimiento" routerLinkActive="active" (click)="closeMenu()">Mantenimiento</a>
   </nav>
 </header>
 

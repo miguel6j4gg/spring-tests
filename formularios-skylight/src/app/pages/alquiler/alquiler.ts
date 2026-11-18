@@ -19,7 +19,7 @@ const validarPeriodoAlquiler: ValidatorFn = (
   if (!inicio || !fin) return null;
 
   return new Date(fin + 'T00:00:00') >
-         new Date(inicio + 'T00:00:00')
+    new Date(inicio + 'T00:00:00')
     ? null
     : { periodoInvalido: true };
 };
