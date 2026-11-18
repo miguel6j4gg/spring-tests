@@ -8,30 +8,37 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-function validarDocumento(control: AbstractControl): ValidationErrors | null {
-  const valor = String(control.value ?? '');
+const fechaNoPasada = (
+  control: AbstractControl
+): ValidationErrors | null => {
 
-  if (!valor) return null;
+  if (!control.value) return null;
 
-  return /^(\d{8}|\d{11})$/.test(valor)
-    ? null
-    : { documentoInvalido: true };
-}
+  const fecha = new Date(control.value + 'T00:00:00');
+  const hoy = new Date();
+
+  hoy.setHours(0, 0, 0, 0);
+
+  return fecha >= hoy ? null : { fechaPasada: true };
+};
 
 @Component({
-  selector: 'app-cotizacion',
+  selector: 'app-mantenimiento-form',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './cotizacion.html',
-  styleUrl: './cotizacion.css'
+  templateUrl: './mantenimiento-form.html',
+  styleUrl: './mantenimiento-form.css'
 })
-export class Cotizacion {
+export class MantenimientoForm {
 
   enviado = false;
 
   private fb = new FormBuilder();
 
+  hoy = new Date().toLocaleDateString('en-CA');
+
   formulario = this.fb.group({
+
     tipoCliente: ['empresa', Validators.required],
 
     nombreCliente: ['', [
@@ -42,12 +49,7 @@ export class Cotizacion {
 
     documento: ['', [
       Validators.required,
-      validarDocumento
-    ]],
-
-    contacto: ['', [
-      Validators.required,
-      Validators.minLength(3)
+      Validators.pattern(/^(\d{8}|\d{11})$/)
     ]],
 
     correo: ['', [
@@ -62,24 +64,36 @@ export class Cotizacion {
 
     tipoEquipo: ['', Validators.required],
 
-    potencia: [null as number | null, [
+    marca: ['', Validators.required],
+
+    modelo: ['', [
       Validators.required,
-      Validators.min(1),
-      Validators.max(2000)
+      Validators.minLength(2)
     ]],
 
-    fase: ['', Validators.required],
+    tipoMantenimiento: ['', Validators.required],
 
-    aplicacion: ['', Validators.required],
+    horometro: [null as number | null, [
+      Validators.required,
+      Validators.min(0),
+      Validators.max(1000000)
+    ]],
+
+    fechaSolicitada: ['', [
+      Validators.required,
+      fechaNoPasada
+    ]],
 
     descripcion: ['', [
       Validators.required,
       Validators.minLength(10),
       Validators.maxLength(500)
     ]]
+
   });
 
   enviar(): void {
+
     this.enviado = false;
 
     if (this.formulario.invalid) {
@@ -88,15 +102,16 @@ export class Cotizacion {
     }
 
     const datos = {
-      tipoSolicitud: 'COTIZACION DE VENTA',
+      tipoSolicitud: 'SOLICITUD DE MANTENIMIENTO',
       fechaRegistro: new Date().toISOString(),
       ...this.formulario.getRawValue()
     };
 
-    console.log('===== SOLICITUD DE COTIZACIÓN =====');
+    console.log('===== SOLICITUD DE MANTENIMIENTO =====');
     console.log(datos);
 
     this.enviado = true;
+
     this.formulario.reset({
       tipoCliente: 'empresa'
     });
@@ -106,4 +121,5 @@ export class Cotizacion {
     const control = this.formulario.get(campo);
     return !!control && control.invalid && control.touched;
   }
+
 }

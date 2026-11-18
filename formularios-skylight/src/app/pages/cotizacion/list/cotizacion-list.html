@@ -1,0 +1,68 @@
+<div class="page-container">
+  <section class="table-card">
+    <div class="table-header">
+      <div>
+        <span class="eyebrow">SERVICIO DE VENTA</span>
+        <h1>Cotizaciones registradas</h1>
+        <p>Listado de solicitudes de cotización de grupos electrógenos.</p>
+      </div>
+      <a routerLink="registrar" class="btn btn-primary">+ Registrar</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Documento</th>
+            <th>Equipo</th>
+            <th>Potencia (kW)</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of registros; track item.id) {
+            <tr>
+              <td>{{ item.id }}</td>
+              <td>{{ item.cliente }}</td>
+              <td>{{ item.documento }}</td>
+              <td>{{ item.equipo }}</td>
+              <td>{{ item.potencia }}</td>
+              <td>{{ item.fecha }}</td>
+              <td><span class="badge">{{ item.estado }}</span></td>
+              <td><button type="button" class="btn-view" (click)="ver(item)">Ver</button></td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="empty">No hay cotizaciones registradas.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+@if (seleccionado) {
+  <app-modal
+    [eyebrow]="'DETALLE ' + seleccionado.id"
+    [title]="seleccionado.cliente"
+    [subtitle]="'Solicitud de cotización registrada el ' + seleccionado.fecha"
+    (closed)="cerrar()"
+  >
+    <div class="detail"><span>Tipo cliente</span><strong>{{ seleccionado.tipoCliente }}</strong></div>
+    <div class="detail"><span>Documento</span><strong>{{ seleccionado.documento }}</strong></div>
+    <div class="detail"><span>Contacto</span><strong>{{ seleccionado.contacto }}</strong></div>
+    <div class="detail"><span>Correo</span><strong>{{ seleccionado.correo }}</strong></div>
+    <div class="detail"><span>Teléfono</span><strong>{{ seleccionado.telefono }}</strong></div>
+    <div class="detail"><span>Equipo</span><strong>{{ seleccionado.equipo }}</strong></div>
+    <div class="detail"><span>Potencia</span><strong>{{ seleccionado.potencia }} kW</strong></div>
+    <div class="detail"><span>Fase</span><strong>{{ seleccionado.fase }}</strong></div>
+    <div class="detail"><span>Aplicación</span><strong>{{ seleccionado.aplicacion }}</strong></div>
+    <div class="detail"><span>Estado</span><strong>{{ seleccionado.estado }}</strong></div>
+    <div class="detail full"><span>Descripción</span><strong>{{ seleccionado.descripcion }}</strong></div>
+  </app-modal>
+}

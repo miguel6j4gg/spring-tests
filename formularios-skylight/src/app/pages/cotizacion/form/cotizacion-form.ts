@@ -4,51 +4,45 @@ import {
   ReactiveFormsModule,
   Validators,
   AbstractControl,
-  ValidationErrors,
-  ValidatorFn
+  ValidationErrors
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-const validarPeriodoAlquiler: ValidatorFn = (
-  control: AbstractControl
-): ValidationErrors | null => {
+function validarDocumento(control: AbstractControl): ValidationErrors | null {
+  const valor = String(control.value ?? '');
 
-  const inicio = control.get('fechaInicio')?.value;
-  const fin = control.get('fechaFin')?.value;
+  if (!valor) return null;
 
-  if (!inicio || !fin) return null;
-
-  return new Date(fin + 'T00:00:00') >
-    new Date(inicio + 'T00:00:00')
+  return /^(\d{8}|\d{11})$/.test(valor)
     ? null
-    : { periodoInvalido: true };
-};
+    : { documentoInvalido: true };
+}
 
 @Component({
-  selector: 'app-alquiler',
+  selector: 'app-cotizacion-form',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './alquiler.html',
-  styleUrl: './alquiler.css'
+  templateUrl: './cotizacion-form.html',
+  styleUrl: './cotizacion-form.css'
 })
-export class Alquiler {
+export class CotizacionForm {
 
   enviado = false;
 
   private fb = new FormBuilder();
 
-  hoy = new Date().toLocaleDateString('en-CA');
-
   formulario = this.fb.group({
-    nombreEmpresa: ['', [
+    tipoCliente: ['empresa', Validators.required],
+
+    nombreCliente: ['', [
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(100)
     ]],
 
-    ruc: ['', [
+    documento: ['', [
       Validators.required,
-      Validators.pattern(/^\d{11}$/)
+      validarDocumento
     ]],
 
     contacto: ['', [
@@ -66,35 +60,26 @@ export class Alquiler {
       Validators.pattern(/^9\d{8}$/)
     ]],
 
+    tipoEquipo: ['', Validators.required],
+
     potencia: [null as number | null, [
       Validators.required,
       Validators.min(1),
       Validators.max(2000)
     ]],
 
-    tipoGenerador: ['', Validators.required],
+    fase: ['', Validators.required],
 
-    fechaInicio: ['', Validators.required],
-
-    fechaFin: ['', Validators.required],
-
-    modalidad: ['', Validators.required],
-
-    ubicacion: ['', [
-      Validators.required,
-      Validators.minLength(5)
-    ]],
+    aplicacion: ['', Validators.required],
 
     descripcion: ['', [
       Validators.required,
       Validators.minLength(10),
       Validators.maxLength(500)
     ]]
-
-  }, { validators: validarPeriodoAlquiler });
+  });
 
   enviar(): void {
-
     this.enviado = false;
 
     if (this.formulario.invalid) {
@@ -103,27 +88,22 @@ export class Alquiler {
     }
 
     const datos = {
-      tipoSolicitud: 'SOLICITUD DE ALQUILER',
+      tipoSolicitud: 'COTIZACION DE VENTA',
       fechaRegistro: new Date().toISOString(),
       ...this.formulario.getRawValue()
     };
 
-    console.log('===== SOLICITUD DE ALQUILER =====');
+    console.log('===== SOLICITUD DE COTIZACIÓN =====');
     console.log(datos);
 
     this.enviado = true;
-
-    this.formulario.reset();
+    this.formulario.reset({
+      tipoCliente: 'empresa'
+    });
   }
 
   tieneError(campo: string): boolean {
     const control = this.formulario.get(campo);
     return !!control && control.invalid && control.touched;
-  }
-
-  get periodoInvalido(): boolean {
-    return !!this.formulario.errors?.['periodoInvalido']
-      && (this.formulario.get('fechaInicio')?.touched ?? false)
-      && (this.formulario.get('fechaFin')?.touched ?? false);
   }
 }

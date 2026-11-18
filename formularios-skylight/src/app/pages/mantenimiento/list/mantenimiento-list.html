@@ -1,0 +1,66 @@
+<div class="page-container">
+  <section class="table-card">
+    <div class="table-header">
+      <div>
+        <span class="eyebrow">SERVICIO TÉCNICO</span>
+        <h1>Mantenimientos registrados</h1>
+        <p>Listado de solicitudes de mantenimiento técnico.</p>
+      </div>
+      <a routerLink="registrar" class="btn btn-primary">+ Registrar</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Equipo</th>
+            <th>Tipo</th>
+            <th>Fecha solicitada</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of registros; track item.id) {
+            <tr>
+              <td>{{ item.id }}</td>
+              <td>{{ item.cliente }}</td>
+              <td>{{ item.equipo }}</td>
+              <td>{{ item.tipo }}</td>
+              <td>{{ item.fechaSolicitada }}</td>
+              <td><span class="badge">{{ item.estado }}</span></td>
+              <td><button type="button" class="btn-view" (click)="ver(item)">Ver</button></td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty">No hay mantenimientos registrados.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+@if (seleccionado) {
+  <app-modal
+    [eyebrow]="'DETALLE ' + seleccionado.id"
+    [title]="seleccionado.cliente"
+    [subtitle]="'Mantenimiento ' + seleccionado.tipo + ' — ' + seleccionado.fechaSolicitada"
+    (closed)="cerrar()"
+  >
+    <div class="detail"><span>Tipo cliente</span><strong>{{ seleccionado.tipoCliente }}</strong></div>
+    <div class="detail"><span>Documento</span><strong>{{ seleccionado.documento }}</strong></div>
+    <div class="detail"><span>Correo</span><strong>{{ seleccionado.correo }}</strong></div>
+    <div class="detail"><span>Teléfono</span><strong>{{ seleccionado.telefono }}</strong></div>
+    <div class="detail"><span>Equipo</span><strong>{{ seleccionado.equipo }}</strong></div>
+    <div class="detail"><span>Marca</span><strong>{{ seleccionado.marca }}</strong></div>
+    <div class="detail"><span>Modelo</span><strong>{{ seleccionado.modelo }}</strong></div>
+    <div class="detail"><span>Tipo</span><strong>{{ seleccionado.tipo }}</strong></div>
+    <div class="detail"><span>Horómetro</span><strong>{{ seleccionado.horometro }}</strong></div>
+    <div class="detail"><span>Estado</span><strong>{{ seleccionado.estado }}</strong></div>
+    <div class="detail full"><span>Descripción</span><strong>{{ seleccionado.descripcion }}</strong></div>
+  </app-modal>
+}

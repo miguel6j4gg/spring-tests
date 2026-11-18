@@ -3,11 +3,11 @@
   <section class="form-card">
 
     <div class="form-header">
-      <span class="eyebrow">SERVICIO TÉCNICO</span>
-      <h1>Solicitud de mantenimiento</h1>
+      <span class="eyebrow">SERVICIO DE VENTA</span>
+      <h1>Solicitud de cotización</h1>
       <p>
-        Registra tu solicitud para recibir atención técnica
-        de nuestros especialistas.
+        Completa los siguientes datos para solicitar una cotización
+        de grupos electrógenos.
       </p>
     </div>
 
@@ -30,7 +30,7 @@
           <input
             type="text"
             formControlName="nombreCliente"
-            placeholder="Nombre del cliente"
+            placeholder="Ingrese nombre o razón social"
             [class.invalid]="tieneError('nombreCliente')"
           >
           @if (tieneError('nombreCliente')) {
@@ -50,6 +50,19 @@
           >
           @if (tieneError('documento')) {
             <span class="error">Ingrese un DNI de 8 o RUC de 11 dígitos.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label>Persona de contacto *</label>
+          <input
+            type="text"
+            formControlName="contacto"
+            placeholder="Nombre del contacto"
+            [class.invalid]="tieneError('contacto')"
+          >
+          @if (tieneError('contacto')) {
+            <span class="error">El contacto es obligatorio.</span>
           }
         </div>
 
@@ -77,13 +90,13 @@
             [class.invalid]="tieneError('telefono')"
           >
           @if (tieneError('telefono')) {
-            <span class="error">Ingrese un celular válido de 9 dígitos.</span>
+            <span class="error">Ingrese un celular peruano de 9 dígitos.</span>
           }
         </div>
 
       </div>
 
-      <h3 class="section-title">02. Información del equipo</h3>
+      <h3 class="section-title">02. Características del equipo</h3>
 
       <div class="form-grid">
 
@@ -91,94 +104,63 @@
           <label>Tipo de equipo *</label>
           <select formControlName="tipoEquipo">
             <option value="">Seleccione</option>
-            <option value="monofasico">Generador monofásico</option>
-            <option value="trifasico">Generador trifásico</option>
+            <option value="grupo_electrogeno">Grupo electrógeno</option>
             <option value="torre_iluminacion">Torre de iluminación</option>
-            <option value="otro">Otro equipo</option>
           </select>
           @if (tieneError('tipoEquipo')) {
-            <span class="error">Seleccione el tipo de equipo.</span>
+            <span class="error">Seleccione un equipo.</span>
           }
         </div>
 
         <div class="field">
-          <label>Marca *</label>
-          <input
-            type="text"
-            formControlName="marca"
-            placeholder="Ej. Perkins, Cummins, etc."
-            [class.invalid]="tieneError('marca')"
-          >
-          @if (tieneError('marca')) {
-            <span class="error">Ingrese la marca del equipo.</span>
-          }
-        </div>
-
-        <div class="field">
-          <label>Modelo *</label>
-          <input
-            type="text"
-            formControlName="modelo"
-            placeholder="Modelo del generador"
-            [class.invalid]="tieneError('modelo')"
-          >
-          @if (tieneError('modelo')) {
-            <span class="error">Ingrese el modelo del equipo.</span>
-          }
-        </div>
-
-        <div class="field">
-          <label>Horómetro actual *</label>
+          <label>Potencia requerida (kW) *</label>
           <input
             type="number"
-            formControlName="horometro"
-            min="0"
-            max="1000000"
+            formControlName="potencia"
+            min="1"
+            max="2000"
             step="0.1"
-            placeholder="Ej. 1250.5"
-            [class.invalid]="tieneError('horometro')"
+            placeholder="Ej. 100"
+            [class.invalid]="tieneError('potencia')"
           >
-          @if (tieneError('horometro')) {
-            <span class="error">Ingrese un horómetro igual o mayor a cero.</span>
+          @if (tieneError('potencia')) {
+            <span class="error">Ingrese una potencia entre 1 y 2000 kW.</span>
           }
         </div>
 
-      </div>
-
-      <h3 class="section-title">03. Detalles del servicio</h3>
-
-      <div class="form-grid">
-
         <div class="field">
-          <label>Tipo de mantenimiento *</label>
-          <select formControlName="tipoMantenimiento">
+          <label>Tipo de fase *</label>
+          <select formControlName="fase">
             <option value="">Seleccione</option>
-            <option value="preventivo">Preventivo</option>
-            <option value="correctivo">Correctivo</option>
+            <option value="monofasico">Monofásico</option>
+            <option value="trifasico">Trifásico</option>
+            <option value="no_aplica">No aplica</option>
           </select>
-          @if (tieneError('tipoMantenimiento')) {
-            <span class="error">Seleccione el tipo de mantenimiento.</span>
+          @if (tieneError('fase')) {
+            <span class="error">Seleccione el tipo de fase.</span>
           }
         </div>
 
         <div class="field">
-          <label>Fecha solicitada *</label>
-          <input
-            type="date"
-            formControlName="fechaSolicitada"
-            [min]="hoy"
-            [class.invalid]="tieneError('fechaSolicitada')"
-          >
-          @if (tieneError('fechaSolicitada')) {
-            <span class="error">La fecha no puede ser anterior a hoy.</span>
+          <label>Aplicación del equipo *</label>
+          <select formControlName="aplicacion">
+            <option value="">Seleccione</option>
+            <option value="respaldo">Respaldo eléctrico</option>
+            <option value="principal">Fuente principal</option>
+            <option value="industrial">Uso industrial</option>
+            <option value="construccion">Construcción</option>
+            <option value="otro">Otro</option>
+          </select>
+          @if (tieneError('aplicacion')) {
+            <span class="error">Seleccione una aplicación.</span>
           }
         </div>
 
         <div class="field full">
-          <label>Descripción de la falla o trabajo requerido *</label>
+          <label>Descripción del requerimiento *</label>
           <textarea
             formControlName="descripcion"
-            placeholder="Describa el problema, los síntomas o el mantenimiento requerido..."
+            placeholder="Describa las características o necesidades del equipo..."
             [class.invalid]="tieneError('descripcion')"
           ></textarea>
           @if (tieneError('descripcion')) {
@@ -188,24 +170,17 @@
 
       </div>
 
-      <div class="notice">
-        <strong>Importante:</strong>
-        Para una evaluación técnica adecuada, registre el horómetro
-        actual del generador y describa detalladamente el problema
-        o trabajo requerido.
-      </div>
-
       @if (enviado) {
         <div class="success-message">
-          ✓ Solicitud de mantenimiento registrada correctamente.
+          ✓ Solicitud de cotización registrada correctamente.
           Los datos fueron enviados a la consola.
         </div>
       }
 
       <div class="form-actions">
-        <a routerLink="/inicio" class="btn btn-secondary">Cancelar</a>
+        <a routerLink=".." class="btn btn-secondary">Cancelar</a>
         <button type="submit" class="btn btn-primary">
-          Enviar solicitud →
+          Enviar cotización →
         </button>
       </div>
 

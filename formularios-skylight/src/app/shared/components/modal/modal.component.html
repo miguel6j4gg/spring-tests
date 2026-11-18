@@ -1,0 +1,26 @@
+<div class="modal-backdrop" (click)="cerrar()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        @if (eyebrow) {
+          <span class="eyebrow">{{ eyebrow }}</span>
+        }
+        @if (title) {
+          <h2>{{ title }}</h2>
+        }
+        @if (subtitle) {
+          <p>{{ subtitle }}</p>
+        }
+      </div>
+      <button type="button" class="modal-close" (click)="cerrar()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cerrar()">Cerrar</button>
+    </div>
+  </div>
+</div>

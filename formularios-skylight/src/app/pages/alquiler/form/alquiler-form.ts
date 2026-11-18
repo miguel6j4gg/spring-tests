@@ -4,32 +4,34 @@ import {
   ReactiveFormsModule,
   Validators,
   AbstractControl,
-  ValidationErrors
+  ValidationErrors,
+  ValidatorFn
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-const fechaNoPasada = (
+const validarPeriodoAlquiler: ValidatorFn = (
   control: AbstractControl
 ): ValidationErrors | null => {
 
-  if (!control.value) return null;
+  const inicio = control.get('fechaInicio')?.value;
+  const fin = control.get('fechaFin')?.value;
 
-  const fecha = new Date(control.value + 'T00:00:00');
-  const hoy = new Date();
+  if (!inicio || !fin) return null;
 
-  hoy.setHours(0, 0, 0, 0);
-
-  return fecha >= hoy ? null : { fechaPasada: true };
+  return new Date(fin + 'T00:00:00') >
+    new Date(inicio + 'T00:00:00')
+    ? null
+    : { periodoInvalido: true };
 };
 
 @Component({
-  selector: 'app-mantenimiento',
+  selector: 'app-alquiler-form',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './mantenimiento.html',
-  styleUrl: './mantenimiento.css'
+  templateUrl: './alquiler-form.html',
+  styleUrl: './alquiler-form.css'
 })
-export class Mantenimiento {
+export class AlquilerForm {
 
   enviado = false;
 
@@ -38,18 +40,20 @@ export class Mantenimiento {
   hoy = new Date().toLocaleDateString('en-CA');
 
   formulario = this.fb.group({
-
-    tipoCliente: ['empresa', Validators.required],
-
-    nombreCliente: ['', [
+    nombreEmpresa: ['', [
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(100)
     ]],
 
-    documento: ['', [
+    ruc: ['', [
       Validators.required,
-      Validators.pattern(/^(\d{8}|\d{11})$/)
+      Validators.pattern(/^\d{11}$/)
+    ]],
+
+    contacto: ['', [
+      Validators.required,
+      Validators.minLength(3)
     ]],
 
     correo: ['', [
@@ -62,26 +66,23 @@ export class Mantenimiento {
       Validators.pattern(/^9\d{8}$/)
     ]],
 
-    tipoEquipo: ['', Validators.required],
-
-    marca: ['', Validators.required],
-
-    modelo: ['', [
+    potencia: [null as number | null, [
       Validators.required,
-      Validators.minLength(2)
+      Validators.min(1),
+      Validators.max(2000)
     ]],
 
-    tipoMantenimiento: ['', Validators.required],
+    tipoGenerador: ['', Validators.required],
 
-    horometro: [null as number | null, [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(1000000)
-    ]],
+    fechaInicio: ['', Validators.required],
 
-    fechaSolicitada: ['', [
+    fechaFin: ['', Validators.required],
+
+    modalidad: ['', Validators.required],
+
+    ubicacion: ['', [
       Validators.required,
-      fechaNoPasada
+      Validators.minLength(5)
     ]],
 
     descripcion: ['', [
@@ -90,7 +91,7 @@ export class Mantenimiento {
       Validators.maxLength(500)
     ]]
 
-  });
+  }, { validators: validarPeriodoAlquiler });
 
   enviar(): void {
 
@@ -102,19 +103,17 @@ export class Mantenimiento {
     }
 
     const datos = {
-      tipoSolicitud: 'SOLICITUD DE MANTENIMIENTO',
+      tipoSolicitud: 'SOLICITUD DE ALQUILER',
       fechaRegistro: new Date().toISOString(),
       ...this.formulario.getRawValue()
     };
 
-    console.log('===== SOLICITUD DE MANTENIMIENTO =====');
+    console.log('===== SOLICITUD DE ALQUILER =====');
     console.log(datos);
 
     this.enviado = true;
 
-    this.formulario.reset({
-      tipoCliente: 'empresa'
-    });
+    this.formulario.reset();
   }
 
   tieneError(campo: string): boolean {
@@ -122,4 +121,9 @@ export class Mantenimiento {
     return !!control && control.invalid && control.touched;
   }
 
+  get periodoInvalido(): boolean {
+    return !!this.formulario.errors?.['periodoInvalido']
+      && (this.formulario.get('fechaInicio')?.touched ?? false)
+      && (this.formulario.get('fechaFin')?.touched ?? false);
+  }
 }

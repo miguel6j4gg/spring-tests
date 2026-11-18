@@ -239,6 +239,133 @@ button, input, select, textarea {
   margin-top: 20px;
 }
 
+.table-card {
+  background: white;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 8px 30px #1c344310;
+  border: 1px solid #e5eaf0;
+}
+
+.table-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.table-header h1 {
+  font-size: 26px;
+  margin: 8px 0;
+}
+
+.table-header p {
+  color: #6b7885;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e5eaf0;
+  border-radius: 10px;
+}
+
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 720px;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 13px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eef1f5;
+  white-space: nowrap;
+}
+
+.table-wrapper th {
+  background: #101d29;
+  color: white;
+  font-size: 12px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+.table-wrapper tbody tr:hover {
+  background: #f7fafc;
+}
+
+.table-wrapper tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #fff3bf;
+  color: #6b5b00;
+  border: 1px solid #f0d943;
+}
+
+.empty {
+  text-align: center;
+  color: #7b8792;
+  padding: 25px !important;
+}
+
+.btn-view {
+  padding: 8px 14px;
+  border: 1px solid #008bb9;
+  background: white;
+  color: #008bb9;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.btn-view:hover {
+  background: #008bb9;
+  color: white;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f7fafc;
+  border: 1px solid #e5eaf0;
+  border-radius: 8px;
+  padding: 11px 12px;
+}
+
+.detail.full {
+  grid-column: 1 / -1;
+}
+
+.detail span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #687786;
+}
+
+.detail strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #182635;
+  word-break: break-word;
+}
+
 @media(max-width: 750px) {
   .services-grid {
     grid-template-columns: 1fr;

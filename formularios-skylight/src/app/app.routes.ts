@@ -13,18 +13,18 @@ export const routes: Routes = [
   },
   {
     path: 'cotizacion',
-    loadComponent: () =>
-      import('./pages/cotizacion/cotizacion').then(m => m.Cotizacion)
+    loadChildren: () =>
+      import('./pages/cotizacion/cotizacion.routes').then(m => m.COTIZACION_ROUTES)
   },
   {
     path: 'alquiler',
-    loadComponent: () =>
-      import('./pages/alquiler/alquiler').then(m => m.Alquiler)
+    loadChildren: () =>
+      import('./pages/alquiler/alquiler.routes').then(m => m.ALQUILER_ROUTES)
   },
   {
     path: 'mantenimiento',
-    loadComponent: () =>
-      import('./pages/mantenimiento/mantenimiento').then(m => m.Mantenimiento)
+    loadChildren: () =>
+      import('./pages/mantenimiento/mantenimiento.routes').then(m => m.MANTENIMIENTO_ROUTES)
   },
   {
     path: '**',
